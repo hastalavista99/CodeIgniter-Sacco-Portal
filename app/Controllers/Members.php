@@ -48,38 +48,23 @@ class Members extends BaseController
         helper('form');
         // validate user input
         if (! $this->request->is('post')) {
-            return view('auth/register');
+            return view('/members');
         }
-        $validated = [
-            'name'=> 'required',
-            'email'=> 'required|valid_email',
-            'password'=> 'required|min_length[5]|max_length[20]',
-            'passwordConf'=> 'required|min_length[5]|max_length[20]|matches[password]'
-        ]; 
-        $data = $this->request->getPost(array_keys($validated));
-
-        if (! $this->validateData($data, $validated)) {
-            return view('auth/register');
-        }
-        $validData = $this->validator->getValidated();
 
         // save the user
-        $name = $this->request->getPost('name');
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
-        $passwordConf = $this->request->getPost('passwordConf');
+        $fname = $this->request->getPost('first-name');
+        $lname = $this->request->getPost('last-name');
+        $mobile = $this->request->getPost('mobile');
 
-        new \App\Libraries\Hash();
         $data = [
-            'name'=> $name,
-            'email'=> $email,
-            'password'=> Hash::encrypt($password)
+            'member_name'=> $fname . ' ' . $lname,
+            'member_phone'=> $mobile,
         ];
 
 
         // storing data
-        $userModel = new \App\Models\UserModel();
-        $query = $userModel->save($data);
+        $memberModel = new \App\Models\MembersModel();
+        $query = $memberModel->save($data);
         if (! $query) {
             return redirect()->back()->with('fail', 'Saving User failed');
         } 
