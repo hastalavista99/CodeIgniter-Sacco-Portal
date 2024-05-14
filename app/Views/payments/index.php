@@ -31,6 +31,7 @@
                                     <th>Name</th>
                                     <th>Amount</th>
                                     <th>Trans ID</th>
+                                    <th>Paybill</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,6 +43,7 @@
                                         <!-- <div class="main"> -->
                                         <td><?= esc($payment_item['TransAmount']) ?></td>
                                         <td><?= esc($payment_item['TransID']) ?></td>
+                                        <td><?= esc($payment_item['ShortCode']) ?></td>
                                     </tr>
                             </tbody>
 

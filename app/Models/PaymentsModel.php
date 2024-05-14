@@ -46,6 +46,6 @@ class PaymentsModel extends Model
 
     public function getPayments()
     {
-        return $this->findAll();
+        return $this->orderBy('auth_id', 'DESC')->findAll();
     }
 }

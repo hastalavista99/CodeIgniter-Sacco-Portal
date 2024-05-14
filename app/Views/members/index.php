@@ -2,7 +2,7 @@
 <?= $this->section('title') ?>Members <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="row gx-0">
+<div class="row g-0">
     <?= $this->include('partials/sidebar') ?>
     <div class="col-12 col-md-9">
         <div class="card shadow border-none my-4 px-2">
@@ -77,21 +77,21 @@
             <?= csrf_field() ?>
           <div class="mb-3">
             <label for="first-name" class="col-form-label">First Name:</label>
-            <input type="text" class="form-control" id="first-name">
+            <input type="text" class="form-control" id="first-name" name="first-name">
           </div>
           <div class="mb-3">
             <label for="last-name" class="col-form-label">Last Name:</label>
-            <input type="text" class="form-control" id="last-name">
+            <input type="text" class="form-control" id="last-name" name="last-name">
           </div>
           <div class="mb-3">
-            <label for="first-name" class="col-form-label">Mobile No.</label>
-            <input type="text" class="form-control" id="first-name">
+            <label for="mobile" class="col-form-label">Mobile No.</label>
+            <input type="text" class="form-control" id="mobile" name="mobile">
           </div>
+          <div class="d-flex flex-row-reverse">
+            <input type="submit" value="Create" class="btn btn-info">
+          </div>
+          
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Send message</button>
       </div>
     </div>
   </div>
