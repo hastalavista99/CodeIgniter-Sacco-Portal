@@ -46,6 +46,6 @@ class MembersModel extends Model
 
     public function getMembers()
     {
-        return $this->findAll();
+        return $this->orderBy('pk_member_id', 'DESC')->findAll();
     }
 }

@@ -2,66 +2,71 @@
 <?= $this->section('title') ?>Members <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="row g-0">
-    <?= $this->include('partials/sidebar') ?>
-    <div class="col-12 col-md-9">
-        <div class="card shadow border-none my-4 px-2">
-            <div class="d-flex justify-content-between mb-2">
-                <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
-                    <div class="pt-1 pb-1 mb-2">
-                        <h4 class="row text-capitalize display-4 ps-3">Members</h4>
-                    </div>
-                </div>
-                <div class="col-md-2 pt-3">
-                    <div>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal">
-                            New Member
-                        </button>
-                    </div>
-                </div>
 
-            </div>
-            <div class="card-body px-0 pb-2">
+<?= $this->include('partials/navbar') ?>
+<div class="row">
 
-                <!-- <h2><?= esc($title) ?></h2> -->
-                <?php if (!empty($members) && is_array($members)) : ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="tableView">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>Joined</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($members as $member) : ?>
-                                    <tr>
-                                        <td><?= esc($member['pk_member_id']) ?></td>
-                                        <td><?= esc($member['member_name']) ?></td>
 
-                                        <!-- <div class="main"> -->
-                                        <td><?= esc($member['member_phone']) ?></td>
-                                        <td><?= esc($member['member_date']) ?></td>
-                                    </tr>
-                            </tbody>
-
-                        <?php endforeach ?>
-                        </table>
-                    </div>
-
-                <?php else : ?>
-
-                    <h3>No members</h3>
-
-                    <p>Unable to find any members for you.</p>
-
-                <?php endif ?>
-            </div>
+  <?= $this->include('partials/sidebar') ?>
+  <div class="col-12 col-md-10">
+    <div class="card shadow border-none my-4 px-2">
+      <div class="d-flex justify-content-between mb-3">
+        <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
+          <div class="pt-1 pb-1 mb-2">
+            <h4 class="row text-capitalize display-4 ps-3">Members</h4>
+          </div>
+        </div>
+        <div class="col-md-2 pt-3">
+          <div>
+            
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal"><i class="bi-person-plus me-1"></i>
+              New Member
+            </button>
+          </div>
         </div>
 
+      </div>
+      <div class="card-body px-0 pb-2">
+
+        <!-- <h2><?= esc($title) ?></h2> -->
+        <?php if (!empty($members) && is_array($members)) : ?>
+          <div class="table-responsive">
+            <table class="table table-hover" id="tableView">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($members as $member) : ?>
+                  <tr>
+                    <td><?= esc($member['pk_member_id']) ?></td>
+                    <td><?= esc($member['member_name']) ?></td>
+
+                    <!-- <div class="main"> -->
+                    <td><?= esc($member['member_phone']) ?></td>
+                    <td><?= esc($member['member_date']) ?></td>
+                  </tr>
+              </tbody>
+
+            <?php endforeach ?>
+            </table>
+          </div>
+
+        <?php else : ?>
+
+          <h3>No members</h3>
+
+          <p>Unable to find any members for you.</p>
+
+        <?php endif ?>
+      </div>
     </div>
+
+  </div>
 </div>
 
 // Add Member Modal
@@ -74,7 +79,7 @@
       </div>
       <div class="modal-body">
         <form method="post" action="/newMember" class="form-floating mb-3">
-            <?= csrf_field() ?>
+          <?= csrf_field() ?>
           <div class="mb-3">
             <label for="first-name" class="col-form-label">First Name:</label>
             <input type="text" class="form-control" id="first-name" name="first-name">
@@ -90,7 +95,7 @@
           <div class="d-flex flex-row-reverse">
             <input type="submit" value="Create" class="btn btn-info">
           </div>
-          
+
         </form>
       </div>
     </div>

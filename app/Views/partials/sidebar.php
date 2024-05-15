@@ -1,8 +1,6 @@
-<div class="col-12 col-md-3">
+<div class="col-12 col-md-2">
     
-
-
-<div class="position-fixed d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 300px; height: 100vh !important;">
+<div class="position-fixed d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 230px; height: 100vh !important;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
       <i class="bi-person-circle text-success me-2" style="font-size: 3rem;"></i>
       <span class="fs-1"><?= $userInfo['name'] ?></span>
@@ -27,6 +25,12 @@
         <a href="/payments" class="nav-link text-white">
             <i class="bi-cash-stack me-2 h5"></i>
           Payments
+        </a>
+      </li>
+      <li>
+        <a href="/agents" class="nav-link text-white">
+            <i class="bi-person-vcard me-2 h5"></i>
+          Agents
         </a>
       </li>
       <li>
