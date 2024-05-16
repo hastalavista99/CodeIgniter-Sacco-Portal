@@ -3,7 +3,7 @@
 
 <?= $this->section('content') ?>
 <div class="row">
-<?= $this->include('partials/navbar') ?>
+    <?= $this->include('partials/navbar') ?>
     <?= $this->include('partials/sidebar') ?>
     <div class="col-12 col-md-10">
         <div class="card shadow border-none my-4 px-2">
@@ -25,7 +25,7 @@
             <div class="card-body px-0 pb-2">
                 <?php if (!empty($payments) && is_array($payments)) : ?>
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="viewsTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -38,17 +38,18 @@
                             <tbody>
                                 <?php foreach ($payments as $payment_item) : ?>
                                     <tr>
-                                    <td><?= esc($payment_item['mp_id']) ?></td>
+                                        <td><?= esc($payment_item['mp_id']) ?></td>
                                         <td><?= esc($payment_item['mp_name']) ?></td>
 
                                         <!-- <div class="main"> -->
-                                        <td><?= esc($payment_item['TransAmount']) ?></td>
+                                        <td><?= esc(number_format($payment_item['TransAmount'], 2) ) ?></td>
                                         <td><?= esc($payment_item['TransID']) ?></td>
                                         <td><?= esc($payment_item['ShortCode']) ?></td>
+
+
+                                    <?php endforeach ?>
                                     </tr>
                             </tbody>
-
-                        <?php endforeach ?>
                         </table>
                     </div>
 

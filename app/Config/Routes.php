@@ -13,6 +13,7 @@ use App\Controllers\Members;
 use App\Controllers\Payments;
 use App\Controllers\LoginMember;
 use App\Controllers\Agents;
+use App\Controllers\SendSMS;
 use App\Models\MemberLogin;
 
 $routes->get('/', 'Home::index');
@@ -38,6 +39,8 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/agents', [Agents::class, 'index']);
     $routes->post('/newAgent', [Agents::class, 'newAgent']);
     $routes->get('/myPayments', [Payments::class, 'myPayments']);
+    $routes->get('/editMember', [Members::class, 'editMember']);
+    $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
 });
 
 $routes->post('auth/uploadImage', [Auth::class, 'uploadImage']);

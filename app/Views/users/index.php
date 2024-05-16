@@ -1,13 +1,13 @@
 <?= $this->extend('layouts/main') ?>
-<?= $this->section('title')?>Users<?= $this->endSection() ?>
+<?= $this->section('title') ?>Users<?= $this->endSection() ?>
 
-<?= $this->section('content')?>
+<?= $this->section('content') ?>
 <div class="row">
-<?= $this->include('partials/navbar') ?>
+    <?= $this->include('partials/navbar') ?>
 
-    <?= $this->include('partials/sidebar')?>
+    <?= $this->include('partials/sidebar') ?>
     <div class="col-12 col-md-10">
-    <div class="card shadow border-none my-4 px-2">
+        <div class="card shadow border-none my-4 px-2">
             <div class="d-flex justify-content-between mb-2">
                 <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
                     <div class="pt-1 pb-1 mb-2">
@@ -17,7 +17,7 @@
                 <div class="col-md-2 pt-3">
                     <div>
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUnitModal">
-                           <i class="bi-person-plus me-2"></i> New User
+                            <i class="bi-person-plus me-2"></i> New User
                         </button>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                 <!-- <h2><?= esc($title) ?></h2> -->
                 <?php if (!empty($users) && is_array($users)) : ?>
                     <div class="table-responsive">
-                        <table class="table table-hover" id="tableView">
+                        <table class="table table-hover" id="viewsTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -47,9 +47,10 @@
                                         <td><?= esc($user['auth_level']) ?></td>
                                         <td><?= esc($user['auth_time']) ?></td>
                                     </tr>
-                            </tbody>
 
-                        <?php endforeach ?>
+
+                                <?php endforeach ?>
+                            </tbody>
                         </table>
                     </div>
 
@@ -63,7 +64,7 @@
             </div>
         </div>
     </div>
-    
+
 </div>
 
-<?= $this->endSection()?>
+<?= $this->endSection() ?>

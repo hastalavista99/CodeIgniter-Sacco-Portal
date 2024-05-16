@@ -3,11 +3,11 @@
 
 <?= $this->section('content') ?>
 <div class="row g-0">
-    <?= $this->include('partials/navbar') ?>
+  <?= $this->include('partials/navbar') ?>
   <?= $this->include('partials/sidebar') ?>
-  
+
   <div class="col-12 col-md-10">
-    
+
     <div class="card shadow border-none my-4 px-2">
       <div class="d-flex justify-content-between mb-3">
         <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-2 pt-3">
           <div>
-            
+
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addAgentModal"><i class="bi-person-plus me-1"></i>
               New Agent
             </button>
@@ -30,7 +30,7 @@
         <!-- <h2></h2> -->
         <?php if (!empty($agents) && is_array($agents)) : ?>
           <div class="table-responsive">
-            <table class="table table-hover" id="tableView">
+            <table class="table table-hover" id="viewsTable">
               <thead>
                 <tr>
                   <th>#</th>
@@ -51,9 +51,10 @@
                     <td><?= esc($agent['mobile']) ?></td>
                     <td><?= esc($agent['email']) ?></td>
                   </tr>
-              </tbody>
 
-            <?php endforeach ?>
+
+                <?php endforeach ?>
+              </tbody>
             </table>
           </div>
 
@@ -87,20 +88,20 @@
           </div>
           <div class="row">
             <div class="col-4 mb-3">
-            <label for="agent_no" class="col-form-label">Agent No.</label>
-            <input type="text" class="form-control" id="agent_no" name="agent_no">
+              <label for="agent_no" class="col-form-label">Agent No.</label>
+              <input type="text" class="form-control" id="agent_no" name="agent_no">
+            </div>
+            <div class="col-8 mb-3">
+              <label for="mobile" class="col-form-label">Mobile No.</label>
+              <input type="text" class="form-control" id="mobile" name="mobile">
+            </div>
           </div>
-          <div class="col-8 mb-3">
-            <label for="mobile" class="col-form-label">Mobile No.</label>
-            <input type="text" class="form-control" id="mobile" name="mobile">
-          </div>
-          </div>
-          
+
           <div class="mb-3">
             <label for="email" class="col-form-label">Email:</label>
             <input type="text" class="form-control" id="email" name="email">
           </div>
-          
+
           <div class="d-flex flex-row-reverse">
             <input type="submit" value="Create" class="btn btn-info">
           </div>

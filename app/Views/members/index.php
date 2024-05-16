@@ -10,14 +10,14 @@
   ?>
     <div class="alert alert-success alert-dismissible fade show">
       <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
-      <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
     </div>
   <?php
   } else if (!empty(session()->getFlashdata('fail'))) {
   ?>
     <div class="alert alert-danger alert-dismissible fade show">
       <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
-      <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
     </div>
   <?php
   }
@@ -48,13 +48,14 @@
         <!-- <h2><?= esc($title) ?></h2> -->
         <?php if (!empty($members) && is_array($members)) : ?>
           <div class="table-responsive">
-            <table class="table table-hover" id="tableView">
+            <table class="table table-hover" id="viewsTable">
               <thead>
                 <tr>
                   <th>#</th>
                   <th>Name</th>
                   <th>Phone</th>
                   <th>Joined</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -66,10 +67,12 @@
                     <!-- <div class="main"> -->
                     <td><?= esc($member['member_phone']) ?></td>
                     <td><?= esc($member['member_date']) ?></td>
+                    <td><a href="/editMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-info" ><i class="bi-pencil-square"></i></a></td>
                   </tr>
-              </tbody>
 
-            <?php endforeach ?>
+
+                <?php endforeach ?>
+              </tbody>
             </table>
           </div>
 
@@ -111,6 +114,39 @@
           </div>
           <div class="d-flex flex-row-reverse">
             <input type="submit" value="Create" class="btn btn-info">
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+// Edit Member Modal
+<div class="modal fade" id="editMemberModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/newMember" class="form-floating mb-3">
+          <?= csrf_field() ?>
+          <div class="mb-3">
+            <label for="first-name" class="col-form-label">First Name:</label>
+            <input type="text" class="form-control" id="first-name" name="first-name">
+          </div>
+          <div class="mb-3">
+            <label for="last-name" class="col-form-label">Last Name:</label>
+            <input type="text" class="form-control" id="last-name" name="last-name">
+          </div>
+          <div class="mb-3">
+            <label for="mobile" class="col-form-label">Mobile No.</label>
+            <input type="text" class="form-control" id="mobile" name="mobile">
+          </div>
+          <div class="d-flex flex-row-reverse">
+            <input type="submit" value="Apply Changes" class="btn btn-info">
           </div>
 
         </form>

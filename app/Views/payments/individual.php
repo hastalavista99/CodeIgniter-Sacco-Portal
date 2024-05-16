@@ -22,7 +22,7 @@
             <div class="card-body px-0 pb-2">
                 <?php if (!empty($payments) && is_array($payments)) : ?>
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="viewsTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
