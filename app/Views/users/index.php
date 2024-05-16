@@ -17,7 +17,7 @@
                 <div class="col-md-2 pt-3">
                     <div>
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUnitModal">
-                            New User
+                           <i class="bi-person-plus me-2"></i> New User
                         </button>
                     </div>
                 </div>

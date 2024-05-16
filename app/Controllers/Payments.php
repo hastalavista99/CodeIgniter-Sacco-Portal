@@ -41,4 +41,29 @@ class Payments extends BaseController
 
         return view('payments/index', $data);
     }
+
+    public function myPayments()
+    {
+        helper('number');
+        $model = model(PaymentsModel::class);
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $phone = $userInfo['mobile'];
+
+    $payments = $model->where('BillRefNumber', $phone)->findAll();
+    $totalAmount = $model->selectSum('TransAmount')->where('BillRefNumber', $phone)->first()['TransAmount'];
+
+    $total = number_to_currency($totalAmount, 'KES', 'en_US',2);
+
+        $data = [
+            'payments' => $payments,
+            'total' => $total,
+            'title' => 'My Payments',
+            'userInfo' => $userInfo,
+        ];
+
+        return view('payments/individual', $data);
+
+    }
 }

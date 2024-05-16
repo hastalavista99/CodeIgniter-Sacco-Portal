@@ -37,6 +37,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('/newMember', [Members::class, 'newMember']);
     $routes->get('/agents', [Agents::class, 'index']);
     $routes->post('/newAgent', [Agents::class, 'newAgent']);
+    $routes->get('/myPayments', [Payments::class, 'myPayments']);
 });
 
 $routes->post('auth/uploadImage', [Auth::class, 'uploadImage']);

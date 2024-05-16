@@ -5,6 +5,23 @@
 
 <?= $this->include('partials/navbar') ?>
 <div class="row">
+  <?php
+  if (!empty(session()->getFlashdata('success'))) {
+  ?>
+    <div class="alert alert-success alert-dismissible fade show">
+      <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
+      <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php
+  } else if (!empty(session()->getFlashdata('fail'))) {
+  ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+      <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+      <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php
+  }
+  ?>
 
 
   <?= $this->include('partials/sidebar') ?>
@@ -18,7 +35,7 @@
         </div>
         <div class="col-md-2 pt-3">
           <div>
-            
+
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal"><i class="bi-person-plus me-1"></i>
               New Member
             </button>

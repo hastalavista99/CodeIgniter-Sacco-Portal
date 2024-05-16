@@ -15,6 +15,8 @@
           Dashboard
         </a>
       </li>
+      <?php if($userInfo['role'] == 'admin') { ?>
+
       <li>
         <a href="/members" class="nav-link text-white">
           <i class="bi-people me-2 h5"></i>
@@ -34,18 +36,30 @@
         </a>
       </li>
       <li>
+        <a href="/users" class="nav-link text-white">
+        <i class="bi-person-check me-2 h5"></i>
+          Users
+        </a>
+      </li>
+      <?php } ?>
+      <?php if( $userInfo['role'] == 'member'){ ?>
+        <li>
+        <a href="/myPayments" class="nav-link text-white">
+            <i class="bi-cash-stack me-2 h5"></i>
+          My Payments
+        </a>
+      </li>
+      <?php } ?>
+
+
+      <li>
         <a href="#" class="nav-link text-white">
         <i class="bi-person-square me-2 h5"></i>
           Profile
         </a>
       </li>
       
-      <li>
-        <a href="/users" class="nav-link text-white">
-        <i class="bi-person-check me-2 h5"></i>
-          Users
-        </a>
-      </li>
+      
       <li>
         <a href="/logout" class="nav-link text-white">
           <i class="bi-box-arrow-right me-2 h5"></i>
