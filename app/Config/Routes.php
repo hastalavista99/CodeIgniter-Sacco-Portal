@@ -16,7 +16,7 @@ use App\Controllers\Agents;
 use App\Controllers\SendSMS;
 use App\Models\MemberLogin;
 
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Auth::index');
 
 $routes->get('auth', [Auth::class, 'index']);
 $routes->get('auth/login', [Auth::class, 'index']);
@@ -40,6 +40,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('/newAgent', [Agents::class, 'newAgent']);
     $routes->get('/myPayments', [Payments::class, 'myPayments']);
     $routes->get('/editMember', [Members::class, 'editMember']);
+    $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
 });
 

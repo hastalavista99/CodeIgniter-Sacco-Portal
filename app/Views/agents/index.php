@@ -7,8 +7,24 @@
   <?= $this->include('partials/sidebar') ?>
 
   <div class="col-12 col-md-10">
-
-    <div class="card shadow border-none my-4 px-2">
+  <?php
+  if (!empty(session()->getFlashdata('success'))) {
+  ?>
+    <div class="alert alert-success alert-dismissible fade show">
+      <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
+      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php
+  } else if (!empty(session()->getFlashdata('fail'))) {
+  ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+      <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php
+  }
+  ?>
+    <div class="card shadow border-none my-2 px-2">
       <div class="d-flex justify-content-between mb-3">
         <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
           <div class="pt-1 pb-1 mb-2">
@@ -38,6 +54,7 @@
                   <th>Name</th>
                   <th>Mobile</th>
                   <th>Email</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -50,6 +67,7 @@
                     <td><?= esc($agent['name']) ?></td>
                     <td><?= esc($agent['mobile']) ?></td>
                     <td><?= esc($agent['email']) ?></td>
+                    <td><a href="/editAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a></td>
                   </tr>
 
 
@@ -71,7 +89,7 @@
   </div>
 </div>
 
-// Add Agent Modal
+<!-- // Add Agent Modal -->
 <div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

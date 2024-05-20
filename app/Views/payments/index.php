@@ -5,8 +5,8 @@
 <div class="row">
     <?= $this->include('partials/navbar') ?>
     <?= $this->include('partials/sidebar') ?>
-    <div class="col-12 col-md-10">
-        <div class="card shadow border-none my-4 px-2">
+    <div class="col-12 col-md-10 col-sm-10">
+        <div class="card shadow border-none my-2 px-2">
             <div class="d-flex justify-content-between mb-3">
                 <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
                     <div class="pt-1 pb-1 mb-2">
@@ -20,12 +20,12 @@
                         </button> -->
                     </div>
                 </div>
-
+ 
             </div>
             <div class="card-body px-0 pb-2">
                 <?php if (!empty($payments) && is_array($payments)) : ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="viewsTable">
+                    <div class="table-responsive-md">
+                        <table class="table table-hover" id="paymentsTable">
                             <thead>
                                 <tr>
                                     <th>#</th>

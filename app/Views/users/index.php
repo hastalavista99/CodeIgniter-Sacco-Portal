@@ -7,6 +7,23 @@
 
     <?= $this->include('partials/sidebar') ?>
     <div class="col-12 col-md-10">
+    <?php
+  if (!empty(session()->getFlashdata('success'))) {
+  ?>
+    <div class="alert alert-success alert-dismissible fade show">
+      <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
+      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php
+  } else if (!empty(session()->getFlashdata('fail'))) {
+  ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+      <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php
+  }
+  ?>
         <div class="card shadow border-none my-4 px-2">
             <div class="d-flex justify-content-between mb-2">
                 <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">

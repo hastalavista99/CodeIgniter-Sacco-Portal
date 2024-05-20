@@ -102,16 +102,42 @@ class Members extends BaseController
     public function editMember()
     {
         helper('form');
+        $id = $this->request->getGet('id');
         $model = model(MembersModel::class);
         $userModel = model(UserModel::class);
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
+        $member = $model->find($id);
         $data = [
-            'members'  => $model->getMembers(),
-            'title' => 'Members',
+            'member'  => $member,
+            'title' => 'Edit Member',
             'userInfo' => $userInfo,
+            'id' => $id
         ];
         return view('members/edit', $data);
+    }
+
+    public function updateMember()
+    {
+        helper(['form', 'url']);
+        $id = $this->request->getGet('id');
+        $name = $this->request->getPost('name');
+        $mobile = $this->request->getPost('mobile');
+        $data = [
+            'member_name' => $name,
+            'member_phone' => $mobile
+        ];
+
+        $model = model(MembersModel::class);
+
+        if ($model->update($id, $data)) {
+            // Update successful
+            return redirect()->to('/members')->with('success', 'Member updated successfully.');
+        } else {
+            // Update failed
+            return redirect()->back()->withInput()->with('fail', 'Failed to update member.');
+        }
+        
     }
 
 }

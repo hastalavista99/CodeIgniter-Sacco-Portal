@@ -5,6 +5,8 @@
 
 <?= $this->include('partials/navbar') ?>
 <div class="row">
+  <?= $this->include('partials/sidebar') ?>
+  <div class="col-12 col-md-10">
   <?php
   if (!empty(session()->getFlashdata('success'))) {
   ?>
@@ -22,11 +24,7 @@
   <?php
   }
   ?>
-
-
-  <?= $this->include('partials/sidebar') ?>
-  <div class="col-12 col-md-10">
-    <div class="card shadow border-none my-4 px-2">
+    <div class="card shadow border-none my-2 px-2">
       <div class="d-flex justify-content-between mb-3">
         <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
           <div class="pt-1 pb-1 mb-2">
@@ -67,7 +65,7 @@
                     <!-- <div class="main"> -->
                     <td><?= esc($member['member_phone']) ?></td>
                     <td><?= esc($member['member_date']) ?></td>
-                    <td><a href="/editMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-info" ><i class="bi-pencil-square"></i></a></td>
+                    <td><a href="/editMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a></td>
                   </tr>
 
 
@@ -89,7 +87,7 @@
   </div>
 </div>
 
-// Add Member Modal
+ <!-- Add Member Modal -->
 <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -122,7 +120,7 @@
   </div>
 </div>
 
-// Edit Member Modal
+<!-- // Edit Member Modal -->
 <div class="modal fade" id="editMemberModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

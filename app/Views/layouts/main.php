@@ -180,6 +180,15 @@
 </head>
 
 <body class="bg-light">
+<nav class="navbar bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white ms-3">Imaniline Sacco</a>
+    <form class="d-flex" role="search">
+      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
   <div class="mx-0">
     <?= $this->renderSection('content') ?>
 
@@ -234,7 +243,19 @@
         },
         paging: false,
         scrollCollapse: true,
-        scrollY: '100vh'
+        scrollY: '60vh'
+      });
+
+      new DataTable('#paymentsTable', {
+        layout: {
+          topStart: {
+            buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'print', 'colvis']
+          }
+        },
+        order: [[0, 'desc']],
+        paging: false,
+        scrollCollapse: true,
+        scrollY: '60vh'
       });
     </script>
 
