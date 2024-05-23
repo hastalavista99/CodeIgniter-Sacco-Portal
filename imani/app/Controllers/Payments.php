@@ -12,15 +12,21 @@ class Payments extends BaseController
 {
     public function index()
     {
+        helper('number');
         $model = model(PaymentsModel::class);
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
+        $totalAmount = $model->selectSum('TransAmount')->first()['TransAmount'];
+
+    $total = number_to_currency($totalAmount, 'KES', 'en_US',2);
+
         $data = [
             'payments'  => $model->getPayments(),
             'title' => 'Payments',
             'userInfo' => $userInfo,
+            'total' => $total
         ];
 
         return view('payments/index', $data);

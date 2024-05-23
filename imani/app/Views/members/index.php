@@ -1,12 +1,12 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Members <?= $this->endSection() ?>
 
-<?= $this->section('content') ?>
 
-<?= $this->include('partials/navbar') ?>
+
 <div class="row">
+  <?= $this->section('content') ?>
   <?= $this->include('partials/sidebar') ?>
-  <div class="col-12 col-md-10">
+  <div class="col-lg-12">
   <?php
   if (!empty(session()->getFlashdata('success'))) {
   ?>
@@ -25,12 +25,8 @@
   }
   ?>
     <div class="card shadow border-none my-2 px-2">
-      <div class="d-flex justify-content-between mb-3">
-        <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
-          <div class="pt-1 pb-1 mb-2">
-            <h4 class="row text-capitalize display-4 ps-3">Members</h4>
-          </div>
-        </div>
+      <div class="d-flex justify-content-end mb-3">
+        
         <div class="col-md-2 pt-3">
           <div>
 

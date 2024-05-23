@@ -1,19 +1,14 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Payments<?= $this->endSection() ?>
 
-<?= $this->section('content') ?>
-<div class="row">
-    <?= $this->include('partials/navbar') ?>
-    <?= $this->include('partials/sidebar') ?>
-    <div class="col-12 col-md-10">
-        <div class="card shadow border-none my-4 px-2">
-            <div class="d-flex justify-content-between mb-3">
-                <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
-                    <div class="pt-1 pb-1 mb-2">
-                        <h4 class="row text-capitalize display-4 ps-3"><?= esc($title) ?></h4>
-                    </div>
 
-                </div>
+<div class="row">
+    <?= $this->section('content') ?>
+    <?= $this->include('partials/sidebar') ?>
+    <div class="col-lg-12">
+        <div class="card shadow border-none my-4 px-2">
+            <div class="d-flex justify-content-end mb-3">
+                
                 <div class="pt-1 pb-1 mb-1">
                     <h4 class="text-capitalize display-4 ps-3">Total: <?= esc($total); ?></h4>
                 </div>
@@ -43,9 +38,10 @@
                                         <td><?= esc($payment_item['TransID']) ?></td>
                                         <td><?= esc($payment_item['ShortCode']) ?></td>
                                     </tr>
-                            </tbody>
+                            
 
                         <?php endforeach ?>
+                    </tbody>
                         </table>
                     </div>
 

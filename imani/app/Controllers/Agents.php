@@ -52,12 +52,12 @@ class Agents extends BaseController
         $agentInsert = new \App\Models\AgentModel();
         $query = $agentInsert->save($data);
         if (! $query) {
-            return redirect()->back()->with('fail', 'Saving User failed');
+            return redirect()->to('/agents')->with('fail', 'Saving Agent failed');
         } 
         else
         {
             
-            return redirect()->back()->with('Success', 'Saved User');
+            return redirect()->to('/agents')->with('success', 'Sucessfully Created an Agent');
         }
     }
 

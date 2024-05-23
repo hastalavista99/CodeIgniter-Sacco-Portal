@@ -1,4 +1,76 @@
-<div class="col-12 col-md-2 col-sm-2">
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/dashboard">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <?php if ($userInfo['role'] == 'admin') { ?>
+
+      <li class="nav-item">
+        <a href="/members" class="nav-link collapsed">
+          <i class="bi bi-people"></i>
+          <span>Members</span>
+
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/payments" class="nav-link collapsed">
+          <i class="bi bi-cash-stack"></i>
+          <span>
+            Payments
+          </span>
+
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/agents" class="nav-link collapsed">
+          <i class="bi bi-person-vcard"></i>
+          <span>Agents</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/users" class="nav-link collapsed">
+          <i class="bi bi-person-check"></i>
+          <span>Users</span>
+
+        </a>
+      </li>
+      <!-- <li class="nav-item">
+        <a href="/sms" class="nav-link collapsed">
+          <i class="bi bi-envelope-arrow-up"></i>
+          <span>SMS</span>
+
+        </a>
+      </li> -->
+    <?php } ?>
+      <li class="nav-item">
+        <a href="/myPayments" class="nav-link collapsed">
+          <i class="bi-cash-stack"></i>
+          <span>My Payments</span>
+
+        </a>
+      </li>
+
+
+
+
+    <li class="nav-item">
+      <a href="/logout" class="nav-link collapsed">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </a>
+    </li>
+
+  </ul>
+
+</aside>
+
+<!-- <div class="col-12 col-md-2 col-sm-2">
     
 <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style=" height: 100vh !important;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -8,14 +80,14 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <!-- <i class="material-symbols-outlined opacity-10">dashboard</i> -->
+       
         
         <a href="/dashboard" class="nav-link text-white">
             <i class="bi-house me-2 h5"></i> 
           Dashboard
         </a>
       </li>
-      <?php if($userInfo['role'] == 'admin') { ?>
+      <?php if ($userInfo['role'] == 'admin') { ?>
 
       <li>
         <a href="/members" class="nav-link text-white">
@@ -42,7 +114,7 @@
         </a>
       </li>
       <?php } ?>
-      <?php if( $userInfo['role'] == 'member'){ ?>
+      <?php if ($userInfo['role'] == 'member') { ?>
         <li>
         <a href="/myPayments" class="nav-link text-white">
             <i class="bi-cash-stack me-2 h5"></i>
@@ -84,4 +156,4 @@
   </div>
 
 
-</div></aside>
+</div></aside> -->

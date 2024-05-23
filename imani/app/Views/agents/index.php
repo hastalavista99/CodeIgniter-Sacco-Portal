@@ -1,36 +1,32 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Agents <?= $this->endSection() ?>
 
-<?= $this->section('content') ?>
-<div class="row g-0">
-  <?= $this->include('partials/navbar') ?>
+
+<div class="row">
+  <?= $this->section('content') ?>
   <?= $this->include('partials/sidebar') ?>
 
-  <div class="col-12 col-md-10">
+  <div class="col-lg-12">
   <?php
   if (!empty(session()->getFlashdata('success'))) {
   ?>
     <div class="alert alert-success alert-dismissible fade show">
-      <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
+      <i class="bi-check-circle-fill me-2"></i> <?= session()->getFlashdata('success') ?>
       <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
     </div>
   <?php
   } else if (!empty(session()->getFlashdata('fail'))) {
   ?>
     <div class="alert alert-danger alert-dismissible fade show">
-      <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+      <i class="bi-exclamation-triangle-fill me-2"></i> <?= session()->getFlashdata('fail') ?>
       <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
     </div>
   <?php
   }
   ?>
     <div class="card shadow border-none my-2 px-2">
-      <div class="d-flex justify-content-between mb-3">
-        <div class="row col-md-7 p-0 mx-3 z-index-2 my-2" style="height: 35px;">
-          <div class="pt-1 pb-1 mb-2">
-            <h4 class="row text-capitalize display-4 ps-3"><?= esc($title) ?></h4>
-          </div>
-        </div>
+      <div class="d-flex justify-content-end mb-3">
+        
         <div class="col-md-2 pt-3">
           <div>
 
