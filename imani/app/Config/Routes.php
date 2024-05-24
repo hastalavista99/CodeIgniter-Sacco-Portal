@@ -41,8 +41,12 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('/newMember', [Members::class, 'newMember']);
     $routes->get('/agents', [Agents::class, 'index']);
     $routes->post('/newAgent', [Agents::class, 'newAgent']);
+    $routes->get('/editAgent', [Agents::class, 'editAgent']);
+    $routes->get('/deleteAgent', [Agents::class, 'deleteAgent']);
+    $routes->post('/updateAgent', [Agents::class, 'updateAgent']);
     $routes->get('/myPayments', [Payments::class, 'myPayments']);
     $routes->get('/editMember', [Members::class, 'editMember']);
+    $routes->get('/deleteMember', [Members::class, 'deleteMember']);
     $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
 });

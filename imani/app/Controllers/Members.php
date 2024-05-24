@@ -140,4 +140,18 @@ class Members extends BaseController
         
     }
 
+    public function deleteMember()
+    {
+        helper(['form', 'url']);
+
+        $id = $this->request->getGet('id');
+        $model = model(MembersModel::class);
+        $member = $model->delete($id);
+        if($member)
+        {
+            return redirect()->to('/members')->with('success', 'Member deleted successfully.');
+        }
+        
+    }
+
 }

@@ -50,7 +50,7 @@
                   <th>Name</th>
                   <th>Mobile</th>
                   <th>Email</th>
-                  <th>Edit</th>
+                  <th>Edit</i></th>
                 </tr>
               </thead>
               <tbody>
@@ -63,7 +63,10 @@
                     <td><?= esc($agent['name']) ?></td>
                     <td><?= esc($agent['mobile']) ?></td>
                     <td><?= esc($agent['email']) ?></td>
-                    <td><a href="/editAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a></td>
+                    <td><a href="/editAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
+                    <a href="/deleteAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-danger" ><i class="bi-trash3"></i></a>
+                    
+                  </td>
                   </tr>
 
 

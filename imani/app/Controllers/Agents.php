@@ -61,5 +61,61 @@ class Agents extends BaseController
         }
     }
 
+    public function editAgent()
+    {
+        helper('form');
+        $id = $this->request->getGet('id');
+        $model = model(AgentModel::class);
+        $userModel = model(UserModel::class);
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $agent = $model->find($id);
+        $data = [
+            'agent'  => $agent,
+            'title' => 'Edit Agent',
+            'userInfo' => $userInfo,
+            'id' => $id
+        ];
+        return view('agents/edit', $data);
+    }
+
+    public function updateAgent()
+    {
+        helper(['form', 'url']);
+        $id = $this->request->getGet('id');
+        $name = $this->request->getPost('name');
+        $mobile = $this->request->getPost('mobile');
+        $email = $this->request->getPost('email');
+        $data = [
+            'name' => $name,
+            'mobile' => $mobile,
+            'email' => $email
+        ];
+
+        $model = model(AgentModel::class);
+
+        if ($model->update($id, $data)) {
+            // Update successful
+            return redirect()->to('/agents')->with('success', 'Agent updated successfully.');
+        } else {
+            // Update failed
+            return redirect()->back()->withInput()->with('fail', 'Failed to update agent.');
+        }
+        
+    }
+    public function deleteAgent()
+    {
+        helper(['form', 'url']);
+
+        $id = $this->request->getGet('id');
+        $model = model(AgentModel::class);
+        $agent = $model->delete($id);
+        if($agent)
+        {
+            return redirect()->to('/agents')->with('success', 'Agent deleted successfully.');
+        }
+        
+    }
+
 
 }

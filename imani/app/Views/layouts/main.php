@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css">
   <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/util.css') ?>">
 
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
   <script src="sidebars.js"></script>
@@ -181,6 +182,11 @@
 </head>
 
 <body>
+  <div class="spinner-wrapper">
+    <div class="spinner-border text-info" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
@@ -255,7 +261,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
+              <a class="dropdown-item d-flex align-items-center" href="/logout">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -269,10 +275,10 @@
 
   </header>
   <main id="main" class="main">
-  <div class="pagetitle">
-    <h1><?= $title ?></h1>
+    <div class="pagetitle">
+      <h1><?= $title ?></h1>
 
-  </div>
+    </div>
     <section class="section">
       <?= $this->renderSection('content') ?>
     </section>
@@ -309,6 +315,7 @@
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
+  <script src="<?= base_url('assets/js/util.js') ?>"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

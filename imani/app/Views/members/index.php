@@ -61,7 +61,8 @@
                     <!-- <div class="main"> -->
                     <td><?= esc($member['member_phone']) ?></td>
                     <td><?= esc($member['member_date']) ?></td>
-                    <td><a href="/editMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a></td>
+                    <td><a href="/editMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
+                    <a href="/deleteMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-sm btn-danger" ><i class="bi-trash3"></i></a></td>
                   </tr>
 
 
