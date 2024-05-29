@@ -89,7 +89,7 @@ class Members extends BaseController
         if (!$insert) {
             return redirect()->back()->with('fail', 'Saving User failed');
         } else {
-            $msg = "Hi, $fname \n Welcome to Pula Sacco Login to https://sacco.pulasacco.co.ke to view your transactions.\nUsername: $fname\nPassword: $pass; \n Regards \n Pula Sacco Manager";
+            $msg = "Hi, $fname \n Welcome to Pula Sacco Login to https://sacco.imanilinesacco.co.ke to view your transactions.\nUsername: $fname\nPassword: $pass; \n Regards \n Pula Sacco Manager";
 
             $sms = new SendSMS();
 

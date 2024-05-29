@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= $this->renderSection('title') ?></title>
+  <link rel="shortcut icon" href="<?= base_url('favicon.ico')?>" type="image/x-icon">
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -315,7 +316,7 @@
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
-  <script src="<?= base_url('assets/js/util.js') ?>"></script>
+ 
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -373,6 +374,7 @@
 
   <script src="<?= base_url('assets/js/main.js') ?>"></script>
   <script src="<?= base_url('assets/js/dashboard.js') ?>"></script>
+  <script src="<?= base_url('assets/js/util.js') ?>"></script>
 
 
 </body>

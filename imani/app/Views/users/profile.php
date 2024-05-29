@@ -25,23 +25,23 @@
         </div>
 
         <div class="col-xl-8">
-        <?php
-                            if (!empty(session()->getFlashdata('success'))) {
-                            ?>
-                                <div class="alert alert-success alert-dismissible fade show">
-                                    <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
-                                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-                                </div>
-                            <?php
-                            } else if (!empty(session()->getFlashdata('fail'))) {
-                            ?>
-                                <div class="alert alert-danger alert-dismissible fade show">
-                                    <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
-                                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-                                </div>
-                            <?php
-                            }
-                            ?>
+            <?php
+            if (!empty(session()->getFlashdata('success'))) {
+            ?>
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
+                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php
+            } else if (!empty(session()->getFlashdata('fail'))) {
+            ?>
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php
+            }
+            ?>
 
             <div class="card">
                 <div class="card-body pt-3">
@@ -99,14 +99,14 @@
 
 
                         <div class="tab-pane fade pt-3" id="profile-change-password">
-                            
+
                             <!-- Change Password Form -->
                             <form action="<?= site_url('loginMember/changePass?id=' . $id) ?>" method="post" class="form">
                                 <?= csrf_field() ?>
                                 <div class="row mb-3">
                                     <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="password" type="password" class="form-control" id="currentPassword" required>
+                                    <div class="col-md-8 col-lg-9 d-flex align-items-center">
+                                        <input name="password" type="password" class="form-control me-1" id="currentPassword" required>
                                     </div>
                                 </div>
 
@@ -123,11 +123,29 @@
                                         <input name="renewpassword" type="password" class="form-control" id="renewPassword" required>
                                     </div>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkPassword">
+                                    <label class="form-check-label" for="checkPassword">
+                                        Show Password
+                                    </label>
+                                </div>
 
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Change Password</button>
                                 </div>
                             </form>
+                            <script>
+                                document.getElementById('checkPassword').addEventListener('change', function() {
+                                    let passwordFields = document.querySelectorAll('#currentPassword, #newPassword, #renewPassword');
+                                    passwordFields.forEach(field => {
+                                        if (this.checked) {
+                                            field.type = 'text';
+                                        } else {
+                                            field.type = 'password';
+                                        }
+                                    });
+                                });
+                            </script>
                         </div>
 
 

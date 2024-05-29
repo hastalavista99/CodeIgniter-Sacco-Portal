@@ -7,10 +7,11 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Signin Template · Bootstrap v5.3</title>
+    <title>Sign In</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
@@ -128,12 +129,14 @@ body {
 
     <?php if (session()->getFlashdata('fail')) : ?>
         <div class="alert alert-danger">
+          <i class="exclamation-triangle-fill me-2"></i>
             <?= session()->getFlashdata('fail') ?>
         </div>
     <?php endif; ?>
 
     <?php if (isset($validation)) : ?>
         <div class="alert alert-danger">
+        <i class="exclamation-triangle-fill me-2"></i>
             <?= $validation->listErrors() ?>
         </div>
     <?php endif; ?>
@@ -144,9 +147,11 @@ body {
     </div>
 
     <div class="form-floating">
+      
 
         <input type="password" name="password" id="floatingPassword" class="form-control" placeholder="Password">
         <label for="floatingPassword">Password</label>
+        
     </div>
     <div class="form-check text-start my-3">
         <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
@@ -158,7 +163,7 @@ body {
     <input type="submit" value="Sign In" class="btn btn-primary w-100 py-2">
 
 </form>
-<a href="<?= site_url('auth/register') ?>">I don't have an account</a>
+
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 

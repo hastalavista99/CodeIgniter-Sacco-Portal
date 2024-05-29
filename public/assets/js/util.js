@@ -7,3 +7,5 @@ window.addEventListener('load', ()=>{
     spinner.style.display = 'none';
 }, 200);  
 });
+
+
