@@ -7,32 +7,32 @@
 
     <?= $this->include('partials/sidebar') ?>
     <div class="col-lg-12">
-    <?php
-  if (!empty(session()->getFlashdata('success'))) {
-  ?>
-    <div class="alert alert-success alert-dismissible fade show">
-      <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
-      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php
-  } else if (!empty(session()->getFlashdata('fail'))) {
-  ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-      <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
-      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php
-  }
-  ?>
+        <?php
+        if (!empty(session()->getFlashdata('success'))) {
+        ?>
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
+                <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php
+        } else if (!empty(session()->getFlashdata('fail'))) {
+        ?>
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+                <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php
+        }
+        ?>
         <div class="card shadow border-none my-4 px-2">
             <div class="d-flex justify-content-end mb-2">
-                
+
                 <div class="col-md-2 pt-3">
-                    <!-- <div>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUnitModal">
+                    <div>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
                             <i class="bi-person-plus me-2"></i> New User
                         </button>
-                    </div> -->
+                    </div>
                 </div>
 
             </div>
@@ -46,19 +46,19 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Username</th>
-                                    <th>Auth Level</th>
-                                    <th>Created At</th>
+                                    <th>Mobile</th>
+                                    <th>Role</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($users as $user) : ?>
                                     <tr>
-                                        <td><?= esc($user['auth_id']) ?></td>
-                                        <td><?= esc($user['auth_name']) ?></td>
+                                        <td><?= esc($user['id']) ?></td>
+                                        <td><?= esc($user['name']) ?></td>
 
                                         <!-- <div class="main"> -->
-                                        <td><?= esc($user['auth_level']) ?></td>
-                                        <td><?= esc($user['auth_time']) ?></td>
+                                        <td><?= esc($user['mobile']) ?></td>
+                                        <td><?= esc($user['role']) ?></td>
                                     </tr>
 
 
@@ -78,6 +78,69 @@
         </div>
     </div>
 
+</div>
+
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">New User</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/newUser" class="form-floating mb-3">
+                    <?= csrf_field() ?>
+                    <div class="mb-3">
+                        <label for="username" class="col-form-label">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="col-form-label">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobile" class="col-form-label">Mobile No.:</label>
+                        <input type="text" class="form-control" id="mobile" name="mobile">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="col-form-label">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="mb-3 col-4">
+                        <select name="role" id="role" class="form-control">
+                            <option selected>-- Select role --</option>
+                            <option value="user" >User</option>
+                            <option value="admin">Admin</option>
+                            
+                        </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="checkPassword">
+                        <label class="form-check-label" for="checkPassword">
+                            Show Password
+                        </label>
+                    </div>
+                    <div class="d-flex flex-row-reverse">
+                        <input type="submit" value="Create" class="btn btn-info">
+                    </div>
+                    
+
+                </form>
+                <script>
+                    document.getElementById('checkPassword').addEventListener('change', function() {
+                        let passwordFields = document.querySelectorAll('#password');
+                        passwordFields.forEach(field => {
+                            if (this.checked) {
+                                field.type = 'text';
+                            } else {
+                                field.type = 'password';
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?= $this->endSection() ?>

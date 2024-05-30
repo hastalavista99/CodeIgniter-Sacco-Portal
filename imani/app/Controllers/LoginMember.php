@@ -19,7 +19,7 @@ class LoginMember extends BaseController
 
         $data = [
             'title' => 'Users',
-            'users' => $model->orderBy('auth_id', 'DESC')->findAll(),
+            'users' => $userModel->orderBy('id', 'DESC')->findAll(),
             'userInfo' => $userInfo,
         ];
         return view('users/index', $data);
@@ -53,7 +53,7 @@ class LoginMember extends BaseController
         ];
 
         // Validate the input
-        if (! $this->validate($rules)) {
+        if (!$this->validate($rules)) {
             return view('/profile', [
                 'validation' => $this->validator
             ]);
@@ -89,6 +89,40 @@ class LoginMember extends BaseController
         }
     }
 
+    public function newUser()
+    {
+        helper('form');
+        // validate user input
+        if (!$this->request->is('post')) {
+            return view('/users');
+        }
+
+        // save the user
+        $name = $this->request->getPost('username');
+        $email = $this->request->getPost('email');
+        $mobile = $this->request->getPost('mobile');
+        $password = $this->request->getPost('password');
+        $role = $this->request->getPost('role');
+
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'mobile' => $mobile,
+            'password' => Hash::encrypt($password),
+            'role' => $role,
+        ];
+
+
+        // storing data
+        $userModel = new \App\Models\UserModel();
+        $query = $userModel->save($data);
+        if (!$query) {
+            return redirect()->back()->with('fail', 'Saving User failed');
+        }
+
+
+        return redirect()->back()->with('success', 'Saved User');
+    }
 
     public function sms()
     {
