@@ -89,14 +89,13 @@ class Members extends BaseController
         if (!$insert) {
             return redirect()->back()->with('fail', 'Saving User failed');
         } else {
-            $msg = "Hi, $fname \n Welcome to Pula Sacco Login to https://sacco.imanilinesacco.co.ke to view your transactions.\nUsername: $fname\nPassword: $pass; \n Regards \n Pula Sacco Manager";
+            $msg = "Hi, $fname \n Welcome to Imaniline Sacco Login to https://sacco.imanilinesacco.co.ke to view your transactions.\nUsername: $fname\nPassword: $pass; \n Regards \n Imaniline Sacco Manager";
 
             $sms = new SendSMS();
 
-           $sms->sendSMS($mobile, $msg);
-            }
-            return redirect()->back()->with('Success', 'Saved User');
-        
+            $sms->sendSMS($mobile, $msg);
+        }
+        return redirect()->back()->with('Success', 'Saved User');
     }
 
     public function editMember()
@@ -137,7 +136,6 @@ class Members extends BaseController
             // Update failed
             return redirect()->back()->withInput()->with('fail', 'Failed to update member.');
         }
-        
     }
 
     public function deleteMember()
@@ -147,11 +145,8 @@ class Members extends BaseController
         $id = $this->request->getGet('id');
         $model = model(MembersModel::class);
         $member = $model->delete($id);
-        if($member)
-        {
+        if ($member) {
             return redirect()->to('/members')->with('success', 'Member deleted successfully.');
         }
-        
     }
-
 }
