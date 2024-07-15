@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\MembersModel;
+use App\Models\PaymentsModel;
 use App\Models\UserModel;
 use App\Libraries\Hash;
 use App\Controllers\SendSMS;
@@ -144,9 +145,25 @@ class Members extends BaseController
 
         $id = $this->request->getGet('id');
         $model = model(MembersModel::class);
-        $member = $model->delete($id);
-        if ($member) {
+        $paymentModel = new PaymentsModel();
+
+        // Check if member exists
+        $member = $model->find($id);
+        if (!$member) {
+            return redirect()->to('/members')->with('fail', 'Member not found.');
+        }
+
+        // Check if member has transactions
+        $transactions = $paymentModel->where('MSISDN', $member['member_phone'])->findAll();
+        if ($transactions) {
+            return redirect()->to('/members')->with('fail', 'Failed! Member has transactions.');
+        }
+
+        // Delete member
+        if ($model->delete($id)) {
             return redirect()->to('/members')->with('success', 'Member deleted successfully.');
+        } else {
+            return redirect()->to('/members')->with('fail', 'Failed to delete member.');
         }
     }
 }
