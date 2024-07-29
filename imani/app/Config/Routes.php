@@ -43,6 +43,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('/newUser', [LoginMember::class, 'newUser']);
     $routes->get('/agents', [Agents::class, 'index']);
     $routes->get('agent/commissions', [Commissions::class, 'index']);
+    $routes->get('agent/myCommissions', [Commissions::class, 'individual']);
     $routes->post('/newAgent', [Agents::class, 'newAgent']);
     $routes->get('/editAgent', [Agents::class, 'editAgent']);
     $routes->get('/deleteAgent', [Agents::class, 'deleteAgent']);

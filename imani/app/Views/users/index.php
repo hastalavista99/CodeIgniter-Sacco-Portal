@@ -92,7 +92,7 @@
                     <?= csrf_field() ?>
                     <div class="mb-3">
                         <label for="username" class="col-form-label">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username">
+                        <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="col-form-label">Email:</label>
@@ -100,11 +100,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="mobile" class="col-form-label">Mobile No.:</label>
-                        <input type="text" class="form-control" id="mobile" name="mobile">
+                        <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="col-form-label">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password">
+                        <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <div class="mb-3 col-4">
                         <select name="role" id="role" class="form-control">

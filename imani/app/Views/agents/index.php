@@ -109,16 +109,16 @@
           <?= csrf_field() ?>
           <div class="mb-3">
             <label for="name" class="col-form-label">Name:</label>
-            <input type="text" class="form-control" id="name" name="name">
+            <input type="text" class="form-control" id="name" name="name" required>
           </div>
           <div class="row">
             <div class="col-4 mb-3">
               <label for="agent_no" class="col-form-label">Agent No.</label>
-              <input type="text" class="form-control" id="agent_no" name="agent_no">
+              <input type="text" class="form-control" id="agent_no" name="agent_no" required>
             </div>
             <div class="col-8 mb-3">
               <label for="mobile" class="col-form-label">Mobile No.</label>
-              <input type="text" class="form-control" id="mobile" name="mobile">
+              <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
             </div>
           </div>
 

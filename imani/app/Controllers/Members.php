@@ -58,10 +58,12 @@ class Members extends BaseController
         $fname = $this->request->getPost('first-name');
         $lname = $this->request->getPost('last-name');
         $mobile = $this->request->getPost('mobile');
+        $memberNumber = $this->request->getPost('memberNumber');
 
         $data = [
             'member_name' => $fname . ' ' . $lname,
             'member_phone' => $mobile,
+            'member_number' => $memberNumber
         ];
 
 
@@ -90,7 +92,7 @@ class Members extends BaseController
         if (!$insert) {
             return redirect()->back()->with('fail', 'Saving User failed');
         } else {
-            $msg = "Hi, $fname \n Welcome to Gloha Sacco Login to https://sacco.glohasacco.co.ke to view your transactions.\nUsername: $fname\nPassword: $pass; \n Regards \n Gloha Sacco Manager";
+            $msg = "Hi, $fname \n Welcome to Gloha Sacco Login to https://app.gloha-sacco.co.ke to view your transactions.\nUsername: $fname\nPassword: $pass; \n Regards \n Gloha Sacco Manager";
 
             $sms = new SendSMS();
 
@@ -123,9 +125,11 @@ class Members extends BaseController
         $id = $this->request->getGet('id');
         $name = $this->request->getPost('name');
         $mobile = $this->request->getPost('mobile');
+        $memberNumber = $this->request->getPost('memberNumber');
         $data = [
             'member_name' => $name,
-            'member_phone' => $mobile
+            'member_phone' => $mobile,
+            'member_number' => $memberNumber
         ];
 
         $model = model(MembersModel::class);

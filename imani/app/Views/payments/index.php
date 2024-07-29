@@ -28,6 +28,7 @@
                                     <th>Amount</th>
                                     <th>Trans ID</th>
                                     <th>Paybill</th>
+                                    <th>Time</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,6 +41,7 @@
                                         <td><?= esc(number_format($payment_item['TransAmount'], 2) ) ?></td>
                                         <td><?= esc($payment_item['TransID']) ?></td>
                                         <td><?= esc($payment_item['ShortCode']) ?></td>
+                                        <td><?= esc($payment_item['mp_date']) ?></td>
 
 
                                     <?php endforeach ?>

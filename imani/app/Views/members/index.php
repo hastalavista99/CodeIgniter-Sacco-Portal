@@ -96,6 +96,10 @@
         <form method="post" action="/newMember" class="form-floating mb-3">
           <?= csrf_field() ?>
           <div class="mb-3">
+            <label for="first-name" class="col-form-label">Member Number:</label>
+            <input type="text" class="form-control" id="first-name" name="memberNumber">
+          </div>
+          <div class="mb-3">
             <label for="first-name" class="col-form-label">First Name:</label>
             <input type="text" class="form-control" id="first-name" name="first-name">
           </div>
@@ -105,7 +109,7 @@
           </div>
           <div class="mb-3">
             <label for="mobile" class="col-form-label">Mobile No.</label>
-            <input type="text" class="form-control" id="mobile" name="mobile">
+            <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
           </div>
           <div class="d-flex flex-row-reverse">
             <input type="submit" value="Create" class="btn btn-info">

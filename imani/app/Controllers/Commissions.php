@@ -28,4 +28,22 @@ class Commissions extends BaseController
 
         return view('agents/commission', $data);
     }
+    public function individual()
+    {
+        helper('form');
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $userMobile = $userInfo['mobile'];
+        $model = new CommissionsModel();
+        $commissions = $model->where('member_phone', $userMobile)->findAll();
+            $data = [
+                'title' => 'Commissions',
+                'commissions' => $commissions,
+                'userInfo' => $userInfo
+
+            ];
+
+        return view('agents/commission', $data);
+    }
 }

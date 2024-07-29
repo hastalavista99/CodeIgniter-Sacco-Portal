@@ -25,6 +25,7 @@
                                     <th>Amount</th>
                                     <th>Trans ID</th>
                                     <th>Paybill</th>
+                                    <th>Payment Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,6 +38,7 @@
                                         <td><?= esc($payment_item['TransAmount']) ?></td>
                                         <td><?= esc($payment_item['TransID']) ?></td>
                                         <td><?= esc($payment_item['ShortCode']) ?></td>
+                                        <td><?= esc($payment_item['mp_date']) ?></td>
                                     </tr>
                             
 

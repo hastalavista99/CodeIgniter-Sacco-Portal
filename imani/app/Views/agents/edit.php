@@ -40,7 +40,7 @@
             </div>
             <div class="mb-3 col-6">
               <label for="mobile" class="col-form-label">Mobile:</label>
-              <input type="text" name="mobile" id="mobile" value="<?= set_value('mobile', $agent['mobile']) ?>" class="form-control">
+              <input type="tel" name="mobile" pattern="[0-9]{10}" id="mobile" value="<?= set_value('mobile', $agent['mobile']) ?>" class="form-control">
             </div>
             <div class="mb-3 col-6">
               <label for="email" class="col-form-label">Email:</label>
@@ -48,7 +48,7 @@
             </div>
           </div>
           <div class="d-flex align-items-between justify-content-between me-2">
-            <a href="<?= base_url('/agents') ?>" class="btn btn-info me-3">Back</a>
+            <a href="<?= base_url('/agents') ?>" class="btn btn-info me-3"><i class="bi-chevron-left"></i> Back</a>
             <button type="submit" class="btn btn-success">Update</button>
           </div>
           

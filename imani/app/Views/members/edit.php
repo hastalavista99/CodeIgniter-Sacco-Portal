@@ -34,16 +34,21 @@
           <?= csrf_field() ?>
 
           <div class="row">
+          <div class="mb-3 col-2">
+              <label for="name" class="col-form-label">Member Number:</label>
+              <input type="text" name="memberNumber" id="name" value="<?= set_value('name', $member['member_number']) ?>" class="form-control">
+            </div>
             <div class="mb-3 col-6">
               <label for="name" class="col-form-label">Name:</label>
               <input type="text" name="name" id="name" value="<?= set_value('name', $member['member_name']) ?>" class="form-control">
             </div>
-            <div class="mb-3 col-6">
+            <div class="mb-3 col-4">
               <label for="mobile" class="col-form-label">Mobile:</label>
-              <input type="text" name="mobile" id="mobile" value="<?= set_value('mobile', $member['member_phone']) ?>" class="form-control">
+              <input type="tel" name="mobile" pattern="[0-9]{10}" id="mobile" value="<?= set_value('mobile', $member['member_phone']) ?>" class="form-control">
             </div>
           </div>
-          <div class="d-flex align-items-end justify-content-end me-2">
+          <div class="d-flex align-items-between justify-content-between me-2">
+          <a href="<?= site_url('/members')?>" class="btn btn-info"><i class="bi-chevron-left"></i> Back</a>
             <button type="submit" class="btn btn-success">Update</button>
           </div>
           

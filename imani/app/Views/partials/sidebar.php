@@ -48,11 +48,18 @@
         </a>
       </li> -->
     <?php } ?>
+    <?php if ($userInfo['role'] == 'agent') { ?>
+      <li class="nav-item">
+        <a href="<?= site_url('agent/myCommissions')?>" class="nav-link collapsed">
+          <i class="bi-cash-stack"></i>
+          <span>Commissions</span>
+        </a>
+      </li>
+      <?php } ?>
       <li class="nav-item">
         <a href="/myPayments" class="nav-link collapsed">
           <i class="bi-cash-stack"></i>
           <span>My Payments</span>
-
         </a>
       </li>
 

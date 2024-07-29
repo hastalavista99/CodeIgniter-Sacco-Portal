@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\AgentModel;
 use App\Models\UserModel;
+use App\Libraries\Hash;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -35,10 +36,10 @@ class Agents extends BaseController
         }
 
         // save the user
-        $name = $this->request->getPost('name');
-        $agent_no = $this->request->getPost('agent_no');
-        $mobile = $this->request->getPost('mobile');
-        $email = $this->request->getPost('email');
+        $name = esc($this->request->getPost('name'));
+        $agent_no = esc($this->request->getPost('agent_no'));
+        $mobile = esc($this->request->getPost('mobile'));
+        $email = esc($this->request->getPost('email'));
 
         $data = [
             'agent_no'=> $agent_no,
@@ -51,14 +52,42 @@ class Agents extends BaseController
         // storing data
         $agentInsert = new \App\Models\AgentModel();
         $query = $agentInsert->save($data);
+        
         if (! $query) {
             return redirect()->to('/agents')->with('fail', 'Saving Agent failed');
-        } 
-        else
-        {
-            
-            return redirect()->to('/agents')->with('success', 'Sucessfully Created an Agent');
         }
+
+        $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $pass = substr(str_shuffle($alpha_numeric), 0, 8);
+        new \App\Libraries\Hash();
+
+        $authModel = new UserModel();
+        $userData = [
+            'name' => $name,
+            'email' => $email,
+            'mobile' => $mobile,
+            'password' => Hash::encrypt($pass),
+            'role' => 'agent',
+        ];
+
+        $userQuery = $authModel->save($userData);
+
+        if (!$userQuery) {
+            return redirect()->back()->with('fail', 'Saving Agent failed');
+        } else {
+            $msg = "Hi, $name \n Welcome to Gloha Sacco Login to https://app.gloha-sacco.co.ke to view your transactions.\nUsername: $name\nPassword: $pass \n Regards \n Gloha Sacco Manager";
+
+            $sms = new SendSMS();
+
+            $sms->sendSMS($mobile, $msg);
+        }
+        return redirect()->back()->with('Success', 'Saved Agent Successfully');
+         
+        // else
+        // {
+            
+        //     return redirect()->to('/agents')->with('success', 'Sucessfully Created an Agent');
+        // }
     }
 
     public function editAgent()

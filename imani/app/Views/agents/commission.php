@@ -1,5 +1,5 @@
 <?= $this->extend('layouts/main') ?>
-<?= $this->section('title') ?><?= esc($title)?> <?= $this->endSection() ?>
+<?= $this->section('title') ?><?= esc($title) ?> <?= $this->endSection() ?>
 
 
 <div class="row">
@@ -7,32 +7,32 @@
   <?= $this->include('partials/sidebar') ?>
 
   <div class="col-lg-12">
-  <?php
-  if (!empty(session()->getFlashdata('success'))) {
-  ?>
-    <div class="alert alert-success alert-dismissible fade show">
-      <i class="bi-check-circle-fill me-2"></i> <?= session()->getFlashdata('success') ?>
-      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php
-  } else if (!empty(session()->getFlashdata('fail'))) {
-  ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-      <i class="bi-exclamation-triangle-fill me-2"></i> <?= session()->getFlashdata('fail') ?>
-      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php
-  }
-  ?>
+    <?php
+    if (!empty(session()->getFlashdata('success'))) {
+    ?>
+      <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi-check-circle-fill me-2"></i> <?= session()->getFlashdata('success') ?>
+        <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php
+    } else if (!empty(session()->getFlashdata('fail'))) {
+    ?>
+      <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi-exclamation-triangle-fill me-2"></i> <?= session()->getFlashdata('fail') ?>
+        <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php
+    }
+    ?>
     <div class="card shadow border-none my-2 px-2">
       <div class="d-flex justify-content-end mb-3">
-        
+
         <div class="col-md-2 pt-3">
           <div>
 
-            <!-- <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addAgentModal"><i class="bi-person-plus me-1"></i>
-              New Agent
-            </button> -->
+            <a class="btn btn-success" href="<?= site_url('agents')?>"><i class="bi-chevron-left me-1"></i>
+              Back
+            </a>
           </div>
         </div>
 
@@ -48,6 +48,7 @@
                   <th>#</th>
                   <th>Agent</th>
                   <th>Amount</th>
+                  <th>Member Name</th>
                   <th>Member Phone</th>
                   <th>time</th>
                   <th></i></th>
@@ -57,16 +58,17 @@
                 <?php foreach ($commissions as $commission) : ?>
                   <tr>
                     <td><?= esc($commission['id']) ?></td>
-                    <td><?= esc($commission['agent']) ?></td>
+                    <td><?= esc($commission['agent_id']) ?></td>
 
                     <!-- <div class="main"> -->
                     <td><?= esc($commission['amount']) ?></td>
+                    <td><?= esc($commission['member_name']) ?></td>
                     <td><?= esc($commission['member_phone']) ?></td>
-                    <td><?= esc($commission['time']) ?></td>
-                    <td><a href="#" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
-                    <a href="#" class="btn btn-sm btn-danger" ><i class="bi-trash3"></i></a>
-                    
-                  </td>
+                    <td><?= esc($commission['date']) ?></td>
+                     <td><!--<a href="#" class="btn btn-sm btn-info"><i class="bi-pencil-square"></i></a>
+                      <a href="#" class="btn btn-sm btn-danger"><i class="bi-trash3"></i></a> -->
+
+                    </td>
                   </tr>
 
 

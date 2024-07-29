@@ -242,17 +242,11 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
-              </a>
-            </li>
-            <li>
               <hr class="dropdown-divider">
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+              <a class="dropdown-item d-flex align-items-center" href="#">
                 <i class="bi bi-question-circle"></i>
                 <span>Need Help?</span>
               </a>
@@ -290,7 +284,7 @@
 
   <footer id="footer" class="footer">
     <div class="copyright">
-      &copy; Copyright <strong><span>McLogic</span><span class="d-none">NiceAdmin</span></strong>. All Rights Reserved
+      &copy; Copyright <strong><span><a href="https://macrologicsys.com">McLogic</a></span><span class="d-none">NiceAdmin</span></strong>. All Rights Reserved
     </div>
     <div class="credits d-none">
       <!-- All the links in the footer should remain intact. -->
