@@ -9,9 +9,9 @@ class SendSMS extends BaseController
 {
     public function sendSMS($mobile, $msg)
     {
-        $senderid = "McLogic";
-        $apikey = '28c604f07192075134ac027a2d4d9e96';
-        $partnerid = 10524;
+        $senderid = $_SERVER['SENDER_ID'];
+        $apikey = $_SERVER['SMS_API_KEY'];
+        $partnerid = $_SERVER['SMS_PARTNER_ID'];
 
         if (!empty($msg) && !empty($mobile)) {
             $msg = urlencode($msg);

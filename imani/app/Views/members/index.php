@@ -31,7 +31,7 @@
           <div>
 
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal"><i class="bi-person-plus me-1"></i>
-              New Member
+              Add
             </button>
           </div>
         </div>

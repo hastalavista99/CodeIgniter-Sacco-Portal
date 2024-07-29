@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= $this->renderSection('title') ?></title>
-  <link rel="shortcut icon" href="<?= base_url('favicon.ico')?>" type="image/x-icon">
+  <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png')?>" type="image/png">
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -191,9 +191,9 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
-        <img src="assets/img/logo.png" alt="">
-        <span class="d-none d-lg-block">Imaniline Sacco</span>
+      <a href="<?= site_url('dashboard')?>" class="logo d-flex align-items-center">
+        <img src="<?= base_url('assets/images/logo-sm.png')?>" alt="logo">
+        <span class="d-none d-lg-block" style="color:#009833;">Gloha Sacco</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->

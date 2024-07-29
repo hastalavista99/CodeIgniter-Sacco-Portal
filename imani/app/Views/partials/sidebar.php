@@ -57,15 +57,6 @@
       </li>
 
 
-
-
-    <li class="nav-item">
-      <a href="/logout" class="nav-link collapsed">
-        <i class="bi bi-box-arrow-right"></i>
-        Logout
-      </a>
-    </li>
-
   </ul>
 
 </aside>

@@ -26,6 +26,14 @@
   ?>
     <div class="card shadow border-none my-2 px-2">
       <div class="d-flex justify-content-end mb-3">
+      <div class="col-md-2 pt-3">
+          <div>
+
+            <a href="<?= site_url('agent/commissions')?>" class="btn btn-primary"><i class="bi-cash-coin me-1"></i>
+              Commissions
+            </a>
+          </div>
+        </div>
         
         <div class="col-md-2 pt-3">
           <div>
