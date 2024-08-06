@@ -47,8 +47,8 @@
                 <tr>
                   <th>#</th>
                   <th>Agent</th>
+                  <th>Agent No</th>
                   <th>Amount</th>
-                  <th>Member Name</th>
                   <th>Member Phone</th>
                   <th>time</th>
                   <th></i></th>
@@ -61,8 +61,9 @@
                     <td><?= esc($commission['agent_id']) ?></td>
 
                     <!-- <div class="main"> -->
+                    <td><?= esc($commission['agent_number']) ?></td>
                     <td><?= esc($commission['amount']) ?></td>
-                    <td><?= esc($commission['member_name']) ?></td>
+                    
                     <td><?= esc($commission['member_phone']) ?></td>
                     <td><?= esc($commission['date']) ?></td>
                      <td><!--<a href="#" class="btn btn-sm btn-info"><i class="bi-pencil-square"></i></a>
