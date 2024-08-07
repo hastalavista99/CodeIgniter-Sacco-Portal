@@ -24,6 +24,20 @@ class Auth extends BaseController
         return view('auth/register');
     }
 
+    public function userDetails()
+    {
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $data = [
+            'title' => 'Dashboard',
+            'userInfo' => $userInfo,
+        ];
+
+        return $data;
+    }
+
     // Save new user to database
     public function registerUser()
     {

@@ -40,8 +40,19 @@
                     <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
                 </div>
             <?php
+            
+            ?>
+            <?php
+            }else if (!empty(session()->getFlashdata('validation'))) {
+            ?>
+                <div class="alert alert-warning alert-dismissible fade show">
+                    <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php
             }
             ?>
+            <?= validation_list_errors()?>
 
             <div class="card">
                 <div class="card-body pt-3">
@@ -101,6 +112,7 @@
                         <div class="tab-pane fade pt-3" id="profile-change-password">
 
                             <!-- Change Password Form -->
+                            <?= validation_list_errors()?>
                             <form action="<?= site_url('loginMember/changePass?id=' . $id) ?>" method="post" class="form">
                                 <?= csrf_field() ?>
                                 <div class="row mb-3">

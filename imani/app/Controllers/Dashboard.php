@@ -8,9 +8,9 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Dashboard extends BaseController
 {
-    public function index()
-    {
 
+    public function userDetails()
+    {
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
@@ -19,6 +19,13 @@ class Dashboard extends BaseController
             'title' => 'Dashboard',
             'userInfo' => $userInfo,
         ];
+
+        return $data;
+    }
+    public function index()
+    {
+
+        $data = Dashboard::userDetails();
 
         return view('dashboard/index', $data);
     }

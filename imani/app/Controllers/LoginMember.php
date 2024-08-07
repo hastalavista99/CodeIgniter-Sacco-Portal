@@ -25,26 +25,35 @@ class LoginMember extends BaseController
         return view('users/index', $data);
     }
 
-    public function profile()
+    public function userDetails()
     {
-        helper('form');
-        $model = new MemberLogin();
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
         $data = [
-            'title' => 'Profile',
-            'users' => $model->orderBy('auth_id', 'DESC')->findAll(),
+            
             'userInfo' => $userInfo,
         ];
+
+        return $data;
+    }
+
+    public function profile()
+    {
+        helper('form');
+        $model = new MemberLogin();
+        $data = LoginMember::userDetails();
+
+        $data['title'] = 'Profile';
+        $data['users'] = $model->orderBy('auth_id', 'DESC')->findAll();
         return view('users/profile', $data);
     }
 
     public function changePass()
     {
         helper(['form', 'url']);
-
+        $model = new MemberLogin();
         // Validation rules
         $rules = [
             'password' => 'required',
@@ -52,12 +61,13 @@ class LoginMember extends BaseController
             'renewpassword' => 'required|matches[newpassword]'
         ];
 
+        $data = $this->request->getPost(array_keys($rules));
+
         // Validate the input
-        if (!$this->validate($rules)) {
-            return view('/profile', [
-                'validation' => $this->validator
-            ]);
-        }
+        // if (!$this->validateData($data, $rules)) {
+        //     return redirect()->to('/profile')->with('validation', $this->validator);
+            
+        // }
 
         $id = $this->request->getGet('id');
         $currentPass = $this->request->getPost('password');
