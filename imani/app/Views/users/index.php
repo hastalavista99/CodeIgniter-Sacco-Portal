@@ -48,6 +48,7 @@
                                     <th>Username</th>
                                     <th>Mobile</th>
                                     <th>Role</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +60,10 @@
                                         <!-- <div class="main"> -->
                                         <td><?= esc($user['mobile']) ?></td>
                                         <td><?= esc($user['role']) ?></td>
+                                        <td><a href="/editUser?id=<?= $user['id'] ?>" class="btn btn-sm btn-info"><i class="bi-pencil-square"></i></a>
+                                            <a href="#" class="btn btn-sm btn-danger"><i class="bi-trash3"></i></a>
+
+                                        </td>
                                     </tr>
 
 
@@ -109,9 +114,9 @@
                     <div class="mb-3 col-4">
                         <select name="role" id="role" class="form-control">
                             <option selected>-- Select role --</option>
-                            <option value="user" >User</option>
+                            <option value="user">User</option>
                             <option value="admin">Admin</option>
-                            
+
                         </select>
                     </div>
                     <div class="form-check">
@@ -123,7 +128,7 @@
                     <div class="d-flex flex-row-reverse">
                         <input type="submit" value="Create" class="btn btn-info">
                     </div>
-                    
+
 
                 </form>
                 <script>
