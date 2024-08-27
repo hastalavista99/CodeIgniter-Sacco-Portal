@@ -12,7 +12,7 @@ class PaymentsModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['mp_id','mp_name', 'TransactionType', 'TransID', 'TransTime', 'TransAmount', 'ShortCode', 'BillRefNumber', 'mp_date', 'exported'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -46,6 +46,6 @@ class PaymentsModel extends Model
 
     public function getPayments()
     {
-        return $this->orderBy('auth_id', 'DESC')->findAll();
+        return $this->orderBy('mp_id', 'DESC')->findAll();
     }
 }

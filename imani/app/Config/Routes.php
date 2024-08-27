@@ -35,7 +35,12 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
     $routes->get('/members', [Members::class, 'index']);
     $routes->get('/payments', [Payments::class, 'index']);
+    $routes->get('editPay', [Payments::class, 'editPage']);
+    $routes->post('updatePayment', [Payments::class, 'updatePay']);
+    $routes->post('payments/export', [Payments::class, 'export']);
     $routes->get('/users', [LoginMember::class, 'index']);
+    $routes->get('/editUser', [Auth::class, 'editUser']);
+    $routes->post('/updateUser', [Auth::class, 'updateUser']);
     $routes->get('/profile', [LoginMember::class, 'profile']);
     $routes->post('loginMember/changePass', [LoginMember::class, 'changePass']);
     $routes->get('/sms', [LoginMember::class, 'sms']);

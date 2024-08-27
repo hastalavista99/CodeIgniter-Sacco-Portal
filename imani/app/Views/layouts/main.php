@@ -24,7 +24,15 @@
 
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
   <script src="sidebars.js"></script>
+  
+
   <style>
+  .exported {
+    background-color: #e0e0e0 !important; /* Light grey background */
+    color: #888 !important; /* Grey text */
+    cursor: not-allowed; 
+    /* pointer-events: none !important;Disable pointer events (e.g., clicking) */
+}
     .bd-placeholder-img {
       font-size: 1.125rem;
       text-anchor: middle;
