@@ -131,54 +131,6 @@ class Auth extends BaseController
         }
     }
 
-    public function editUser()
-    {
-
-        helper(['form, url']);
-
-        $id = $this->request->getGet('id');
-        $userModel = model(UserModel::class);
-        $loggedInUserId = session()->get('loggedInUser');
-        $userInfo = $userModel->find($loggedInUserId);
-        $user = $userModel->find($id);
-        $data = [
-            'user'  => $user,
-            'title' => 'Edit User',
-            'userInfo' => $userInfo,
-            'id' => $id
-        ];
-        return view('users/edit', $data);
-    }
-
-
-    public function updateUser()
-    {
-        helper(['form, url']);
-
-        $id = $this->request->getGet('id');
-        $name = $this->request->getPost('name');
-        $mobile = $this->request->getPost('mobile');
-        $role = $this->request->getPost('role');
-        $data = [
-            'name' => $name,
-            'mobile' => $mobile,
-            'email' => $role
-        ];
-
-        $model = model(UserModel::class);
-
-        if ($model->update($id, $data)) {
-            // Update successful
-            return redirect()->to('/users')->with('success', 'User updated successfully.');
-        } else {
-            // Update failed
-            return redirect()->back()->withInput()->with('fail', 'Failed to update user. Try again later');
-        }
-        
-
-    }
-
-
     
 
     // public function uploadImage(){
