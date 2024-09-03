@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Libraries\Hash;
+use App\Models\AgentModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 
@@ -47,11 +48,11 @@ class Auth extends BaseController
             return view('auth/register');
         }
         $validated = [
-            'name'=> 'required',
-            'email'=> 'required|valid_email',
-            'password'=> 'required|min_length[5]|max_length[20]',
-            'passwordConf'=> 'required|min_length[5]|max_length[20]|matches[password]'
-        ]; 
+            'name' => 'required',
+            'email' => 'required|valid_email',
+            'password' => 'required|min_length[5]|max_length[20]',
+            'passwordConf' => 'required|min_length[5]|max_length[20]|matches[password]'
+        ];
         $data = $this->request->getPost(array_keys($validated));
 
         if (! $this->validateData($data, $validated)) {
@@ -67,9 +68,9 @@ class Auth extends BaseController
 
         new \App\Libraries\Hash();
         $data = [
-            'name'=> $name,
-            'email'=> $email,
-            'password'=> Hash::encrypt($password)
+            'name' => $name,
+            'email' => $email,
+            'password' => Hash::encrypt($password)
         ];
 
 
@@ -78,17 +79,14 @@ class Auth extends BaseController
         $query = $userModel->save($data);
         if (! $query) {
             return redirect()->back()->with('fail', 'Saving User failed');
-        } 
-        else
-        {
+        } else {
             return redirect()->back()->with('Success', 'Saved User');
         }
-
-        
     }
 
     // User login
-    public function loginUser(){
+    public function loginUser()
+    {
 
         helper(['form', 'url']); // Load form and URL helpers
 
@@ -131,7 +129,74 @@ class Auth extends BaseController
         }
     }
 
-    
+
+    public function editUser()
+    {
+
+        helper(['form, url']);
+
+        $id = $this->request->getGet('id');
+        $userModel = model(UserModel::class);
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $user = $userModel->find($id);
+        $data = [
+            'user'  => $user,
+            'title' => 'Edit User',
+            'userInfo' => $userInfo,
+            'id' => $id
+        ];
+        return view('users/edit', $data);
+    }
+
+
+    public function updateUser()
+    {
+        helper(['form, url']);
+
+        $id = $this->request->getGet('id');
+        $name = $this->request->getPost('name');
+        $email = $this->request->getPost('email');
+        $mobile = $this->request->getPost('mobile');
+        $role = $this->request->getPost('role');
+        $data = [
+            'name' => $name,
+            'mobile' => $mobile,
+            'email' => $email,
+            'role' => $role
+        ];
+
+        $model = model(UserModel::class);
+
+        if ($model->update($id, $data)) {
+            // Update successful
+            if ($role == 'agent') {
+                $model = new AgentModel();
+                $agentModel = new \App\Models\AgentModel();
+                $lastAgent = $agentModel->selectMax('agent_no')->first();
+                $lastAgentNumber = $lastAgent ? intval($lastAgent['agent_no']) : 0;
+
+                // Increment the agent number by 1 and format it to be 3 digits (e.g., '001')
+                $newAgentNumber = str_pad($lastAgentNumber + 1, 3, '0', STR_PAD_LEFT);
+
+                // Prepare data for saving
+                $agentData = [
+                    'agent_no' => $newAgentNumber,
+                    'name' => $name,
+                    'mobile' => $mobile,
+                    'email' => $email,
+                ];
+                $query = $model->save($agentData);
+            }
+
+            return redirect()->to('/users')->with('success', 'User updated successfully.');
+        } else {
+            // Update failed
+            return redirect()->back()->withInput()->with('fail', 'Failed to update user. Try again later');
+        }
+    }
+
+
 
     // public function uploadImage(){
     //     helper('form');
@@ -168,16 +233,15 @@ class Auth extends BaseController
     //     } catch (Exception $e) {
     //         echo $e->getMessage();
     //     }
-        
+
     // }
 
 
     // logout user 
-    public function logout(){
-        if(session()->has('loggedInUser'))
-        {
+    public function logout()
+    {
+        if (session()->has('loggedInUser')) {
             session()->remove('loggedInUser');
-
         }
 
         return redirect()->to('/auth?access=loggedout')->with('fail', "You are logged out");

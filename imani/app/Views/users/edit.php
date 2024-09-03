@@ -42,9 +42,15 @@
               <label for="mobile" class="col-form-label">Mobile:</label>
               <input type="tel" name="mobile" pattern="[0-9]{10}" id="mobile" value="<?= set_value('mobile', $user['mobile']) ?>" class="form-control">
             </div>
+            <div class="mb-3 col-6">
+              <label for="name" class="col-form-label">Email:</label>
+              <input type="email" name="email" id="email" value="<?= set_value('email', $user['email']) ?>" class="form-control">
+            </div>
             <div class="mb-3 col-4">
+              <label for="" class="col-form-label">Role</label>
               <select name="role" id="role" class="form-control">
                 <option selected>-- Select role --</option>
+                <option value="agent">Agent</option>
                 <option value="member">Member</option>
                 <option value="user">User</option>
                 <option value="admin">Admin</option>

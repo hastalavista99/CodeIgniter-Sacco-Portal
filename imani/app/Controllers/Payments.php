@@ -58,8 +58,8 @@ class Payments extends BaseController
         $userInfo = $userModel->find($loggedInUserId);
         $phone = $userInfo['mobile'];
 
-        $payments = $model->where('BillRefNumber', $phone)->findAll();
-        $totalAmount = $model->selectSum('TransAmount')->where('BillRefNumber', $phone)->first()['TransAmount'];
+        $payments = $model->where('SUBSTRING(BillRefNumber, -10) =', $phone)->findAll();
+        $totalAmount = $model->selectSum('TransAmount')->where('SUBSTRING(BillRefNumber, -10) =', $phone)->first()['TransAmount'];
 
         $total = number_to_currency($totalAmount, 'KES', 'en_US', 2);
 

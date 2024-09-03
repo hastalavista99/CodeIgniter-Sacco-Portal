@@ -7,34 +7,34 @@
   <?= $this->include('partials/sidebar') ?>
 
   <div class="col-lg-12">
-  <?php
-  if (!empty(session()->getFlashdata('success'))) {
-  ?>
-    <div class="alert alert-success alert-dismissible fade show">
-      <i class="bi-check-circle-fill me-2"></i> <?= session()->getFlashdata('success') ?>
-      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php
-  } else if (!empty(session()->getFlashdata('fail'))) {
-  ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-      <i class="bi-exclamation-triangle-fill me-2"></i> <?= session()->getFlashdata('fail') ?>
-      <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php
-  }
-  ?>
+    <?php
+    if (!empty(session()->getFlashdata('success'))) {
+    ?>
+      <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi-check-circle-fill me-2"></i> <?= session()->getFlashdata('success') ?>
+        <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php
+    } else if (!empty(session()->getFlashdata('fail'))) {
+    ?>
+      <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi-exclamation-triangle-fill me-2"></i> <?= session()->getFlashdata('fail') ?>
+        <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php
+    }
+    ?>
     <div class="card shadow border-none my-2 px-2">
       <div class="d-flex justify-content-end mb-3">
-      <div class="col-md-2 pt-3">
+        <div class="col-md-2 pt-3">
           <div>
 
-            <a href="<?= site_url('agent/commissions')?>" class="btn btn-primary"><i class="bi-cash-coin me-1"></i>
+            <a href="<?= site_url('agent/commissions') ?>" class="btn btn-primary"><i class="bi-cash-coin me-1"></i>
               Commissions
             </a>
           </div>
         </div>
-        
+
         <div class="col-md-2 pt-3">
           <div>
 
@@ -71,10 +71,10 @@
                     <td><?= esc($agent['name']) ?></td>
                     <td><?= esc($agent['mobile']) ?></td>
                     <td><?= esc($agent['email']) ?></td>
-                    <td><a href="/editAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
-                    <a href="/deleteAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-danger" ><i class="bi-trash3"></i></a>
-                    
-                  </td>
+                    <td><a href="/editAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-info"><i class="bi-pencil-square"></i></a>
+                      <a href="/deleteAgent?id=<?= $agent['id'] ?>" class="btn btn-sm btn-danger"><i class="bi-trash3"></i></a>
+
+                    </td>
                   </tr>
 
 
@@ -111,17 +111,14 @@
             <label for="name" class="col-form-label">Name:</label>
             <input type="text" class="form-control" id="name" name="name" required>
           </div>
-          <div class="row">
-            <div class="col-4 mb-3">
-              <label for="agent_no" class="col-form-label">Agent No.</label>
-              <input type="text" class="form-control" id="agent_no" name="agent_no" required>
-            </div>
-            <div class="col-8 mb-3">
-              <label for="mobile" class="col-form-label">Mobile No.</label>
-              <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
-            </div>
+          <div class=" mb-3">
+            <label for="mobile" class="col-form-label">Mobile No.</label>
+            <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
           </div>
-
+          <div class=" mb-3">
+            <label for="mobile" class="col-form-label">ID No.</label>
+            <input type="text" class="form-control" id="id_number" name="id_number">
+          </div>
           <div class="mb-3">
             <label for="email" class="col-form-label">Email:</label>
             <input type="text" class="form-control" id="email" name="email">
@@ -130,7 +127,6 @@
           <div class="d-flex flex-row-reverse">
             <input type="submit" value="Create" class="btn btn-info">
           </div>
-
         </form>
       </div>
     </div>
