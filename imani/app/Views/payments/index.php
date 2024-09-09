@@ -27,11 +27,44 @@
             <div class="card-body px-0 pb-2">
                 <div class="col-md-2 ms-3">
                     <!-- Export Button -->
-                    <button id="exportButton" class="btn btn-primary">Export selected</button>
+                    <button id="exportButton" class="btn btn-success mb-2">Export selected</button>
                 </div>
+                <form method="GET" action="<?= site_url('filterPay') ?>" class="form-inline mb-3 row">
+                    <div class="form-group col-md-2">
+                        <label for="month">Select Month:</label>
+                        <select name="month" id="month" class="form-control">
+                            <option value="">-- Months --</option>
+                            <?php
+                            for ($m = 1; $m <= 12; $m++) {
+                                $monthName = date('F', mktime(0, 0, 0, $m, 1, date('Y')));
+                                $selected = ($selectedMonth == $m) ? 'selected' : ''; // Check if the month is selected
+                                echo "<option value=\"$m\" $selected>$monthName</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="year">Select Year:</label>
+                        <select name="year" id="year" class="form-control">
+                            <?php
+                            $currentYear = date('Y');
+                            for ($y = $currentYear; $y >= $currentYear - 5; $y--) {
+                                $selected = ($selectedYear == $y) ? 'selected' : ''; // Check if the year is selected
+                                echo "<option value=\"$y\" $selected>$y</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary ms-2 mt-2">Filter</button>
+                    </div>
+
+                </form>
+
                 <?php if (!empty($payments) && is_array($payments)) : ?>
                     <div class="table-responsive-md">
-                        <table class="table table-hover" id="paymentsTable">
+                        <table class="table table-hover" id="paymentsTable1">
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" class="form-check-input" id="checkAll"></th>

@@ -28,10 +28,49 @@ class Payments extends BaseController
             'payments'  => $model->getPayments(),
             'title' => 'Payments',
             'userInfo' => $userInfo,
-            'total' => $total
+            'total' => $total,
+            'selectedMonth' => NULL,
+            'selectedYear' => NULL
         ];
 
         return view('payments/index', $data);
+    }
+
+    public function filter()
+    {
+        // Get the selected month and year from the query parameters
+        $month = $this->request->getGet('month');
+        $year = $this->request->getGet('year') ?: date('Y'); // Default to the current year if no year is selected
+
+        $paymentModel = new PaymentsModel();
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        if ($month) {
+            // Filter payments by the selected month and year
+            $payments = $paymentModel
+                ->where('YEAR(mp_date)', $year)
+                ->where('MONTH(mp_date)', $month)
+                ->findAll();
+        } else {
+            // Fetch all payments for the selected year (if no month is selected)
+            $payments = $paymentModel
+                ->where('YEAR(mp_date)', $year)
+                ->findAll();
+        }
+
+        // Calculate total amount
+        $total = array_sum(array_column($payments, 'TransAmount'));
+
+        return view('payments/index', [
+            'payments' => $payments,
+            'userInfo' => $userInfo,
+            'title' => 'Payments',
+            'total' => $total,
+            'selectedMonth' => $month, // Pass selected month to the view
+            'selectedYear' => $year // Pass selected year to the view
+        ]);
     }
 
     public function show()

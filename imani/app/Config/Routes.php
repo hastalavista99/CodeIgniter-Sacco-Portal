@@ -36,6 +36,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/members', [Members::class, 'index']);
     $routes->get('/payments', [Payments::class, 'index']);
     $routes->get('editPay', [Payments::class, 'editPage']);
+    $routes->get('filterPay', [Payments::class, 'filter']);
     $routes->post('updatePayment', [Payments::class, 'updatePay']);
     $routes->post('payments/export', [Payments::class, 'export']);
     $routes->get('/users', [LoginMember::class, 'index']);
