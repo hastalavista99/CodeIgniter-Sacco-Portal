@@ -48,7 +48,7 @@
 
                 <?php if (!empty($payments) && is_array($payments)) : ?>
                     <div class="table-responsive-md">
-                        <table class="table table-hover" id="paymentsTable1">
+                        <table class="table table-hover" id="paymentsTable">
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" class="form-check-input" id="checkAll"></th>
