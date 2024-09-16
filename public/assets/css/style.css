@@ -28,6 +28,15 @@ a:hover {
   color: #717ff5;
   text-decoration: none;
 }
+.exported {
+
+  background-color: #2bcde2 !important; /* Light blue background */
+  color: #004d40 !important; /* Darker text color for contrast */
+
+  cursor: not-allowed; 
+  /* pointer-events: none !important;Disable pointer events (e.g., clicking) */
+}
+
 
 h1,
 h2,

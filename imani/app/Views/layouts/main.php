@@ -28,8 +28,10 @@
 
   <style>
   .exported {
-    background-color: #e0e0e0 !important; /* Light grey background */
-    color: #888 !important; /* Grey text */
+
+    background-color: #e0f7fa !important; /* Light blue background */
+    color: #004d40 !important; /* Darker text color for contrast */
+
     cursor: not-allowed; 
     /* pointer-events: none !important;Disable pointer events (e.g., clicking) */
 }

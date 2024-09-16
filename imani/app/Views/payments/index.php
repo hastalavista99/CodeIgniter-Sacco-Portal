@@ -29,38 +29,22 @@
                     <!-- Export Button -->
                     <button id="exportButton" class="btn btn-success mb-2">Export selected</button>
                 </div>
-                <form method="GET" action="<?= site_url('filterPay') ?>" class="form-inline mb-3 row">
-                    <div class="form-group col-md-2">
-                        <label for="month">Select Month:</label>
-                        <select name="month" id="month" class="form-control">
-                            <option value="">-- Months --</option>
-                            <?php
-                            for ($m = 1; $m <= 12; $m++) {
-                                $monthName = date('F', mktime(0, 0, 0, $m, 1, date('Y')));
-                                $selected = ($selectedMonth == $m) ? 'selected' : ''; // Check if the month is selected
-                                echo "<option value=\"$m\" $selected>$monthName</option>";
-                            }
-                            ?>
-                        </select>
+                <form method="GET" action="<?= site_url('filterPay') ?>" class="form-inline mb-3 row ms-1">
+                    <div class="form-group col-md-3">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control" value="<?= esc($startDate ?? '') ?>">
                     </div>
 
-                    <div class="form-group col-md-2">
-                        <label for="year">Select Year:</label>
-                        <select name="year" id="year" class="form-control">
-                            <?php
-                            $currentYear = date('Y');
-                            for ($y = $currentYear; $y >= $currentYear - 5; $y--) {
-                                $selected = ($selectedYear == $y) ? 'selected' : ''; // Check if the year is selected
-                                echo "<option value=\"$y\" $selected>$y</option>";
-                            }
-                            ?>
-                        </select>
+                    <div class="form-group col-md-3">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control" value="<?= esc($endDate ?? '') ?>">
                     </div>
-                    <div>
+
+                    <div class="form-group col-md-2 mt-3">
                         <button type="submit" class="btn btn-primary ms-2 mt-2">Filter</button>
                     </div>
-
                 </form>
+
 
                 <?php if (!empty($payments) && is_array($payments)) : ?>
                     <div class="table-responsive-md">
@@ -80,7 +64,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($payments as $payment_item) : ?>
-                                    <tr id="paymentRow-<?= esc($payment_item['mp_id']) ?>" class="<?= $payment_item['exported'] ? 'exported' : '' ?>">
+                                    <tr id="paymentRow-<?= esc($payment_item['mp_id']) ?>" class="<?= $payment_item['exported'] ? 'table-info exported' : '' ?>">
                                         <td><input type="checkbox" class=" checkPayment" data-id="<?= esc($payment_item['mp_id']) ?>" <?= $payment_item['exported'] ? 'disabled' : '' ?>></td>
                                         <td><?= esc($payment_item['mp_id']) ?></td>
                                         <td><?= esc($payment_item['mp_name']) ?></td>
@@ -153,7 +137,7 @@
                         selectedPayments.forEach(id => {
                             let row = document.querySelector(`#paymentRow-${id}`);
                             if (row) {
-                                row.classList.add('exported');
+                                row.classList.add('table-info');
                             }
                         });
                         setTimeout(function() {

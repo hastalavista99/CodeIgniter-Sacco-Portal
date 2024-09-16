@@ -47,16 +47,16 @@ class Payments extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
-        if ($month) {
-            // Filter payments by the selected month and year
+        // Get the start and end dates from the request
+        $startDate = $this->request->getGet('startDate');
+        $endDate = $this->request->getGet('endDate');
+
+        // Fetch payments based on the selected date range
+        $payments = [];
+        if ($startDate && $endDate) {
             $payments = $paymentModel
-                ->where('YEAR(mp_date)', $year)
-                ->where('MONTH(mp_date)', $month)
-                ->findAll();
-        } else {
-            // Fetch all payments for the selected year (if no month is selected)
-            $payments = $paymentModel
-                ->where('YEAR(mp_date)', $year)
+                ->where('mp_date >=', $startDate)
+                ->where('mp_date <=', $endDate)
                 ->findAll();
         }
 
@@ -68,8 +68,8 @@ class Payments extends BaseController
             'userInfo' => $userInfo,
             'title' => 'Payments',
             'total' => $total,
-            'selectedMonth' => $month, // Pass selected month to the view
-            'selectedYear' => $year // Pass selected year to the view
+            'startDate' => $startDate, 
+            'endDate' => $endDate 
         ]);
     }
 
