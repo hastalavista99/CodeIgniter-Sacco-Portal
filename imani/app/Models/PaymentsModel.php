@@ -12,7 +12,7 @@ class PaymentsModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['mp_id','mp_name', 'TransactionType', 'TransID', 'TransTime', 'TransAmount', 'ShortCode', 'BillRefNumber', 'mp_date', 'exported'];
+    protected $allowedFields    = ['mp_id','mp_name', 'TransactionType', 'TransID', 'TransTime', 'TransAmount', 'ShortCode', 'BillRefNumber', 'mp_date', 'exported', 'member_no'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -46,6 +46,7 @@
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Member No.</th>
                   <th>Name</th>
                   <th>Phone</th>
                   <th>Joined</th>
@@ -56,6 +57,7 @@
                 <?php foreach ($members as $member) : ?>
                   <tr>
                     <td><?= esc($member['pk_member_id']) ?></td>
+                    <td><?= esc($member['member_number']) ?></td>
                     <td><?= esc($member['member_name']) ?></td>
 
                     <!-- <div class="main"> -->

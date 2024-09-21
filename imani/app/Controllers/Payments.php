@@ -38,9 +38,6 @@ class Payments extends BaseController
 
     public function filter()
     {
-        // Get the selected month and year from the query parameters
-        $month = $this->request->getGet('month');
-        $year = $this->request->getGet('year') ?: date('Y'); // Default to the current year if no year is selected
 
         $paymentModel = new PaymentsModel();
         $userModel = new UserModel();
@@ -68,8 +65,8 @@ class Payments extends BaseController
             'userInfo' => $userInfo,
             'title' => 'Payments',
             'total' => $total,
-            'startDate' => $startDate, 
-            'endDate' => $endDate 
+            'startDate' => $startDate,
+            'endDate' => $endDate
         ]);
     }
 
@@ -139,10 +136,12 @@ class Payments extends BaseController
         $pay_id = $this->request->getGet('id');
         $name = $this->request->getPost('name');
         $addName = $this->request->getPost('addname');
+        $member = $this->request->getPost('memberNumber');
 
         $model = new PaymentsModel();
         $data = [
             'mp_name' => $name . " " . $addName,
+            'member_no' => $member
         ];
 
         $query = $model->update($pay_id, $data);
@@ -154,68 +153,157 @@ class Payments extends BaseController
     }
 
     public function export()
-    {
-        if ($this->request->isAJAX()) {
-            $paymentIds = $this->request->getPost('payment_ids');
+{
+    if ($this->request->isAJAX()) {
+        // Parse JSON data from the request body
+        $postData = $this->request->getJSON();
+        $paymentIds = $postData->payment_ids ?? [];
+        $title = $postData->title ?? '';
 
-            // Ensure $postData is correctly parsed
-            $postData = $this->request->getJSON();
-            if (isset($postData->payment_ids) && is_array($postData->payment_ids)) {
-                $paymentIds = $postData->payment_ids;
-                // log_message('info', 'Received payment IDs: ' . implode(', ', $paymentIds));
-                // Proceed with processing
+        $account_number = match ($title) {
+            'Share Capital' => '510100',
+            'Saving Deposits' => '380800',
+            'Loan Repayments' => '110100',
+            default => '211',
+        };
+
+        if (!empty($paymentIds)) {
+            $paymentsModel = new PaymentsModel();
+            $payments = $paymentsModel->whereIn('mp_id', $paymentIds)->findAll();
+
+            // Create Excel spreadsheet using PhpSpreadsheet
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            
+            // Set the header row
+            $sheet->fromArray(['account_number', 'ledger_number', 'transaction_date', 'document_number', 'document_type', 'amount', 'charge_amount', 'loan_number', 'description', 'reference_number', 'reference_type'], null, 'A1');
+
+            // Populate the spreadsheet with payment data
+            $row = 2;
+            foreach ($payments as $payment) {
+                $formattedDate = date('d/m/Y', strtotime($payment['mp_date']));
+                $sheet->fromArray([
+                    $account_number,
+                    $payment['member_no'],
+                    $formattedDate,
+                    '',
+                    'VCH',
+                    $payment['TransAmount'],
+                    '-',
+                    '-',
+                    $title,
+                    '',
+                    ''
+                ], null, 'A' . $row);
+                $row++;
             }
 
+            // Save the file
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'payments_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+            $filePath = WRITEPATH . 'exports/' . $fileName;
+            $writer->save($filePath);
 
+            // Update payments as exported
+            $paymentsModel->whereIn('mp_id', $paymentIds)->set(['exported' => 1])->update();
 
-            if (!empty($paymentIds)) {
-                $paymentsModel = new PaymentsModel();
-                // log_message('info', 'Received payment IDs: ' . implode(', ', $paymentIds));
-                $payments = $paymentsModel->whereIn('mp_id', $paymentIds)->findAll();
+            // Trigger file download
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $fileName . '"');
+            header('Cache-Control: max-age=0');
+            $writer->save('php://output');
+            exit;
 
-                // Logic to create Excel file using PhpSpreadsheet
-                $spreadsheet = new Spreadsheet();
-                $sheet = $spreadsheet->getActiveSheet();
-                $sheet->setCellValue('A1', 'ID');
-                $sheet->setCellValue('B1', 'Name');
-                $sheet->setCellValue('C1', 'Amount');
-                $sheet->setCellValue('D1', 'Trans ID');
-                $sheet->setCellValue('E1', 'BillRefNumber');
-                $sheet->setCellValue('F1', 'Paybill');
-                $sheet->setCellValue('G1', 'Time');
-
-                $row = 2;
-                foreach ($payments as $payment) {
-                    $sheet->setCellValue('A' . $row, $payment['mp_id']);
-                    $sheet->setCellValue('B' . $row, $payment['mp_name']);
-                    $sheet->setCellValue('C' . $row, number_format($payment['TransAmount'], 2));
-                    $sheet->setCellValue('D' . $row, $payment['TransID']);
-                    $sheet->setCellValue('E' . $row, $payment['BillRefNumber']);
-                    $sheet->setCellValue('F' . $row, $payment['ShortCode']);
-                    $sheet->setCellValue('G' . $row, $payment['mp_date']);
-                    $row++;
-                }
-
-                $writer = new Xlsx($spreadsheet);
-                $fileName = 'payments_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-                $filePath = WRITEPATH . 'exports/' . $fileName;
-                $writer->save($filePath);
-
-                // Update payments as exported
-                $paymentsModel->whereIn('mp_id', $paymentIds)->set(['exported' => 1])->update();
-
-                // Set headers to trigger file download
-                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attachment; filename="' . $fileName . '"');
-                header('Cache-Control: max-age=0');
-                $writer->save('php://output');
-                exit; // End the script to prevent further output
-
-                return $this->response->setJSON(['success' => true, 'file' => base_url('exports/' . $fileName)]);
-            } else {
-                return $this->response->setJSON(['success' => false, 'message' => 'No payments selected.']);
-            }
+            // Respond with JSON success message (file will download)
+            return $this->response->setJSON(['success' => true, 'file' => base_url('exports/' . $fileName)]);
+        } else {
+            return $this->response->setJSON(['success' => false, 'message' => 'No payments selected.']);
         }
-        return redirect()->to(site_url('payments'));
+    }
+    return redirect()->to(site_url('payments'));
+}
+
+
+    public function shares()
+    {
+        helper(['form', 'url']);
+        $paymentModel = new PaymentsModel();
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $shares = ['SHA', 'Sha', 'sha'];
+
+        $payments = $paymentModel
+            ->groupStart()
+            ->like('BillRefNumber', 'SHA%', 'after')
+            ->orLike('BillRefNumber', 'Sha%', 'after')
+            ->orLike('BillRefNumber', 'sha%', 'after')
+            ->groupEnd()
+            ->findAll();
+            
+        $total = (!empty($payments)) ? number_format(array_sum(array_column($payments, 'TransAmount')), 2, '.', ',') : '0.00';
+        $data = [
+            'payments' => $payments,
+            'userInfo' => $userInfo,
+            'title'    => 'Share Capital',
+            'total'    => $total
+        ];
+
+        return view('payments/index', $data);
+    }
+
+    public function deposits()
+    {
+        helper(['form', 'url']);
+        $paymentModel = new PaymentsModel();
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $deposits = ['DEP', 'Dep', 'dep'];
+
+        $payments = $paymentModel
+            ->groupStart()
+            ->like('BillRefNumber', 'DEP%', 'after')
+            ->orLike('BillRefNumber', 'Dep%', 'after')
+            ->orLike('BillRefNumber', 'dep%', 'after')
+            ->groupEnd()
+            ->findAll();
+
+        $total = (!empty($payments)) ? number_format(array_sum(array_column($payments, 'TransAmount')), 2, '.', ',') : '0.00';
+        $data = [
+            'payments' => $payments,
+            'userInfo' => $userInfo,
+            'title'    => 'Saving Deposits',
+            'total'    => $total
+        ];
+
+        return view('payments/index', $data);
+    }
+
+    public function repayments()
+    {
+        helper(['form', 'url']);
+        $paymentModel = new PaymentsModel();
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $repayments = ['LON', 'Lon', 'lon'];
+
+        $payments = $paymentModel
+            ->groupStart()
+            ->like('BillRefNumber', 'LON%', 'after')
+            ->orLike('BillRefNumber', 'Lon%', 'after')
+            ->orLike('BillRefNumber', 'lon%', 'after')
+            ->groupEnd()
+            ->findAll();
+        $total = (!empty($payments)) ? number_format(array_sum(array_column($payments, 'TransAmount')), 2, '.', ',') : '0.00';
+        $data = [
+            'payments' => $payments,
+            'userInfo' => $userInfo,
+            'title'    => 'Loan Repayments',
+            'total'    => $total
+        ];
+
+        return view('payments/index', $data);
     }
 }

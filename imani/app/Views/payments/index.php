@@ -1,5 +1,5 @@
 <?= $this->extend('layouts/main') ?>
-<?= $this->section('title') ?>Payments<?= $this->endSection() ?>
+<?= $this->section('title') ?><?= esc($title)?><?= $this->endSection() ?>
 
 <div class="row">
     <?= $this->section('content') ?>
@@ -29,6 +29,7 @@
                     <!-- Export Button -->
                     <button id="exportButton" class="btn btn-success mb-2">Export selected</button>
                 </div>
+                
                 <form method="GET" action="<?= site_url('filterPay') ?>" class="form-inline mb-3 row ms-1">
                     <div class="form-group col-md-3">
                         <label for="startDate">Start Date:</label>
@@ -54,6 +55,7 @@
                                     <th><input type="checkbox" class="form-check-input" id="checkAll"></th>
                                     <th>#</th>
                                     <th>Name</th>
+                                    <th>Member No.</th>
                                     <th>Amount</th>
                                     <th>Trans ID</th>
                                     <th>BillRefNumber</th>
@@ -68,6 +70,7 @@
                                         <td><input type="checkbox" class=" checkPayment" data-id="<?= esc($payment_item['mp_id']) ?>" <?= $payment_item['exported'] ? 'disabled' : '' ?>></td>
                                         <td><?= esc($payment_item['mp_id']) ?></td>
                                         <td><?= esc($payment_item['mp_name']) ?></td>
+                                        <td><?= esc($payment_item['member_no'])?></td>
                                         <td><?= esc(number_format($payment_item['TransAmount'], 2)) ?></td>
                                         <td><?= esc($payment_item['TransID']) ?></td>
                                         <td><?= esc($payment_item['BillRefNumber']) ?></td>
@@ -108,7 +111,8 @@
                             'X-CSRF-TOKEN': '<?= csrf_hash() ?>' // Ensure CSRF token is included
                         },
                         body: JSON.stringify({
-                            payment_ids: selectedPayments
+                            payment_ids: selectedPayments,
+                            title: '<?= $title ?>'
                         })
                     })
                     .then(response => {

@@ -35,6 +35,9 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
     $routes->get('/members', [Members::class, 'index']);
     $routes->get('/payments', [Payments::class, 'index']);
+    $routes->get('payments/shares', [Payments::class, 'shares']);
+    $routes->get('payments/deposits', [Payments::class, 'deposits']);
+    $routes->get('payments/repayments', [Payments::class, 'repayments']);
     $routes->get('editPay', [Payments::class, 'editPage']);
     $routes->get('filterPay', [Payments::class, 'filter']);
     $routes->post('updatePayment', [Payments::class, 'updatePay']);

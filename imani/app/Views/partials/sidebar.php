@@ -18,7 +18,7 @@
 
         </a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a href="/payments" class="nav-link collapsed">
           <i class="bi bi-cash-stack"></i>
           <span>
@@ -26,13 +26,89 @@
           </span>
 
         </a>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#payments" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <i class="bi bi-cash-stack"></i>
+          <span>
+            Payments
+          </span>
+          <i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+
+        <div class="collapse" id="payments">
+          <ul>
+          <li class="nav-item">
+              <a href="<?= site_url('/payments')?>" class="nav-link collapsed">
+                <i class="bi bi-phone"></i>
+                <span>
+                  All Payments
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('payments/deposits')?>" class="nav-link collapsed">
+                <i class="bi bi-piggy-bank"></i>
+                <span>
+                  Saving Deposits
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('payments/shares')?>" class="nav-link collapsed">
+                <i class="bi bi-box-arrow-in-down"></i>
+                <span>
+                  Share Deposits
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('payments/repayments')?>" class="nav-link collapsed">
+                <i class="bi bi-cash-coin"></i>
+                <span>
+                  Loan Repayments
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </li>
       <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#agentPay" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <i class="bi bi-cash-stack"></i>
+          <span>
+            Agents
+          </span>
+          <i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+
+        <div class="collapse" id="agentPay">
+          <ul>
+          <li class="nav-item">
+              <a href="<?= site_url('/agents')?>" class="nav-link collapsed">
+                <i class="bi bi-people"></i>
+                <span>
+                  Agent List
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('agent/commissions')?>" class="nav-link collapsed">
+                <i class="bi bi-piggy-bank"></i>
+                <span>
+                  Commissions
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <!-- <li class="nav-item">
         <a href="/agents" class="nav-link collapsed">
           <i class="bi bi-person-vcard"></i>
           <span>Agents</span>
         </a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a href="/users" class="nav-link collapsed">
           <i class="bi bi-person-check"></i>
@@ -50,18 +126,18 @@
     <?php } ?>
     <?php if ($userInfo['role'] == 'agent') { ?>
       <li class="nav-item">
-        <a href="<?= site_url('agent/myCommissions')?>" class="nav-link collapsed">
+        <a href="<?= site_url('agent/myCommissions') ?>" class="nav-link collapsed">
           <i class="bi-cash-stack"></i>
           <span>Commissions</span>
         </a>
       </li>
-      <?php } ?>
-      <li class="nav-item">
-        <a href="/myPayments" class="nav-link collapsed">
-          <i class="bi-cash-stack"></i>
-          <span>My Payments</span>
-        </a>
-      </li>
+    <?php } ?>
+    <li class="nav-item">
+      <a href="/myPayments" class="nav-link collapsed">
+        <i class="bi-cash-stack"></i>
+        <span>My Payments</span>
+      </a>
+    </li>
 
 
   </ul>

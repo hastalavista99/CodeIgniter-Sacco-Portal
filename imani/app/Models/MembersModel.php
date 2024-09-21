@@ -12,7 +12,7 @@ class MembersModel extends Model
     // protected $returnType       = 'array';
     // protected $useSoftDeletes   = false;
     // protected $protectFields    = true;
-    protected $allowedFields    = ['member_name', 'member_phone'];
+    protected $allowedFields    = ['member_name', 'member_phone', 'member_number'];
 
     // protected bool $allowEmptyInserts = false;
     // protected bool $updateOnlyChanged = true;
