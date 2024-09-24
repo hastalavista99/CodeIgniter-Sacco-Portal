@@ -189,8 +189,8 @@ class Payments extends BaseController
                     '',
                     'VCH',
                     $payment['TransAmount'],
-                    '-',
-                    '-',
+                    '0',
+                    '0',
                     $title,
                     '',
                     ''
