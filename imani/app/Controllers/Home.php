@@ -6,6 +6,7 @@ class Home extends BaseController
 {
     public function index(): string
     {
+        helper(['form', 'url']);
         return view('auth/login');
     }
 }

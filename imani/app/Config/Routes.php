@@ -27,9 +27,17 @@ $routes->get('auth/(:segment)', [Auth::class, 'registerUser']);
 $routes->post('auth/(:segment)', [Auth::class, 'registerUser']);
 $routes->post('registerUser', [Auth::class, 'registerUser']);
 $routes->get('registerUser', [Auth::class, 'registerUser']);
-
+$routes->get('set/user', 'Auth::setUser');
+$routes->get('set/success', 'Auth::setSuccess');
+$routes->post('set/user/save', 'Auth::setSave');
 $routes->post('loginUser', [Auth::class, 'loginUser']);
 $routes->get('loginUser', [Auth::class, 'loginUser']);
+$routes->get('confirm/user', [Auth::class, 'confirmUser']);
+$routes->post('check/user', 'Auth::checkUser');
+$routes->get('confirm/otp', "Auth::confirmOTP");
+$routes->post('check/otp', 'Auth::checkOTP');
+$routes->get('password/forgot', 'Auth::changeAuth');
+$routes->post('renew/password', 'Auth::resetPassword');
 
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
@@ -46,6 +54,11 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/editUser', [Auth::class, 'editUser']);
     $routes->post('/updateUser', [Auth::class, 'updateUser']);
     $routes->get('/profile', [LoginMember::class, 'profile']);
+    $routes->get('loans/apply', 'Loans::index');
+    $routes->get('loans/new', 'Loans::new');
+    $routes->get('loans/approved', 'Loans::approved');
+    $routes->get('loans/my_loans', 'Loans::myLoans');
+    $routes->post('loans/submit', 'Loans::submit');
     $routes->post('loginMember/changePass', [LoginMember::class, 'changePass']);
     $routes->get('/sms', [LoginMember::class, 'sms']);
     $routes->post('/newMember', [Members::class, 'newMember']);

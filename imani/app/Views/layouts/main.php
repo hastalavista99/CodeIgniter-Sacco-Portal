@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= $this->renderSection('title') ?></title>
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png')?>" type="image/png">
+  <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png') ?>" type="image/png">
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -15,26 +15,30 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css">
   <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/util.css') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/multi.css') ?>">
 
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
   <script src="sidebars.js"></script>
-  
+
 
   <style>
-  .exported {
+    .exported {
 
-    background-color: #e0f7fa !important; /* Light blue background */
-    color: #004d40 !important; /* Darker text color for contrast */
+      background-color: #e0f7fa !important;
+      /* Light blue background */
+      color: #004d40 !important;
+      /* Darker text color for contrast */
 
-    cursor: not-allowed; 
-    /* pointer-events: none !important;Disable pointer events (e.g., clicking) */
-}
+      cursor: not-allowed;
+      /* pointer-events: none !important;Disable pointer events (e.g., clicking) */
+    }
+
     .bd-placeholder-img {
       font-size: 1.125rem;
       text-anchor: middle;
@@ -201,8 +205,8 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="<?= site_url('dashboard')?>" class="logo d-flex align-items-center">
-        <img src="<?= base_url('assets/images/logo-sm.png')?>" alt="logo">
+      <a href="<?= site_url('dashboard') ?>" class="logo d-flex align-items-center">
+        <img src="<?= base_url('assets/images/logo-sm.png') ?>" alt="logo">
         <span class="d-none d-lg-block" style="color:#009833;">Gloha Sacco</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -320,8 +324,6 @@
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
- 
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const navLinks = document.querySelectorAll('.nav-link');
@@ -379,6 +381,7 @@
   <script src="<?= base_url('assets/js/main.js') ?>"></script>
   <script src="<?= base_url('assets/js/dashboard.js') ?>"></script>
   <script src="<?= base_url('assets/js/util.js') ?>"></script>
+  <script src="<?= base_url('assets/js/script.js') ?>"></script>
 
 
 </body>

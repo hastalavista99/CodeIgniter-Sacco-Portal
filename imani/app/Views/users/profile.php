@@ -79,27 +79,27 @@
                             <h5 class="card-title">Profile Details</h5>
 
                             <div class="row">
-                                <div class="col-lg-3 col-md-4 label ">Name</div>
+                                <div class="col-lg-3 col-md-4 label fw-bold">Name:</div>
                                 <div class="col-lg-9 col-md-8"><?= $userInfo['name'] ?></div>
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Company</div>
+                                <div class="col-lg-3 col-md-4 label fw-bold">Company:</div>
                                 <div class="col-lg-9 col-md-8">Gloha Sacco Society</div>
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-3 col-md-4 label">User Role</div>
+                                <div class="col-lg-3 col-md-4 label fw-bold">User Role:</div>
                                 <div class="col-lg-9 col-md-8"><?= $userInfo['role'] ?></div>
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Phone</div>
+                                <div class="col-lg-3 col-md-4 label fw-bold">Phone:</div>
                                 <div class="col-lg-9 col-md-8"><?= $userInfo['mobile'] ?></div>
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Email</div>
+                                <div class="col-lg-3 col-md-4 label fw-bold">Email:</div>
                                 <div class="col-lg-9 col-md-8"><?= $userInfo['email'] ?></div>
                             </div>
                         </div>

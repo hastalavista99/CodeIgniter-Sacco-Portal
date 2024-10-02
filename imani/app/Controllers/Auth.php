@@ -6,8 +6,10 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Libraries\Hash;
 use App\Models\AgentModel;
+use App\Models\OTPModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
+use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 
 class Auth extends BaseController
 {
@@ -95,14 +97,24 @@ class Auth extends BaseController
         }
 
         $rules = [
-            'name' => 'required',
-            'password' => 'required|min_length[5]|max_length[20]'
+            'name' => [
+                'rules' => 'required',
+                'label' => 'Username',
+                'errors' => [
+                    'required' => 'Please enter your username'
+                ]
+            ],
+            'password' => [
+                'rules' => 'required',
+                'label' => 'Password',
+                'errors' => [
+                    'required' => 'Please enter your password'
+                ]
+            ],
         ];
 
         if (! $this->validate($rules)) {
-            return view('auth/login', [
-                'validation' => $this->validator
-            ]);
+            return redirect()->to('/')->withInput()->with('errors', $this->validator->getErrors());
         } else {
             // User details in database
             $name = $this->request->getPost('name');
@@ -120,6 +132,9 @@ class Auth extends BaseController
                     // Process user info
                     $userId = $user['id'];
                     session()->set('loggedInUser', $userId);
+                    if ($user['temp'] == '1') {
+                        return redirect()->to('set/user?user=' . $user['id']);
+                    }
                     return redirect()->to('/dashboard');
                 }
             } else {
@@ -196,8 +211,243 @@ class Auth extends BaseController
         }
     }
 
+    public function setUser()
+    {
+        helper(['form', 'url']);
+        $id = $this->request->getGet('user');
+        $data = [
+            'title' => 'Account Setup',
+            'user' => $id
+        ];
+        return view('auth/new_user', $data);
+    }
 
+    public function setSave()
+    {
+        helper(['form', 'url']);
+        if (! $this->request->is('post')) {
+            return view('auth/login');
+        }
 
+        $rules = [
+            'name' => 'required',
+            'username' => [
+                'rules' => 'required|min_length[4]|max_length[10]',
+                'label' => 'username',
+                'errors' => [
+                    'required' => 'Username must be provided',
+                    'min_length' => 'Username must be at least 4 characters long',
+                    'max_length' => 'Username must not exceed 10 characters'
+                ],
+            ],
+            'password' => [
+                'rules' => 'required|min_length[5]|max_length[20]',
+                'label' => 'Password',
+                'errors' => [
+                    'required' => 'You must provide a password',
+                    'min_length' => 'Password must be at least 5 characters long',
+                    'max_length' => 'Password must not be longer than 20 characters',
+                ],
+            ],
+            'passwordConf' => [
+                'rules' => 'required|matches[password]',
+                'label' => 'Confirm Password',
+                'errors' => [
+                    'required' => 'Please confirm your password',
+                    'matches' => 'Password confirmation does not match password',
+                ],
+            ],
+        ];
+
+        if (!$this->validate($rules)) {
+            $data["validation"] = $this->validator;
+            return redirect()->to('set/user')->withInput()->with('errors', $this->validator->getErrors());
+        }
+        $id = $this->request->getGet('user');
+        $name = $this->request->getPost('name');
+        $username = $this->request->getPost('username');
+        $pass = $this->request->getPost('password');
+
+        $authModel = new UserModel();
+
+        //in case of username exists
+        $user = $authModel->where('name', $username)->first();
+        if ($user > 0) {
+            return redirect()->to('set/user')->withInput()->with('fail', 'Username already exists, try a different one');
+        }
+
+        $insertData = [
+            'user' => $name,
+            'name' => $username,
+            'password' => Hash::encrypt($pass),
+        ];
+
+        $query = $authModel->update($id, $insertData);
+        if (!$query) {
+            return redirect()->to('set/user')->withInput()->with('fail', 'Something went wrong, try again later');
+        }
+        return redirect()->to('set/sucess');
+    }
+
+    public function setSuccess()
+    {
+        $data = [
+            'title' => 'Account Setup'
+        ];
+        return view('auth/success', $data);
+    }
+
+    public function confirmUser()
+    {
+        helper(['form', 'url']);
+        $data = [
+            'title' => 'Enter Your username'
+        ];
+
+        return view('auth/user_enter', $data);
+    }
+
+    public function checkUser()
+    {
+        helper(['form', 'url']);
+
+        $username = $this->request->getPost('name');
+
+        $userModel = new UserModel();
+        $otpModel = new OTPModel();
+
+        $query = $userModel->where('name', $username)->first();
+        if (!$query) {
+            return redirect()->back()->to('confirm/user')->with('fail', 'User not found. Enter correct username.');
+        } else {
+            $name = $query['name'];
+            $id = $query['id'];
+            $phone = $query['mobile'];
+            
+            $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $otp = substr(str_shuffle($alpha_numeric), 0, 6);
+            $expires = date("U") + 300;
+            $data = [
+                'username' => $name,
+                'otp' => Hash::encrypt($otp),
+                'expiry' => $expires
+            ];
+            $otpQuery = $otpModel->save($data);
+            if ($otpQuery) {
+                $sms = "Use " . $otp . " as your OTP for Password Reset. It will be active for the next 5 minutes";
+                $smsSend = new SendSMS();
+                $smsSend->sendSMS($phone, $sms);
+            }
+            session()->set('userId', $id);
+            session()->setFlashdata('success', 'OTP sent to mobile number');
+            return redirect()->to('confirm/otp')->withInput();
+        }
+    }
+
+    public function confirmOTP()
+    {
+        helper(['form', 'url']);
+        
+
+        return view('auth/enter_otp');
+    }
+
+    public function checkOTP()
+    {
+        helper(['form', 'url']);
+
+        if (! $this->request->is('post')) {
+            return redirect()->to('auth/login')->with('fail', 'Sign In To Continue');
+        }
+        $id = $this->request->getGet('user');
+        $otp = $this->request->getPost('onetime');
+
+        $authModel = new UserModel();
+        $authQuery = $authModel->find($id);
+
+        if (!$authQuery) {
+            return redirect()->back()->with('fail', 'User not found.');
+        }
+
+        $username = $authQuery['name'];
+
+        $model = new OTPModel();
+        $current = date("U"); // Unix timestamp for current time
+
+        // Query to find the OTP record with matching username, OTP, and within the expiry period
+        $otpRecord = $model->where('username', $username)
+            ->where('expiry >=', $current)
+            ->first();
+
+        if ($otpRecord && Hash::check($otp, $otpRecord['otp'])) {
+            // OTP is valid and within its validity period
+            $data = [
+                'user' => $id
+            ];
+            $model->where('username', $username)->delete();
+            return redirect()->to('password/forgot')->with('success', 'Renew Your Password');
+        } else {
+            // OTP is invalid or has expired
+            return redirect()->back()->with('fail', 'Incorrect or expired OTP. Please try again or click Resend to get a new one.');
+        }
+    }
+
+    public function changeAuth()
+    {
+        helper(['form', 'url']);
+        return view('auth/password_reset');
+    }
+
+    public function resetPassword()
+    {
+        helper(['form', 'url']);
+        if (! $this->request->is('post')) {
+            return redirect()->to('auth/login')->with('fail', 'Sign In To Continue');
+        }
+
+        $rules = [
+            'password' => [
+                'rules' => 'required|min_length[5]|max_length[20]',
+                'label' => 'Password',
+                'errors' => [
+                    'required' => 'You must provide a password',
+                    'min_length' => 'Password must be at least 5 characters long',
+                    'max_length' => 'Password must not be longer than 20 characters',
+                ],
+            ],
+            'passwordConf' => [
+                'rules' => 'required|matches[password]',
+                'label' => 'Confirm Password',
+                'errors' => [
+                    'required' => 'Please confirm your password',
+                    'matches' => 'Password confirmation does not match password. Try again',
+                ],
+            ],
+        ];
+
+        if (!$this->validate($rules)) {
+            $data["validation"] = $this->validator;
+            return redirect()->to('password/forgot')->withInput()->with('errors', $this->validator->getErrors());
+        }
+        $id = $this->request->getGet('user');
+        $password = $this->request->getPost('password');
+        $passwordConf = $this->request->getPost('passwordConf');
+
+        $authModel = new UserModel();
+
+        // Hash new password
+        $data = [
+            'password' => Hash::encrypt($password),
+        ];
+
+        // Update password
+        if ($authModel->update($id, $data)) {
+            return redirect()->to('set/success');
+        } else {
+            return redirect()->to('auth/login')->withInput()->with('fail', 'Failed to update password. Contact admin for details.');
+        }
+
+    }
     // public function uploadImage(){
     //     helper('form');
     //     try {

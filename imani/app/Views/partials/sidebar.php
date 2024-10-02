@@ -74,8 +74,55 @@
         </div>
       </li>
       <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#loans" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <i class="bi bi-bank"></i>
+          <span>
+            Loans
+          </span>
+          <i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+
+        <div class="collapse" id="loans">
+          <ul>
+          <li class="nav-item">
+              <!-- <a href="<?= site_url('loans/new')?>" class="nav-link collapsed"> -->
+                <i class="bi bi-card-checklist"></i>
+                <span>
+                  New Applications
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <!-- <a href="<?= site_url('loans/approved')?>" class="nav-link collapsed"> -->
+                <i class="bi bi-check2-circle"></i>
+                <span>
+                  Approved Loans
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('loans/apply')?>" class="nav-link collapsed">
+                <i class="bi bi-pencil-square"></i>
+                <span>
+                  Apply Loan
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <!-- <a href="<?= site_url('loans/my_loans?user'.$userInfo['id'])?>" class="nav-link collapsed"> -->
+                <i class="bi bi-person-workspace"></i>
+                <span>
+                  My Loans
+                </span>
+              </a>
+            </li>
+            
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#agentPay" role="button" aria-expanded="false" aria-controls="collapseExample">
-          <i class="bi bi-cash-stack"></i>
+          <i class="bi bi-person-lines-fill"></i>
           <span>
             Agents
           </span>

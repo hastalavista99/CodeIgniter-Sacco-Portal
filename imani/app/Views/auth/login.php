@@ -11,6 +11,7 @@
   <meta name="generator" content="Hugo 0.122.0">
   <title>Sign In</title>
 
+  <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png') ?>" type="image/png">
   <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -19,6 +20,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
 
   <style>
     html,
@@ -114,55 +116,97 @@
       display: block !important;
     }
   </style>
-
-
-  <!-- Custom styles for this template -->
 </head>
 
-<body class="d-flex align-items-center py-4 bg-body-tertiary">
+<body class="">
 
 
-  <main class="form-signin w-100 m-auto">
-    <form action="/loginUser" class="form mb-3" method="post">
-      <h1 class="h3 mb3 fw-formal">Sign In</h1>
-      <?= csrf_field() ?>
+  <main>
+    <div class="container">
+      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
-      <?php if (session()->getFlashdata('fail')) : ?>
-        <div class="alert alert-danger">
-          <i class="exclamation-triangle-fill me-2"></i>
-          <?= session()->getFlashdata('fail') ?>
+              <div class="d-flex justify-content-center py-4">
+                <a href="index.html" class="logo d-flex align-items-center w-auto">
+                  <img src="<?= base_url('assets/images/logo-sm.png') ?>" alt="logo">
+                  <span class="d-none d-lg-block">Imaniline Sacco</span>
+                </a>
+              </div><!-- End Logo -->
+          
+              <div class="card mb-3">
+
+                <div class="card-body">
+
+                  <div class="pt-4 pb-2">
+                    <h5 class="card-title text-center pb-0 fs-4">Login To Your Account</h5>
+                    <p class="text-center small">Enter your username & password to login</p>
+                  </div>
+
+                  <form action="<?= site_url('/loginUser') ?>" class="row g-3 needs-validation" method="post" novalidate>
+                    <?= csrf_field() ?>
+
+                    <?php if (session()->getFlashdata('fail')) : ?>
+                      <div class="alert alert-danger">
+                        <i class="bi-exclamation-triangle-fill me-2"></i>
+                        <?= session()->getFlashdata('fail') ?>
+                      </div>
+                    <?php endif; ?>
+                    <?php if (session()->getFlashdata('errors')) : ?>
+                      <div class="text-danger">
+                        <?= validation_list_errors() ?>
+                      </div>
+                    <?php endif; ?>
+                  
+                    <div class="form-floating mb-1 col-12">
+                      <input type="text" name="name" id="floatingInput" class="form-control " placeholder="Username Here" required>
+                      <label for="floatingInput">Username</label>
+                      <div class="invalid-feedback">
+                        Please provide your username.
+                      </div>
+                    </div>
+                    <div class="form-floating">
+                      <input type="password" name="password" id="floatingPassword" class="form-control" placeholder="Password" required>
+                      <label for="floatingPassword">Password</label>
+                      <div class="invalid-feedback">
+                        Please provide your password.
+                      </div>
+                    </div>
+                    <div class="form-check text-start my-3">
+                      <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">
+                        Remember me
+                      </label>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary w-100" type="submit">Login</button>
+                    </div>
+                    <div class="col-12">
+                      <p class="small mb-0"><a href="<?= site_url('confirm/user')?>">Forgot password?</a></p>
+                    </div>
+
+                  </form>
+
+                </div>
+              </div>
+
+              <div class="credits">
+                <!-- All the links in the footer should remain intact. -->
+                <!-- You can delete the links only if you purchased the pro version. -->
+                <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+                <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
+                &copy;<?= date('Y') ?>, <a href="https://macrologicsys.com">McLogic</a>
+              </div>
+
+            </div>
+          </div>
         </div>
-      <?php endif; ?>
 
-      <?php if (isset($validation)) : ?>
-        <div class="alert alert-danger">
-          <i class="exclamation-triangle-fill me-2"></i>
-          <?= $validation->listErrors() ?>
-        </div>
-      <?php endif; ?>
-      <div class="form-floating mb-1">
+      </section>
+    </div>
 
-        <input type="text" name="name" id="floatingInput" class="form-control" placeholder="Username Here">
-        <label for="floatingInput">Username</label>
-      </div>
-
-      <div class="form-floating">
-
-
-        <input type="password" name="password" id="floatingPassword" class="form-control" placeholder="Password">
-        <label for="floatingPassword">Password</label>
-
-      </div>
-      <div class="form-check text-start my-3">
-        <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
-          Remember me
-        </label>
-      </div>
-
-      <input type="submit" value="Sign In" class="btn btn-primary w-100 py-2">
-
-    </form>
 
   </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
