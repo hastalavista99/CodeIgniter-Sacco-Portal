@@ -176,7 +176,7 @@ class Payments extends BaseController
             $sheet = $spreadsheet->getActiveSheet();
             
             // Set the header row
-            $sheet->fromArray(['account_number', 'ledger_number', 'transaction_date', 'document_number', 'document_type', 'amount', 'charge_amount', 'loan_number', 'description', 'reference_number', 'reference_type'], null, 'A1');
+            $sheet->fromArray(['account_number', 'ledger_number', 'transaction_date', 'document_number', 'document_type', 'amount', 'charge_amount', 'loan_number', 'description', 'reference_number', 'reference_type'], null, 'A1'); 
 
             // Populate the spreadsheet with payment data
             $row = 2;
@@ -305,5 +305,54 @@ class Payments extends BaseController
         ];
 
         return view('payments/index', $data);
+    }
+    public function group()
+    {
+        helper(['form', 'url']);
+        $paymentModel = new PaymentsModel();
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $repayments = ['G'];
+
+        $payments = $paymentModel
+            ->groupStart()
+            ->like('BillRefNumber', 'G%', 'after')
+            ->orLike('BillRefNumber', 'g%', 'after')
+            ->groupEnd()
+            ->findAll();
+        $total = (!empty($payments)) ? number_format(array_sum(array_column($payments, 'TransAmount')), 2, '.', ',') : '0.00';
+        $data = [
+            'payments' => $payments,
+            'userInfo' => $userInfo,
+            'title'    => 'Group Payments',
+            'total'    => $total
+        ];
+
+        return view('payments/individual', $data);
+    }
+
+    public function payDetails($billReff)
+    {
+        helper(['form', 'url']);
+
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        $model = new PaymentsModel();
+
+        $payments = $model->where('SUBSTRING(BillRefNumber, -10) =', $billReff)->findAll();
+        $totalAmount = $model->selectSum('TransAmount')->where('SUBSTRING(BillRefNumber, -10) =', $billReff)->first()['TransAmount'];
+
+        $total = (!empty($payments)) ? number_format(array_sum(array_column($payments, 'TransAmount')), 2, '.', ',') : '0.00';
+
+        $data = [
+            'payments' => $payments,
+            'total' => $total,
+            'title' => 'Group Payments',
+            'userInfo' => $userInfo,
+        ];
+
+        return view('payments/individual', $data);
     }
 }

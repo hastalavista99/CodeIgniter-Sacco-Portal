@@ -28,7 +28,8 @@
         </a>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#payments" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#payments" role="button" aria-expanded="false"
+          aria-controls="collapseExample">
           <i class="bi bi-cash-stack"></i>
           <span>
             Payments
@@ -38,8 +39,8 @@
 
         <div class="collapse" id="payments">
           <ul>
-          <li class="nav-item">
-              <a href="<?= site_url('/payments')?>" class="nav-link collapsed">
+            <li class="nav-item">
+              <a href="<?= site_url('/payments') ?>" class="nav-link collapsed">
                 <i class="bi bi-phone"></i>
                 <span>
                   All Payments
@@ -47,7 +48,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('payments/deposits')?>" class="nav-link collapsed">
+              <a href="<?= site_url('payments/deposits') ?>" class="nav-link collapsed">
                 <i class="bi bi-piggy-bank"></i>
                 <span>
                   Saving Deposits
@@ -55,7 +56,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('payments/shares')?>" class="nav-link collapsed">
+              <a href="<?= site_url('payments/shares') ?>" class="nav-link collapsed">
                 <i class="bi bi-box-arrow-in-down"></i>
                 <span>
                   Share Deposits
@@ -63,10 +64,18 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('payments/repayments')?>" class="nav-link collapsed">
+              <a href="<?= site_url('payments/repayments') ?>" class="nav-link collapsed">
                 <i class="bi bi-cash-coin"></i>
                 <span>
                   Loan Repayments
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('payments/group') ?>" class="nav-link collapsed">
+                <i class="bi bi-people"></i>
+                <span>
+                  Group Payments
                 </span>
               </a>
             </li>
@@ -74,7 +83,8 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#loans" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#loans" role="button" aria-expanded="false"
+          aria-controls="collapseExample">
           <i class="bi bi-bank"></i>
           <span>
             Loans
@@ -84,16 +94,16 @@
 
         <div class="collapse" id="loans">
           <ul>
-          <li class="nav-item">
-              <!-- <a href="<?= site_url('loans/new')?>" class="nav-link collapsed"> -->
+            <li class="nav-item">
+              <a href="<?= site_url('loans/new') ?>" class="nav-link collapsed">
                 <i class="bi bi-card-checklist"></i>
                 <span>
-                  New Applications
+                  Loan Applications
                 </span>
               </a>
             </li>
             <li class="nav-item">
-              <!-- <a href="<?= site_url('loans/approved')?>" class="nav-link collapsed"> -->
+              <a href="<?= site_url('loans/approved') ?>" class="nav-link collapsed">
                 <i class="bi bi-check2-circle"></i>
                 <span>
                   Approved Loans
@@ -101,7 +111,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('loans/apply')?>" class="nav-link collapsed">
+              <a href="<?= site_url('loans/apply') ?>" class="nav-link collapsed">
                 <i class="bi bi-pencil-square"></i>
                 <span>
                   Apply Loan
@@ -109,19 +119,20 @@
               </a>
             </li>
             <li class="nav-item">
-              <!-- <a href="<?= site_url('loans/my_loans?user'.$userInfo['id'])?>" class="nav-link collapsed"> -->
+              <a href="<?= site_url('loans/my_loans?user' . $userInfo['id']) ?>" class="nav-link collapsed">
                 <i class="bi bi-person-workspace"></i>
                 <span>
                   My Loans
                 </span>
               </a>
             </li>
-            
+
           </ul>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#agentPay" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#agentPay" role="button" aria-expanded="false"
+          aria-controls="collapseExample">
           <i class="bi bi-person-lines-fill"></i>
           <span>
             Agents
@@ -131,8 +142,8 @@
 
         <div class="collapse" id="agentPay">
           <ul>
-          <li class="nav-item">
-              <a href="<?= site_url('/agents')?>" class="nav-link collapsed">
+            <li class="nav-item">
+              <a href="<?= site_url('/agents') ?>" class="nav-link collapsed">
                 <i class="bi bi-people"></i>
                 <span>
                   Agent List
@@ -140,7 +151,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('agent/commissions')?>" class="nav-link collapsed">
+              <a href="<?= site_url('agent/commissions') ?>" class="nav-link collapsed">
                 <i class="bi bi-piggy-bank"></i>
                 <span>
                   Commissions
@@ -185,6 +196,40 @@
         <span>My Payments</span>
       </a>
     </li>
+    <?php if ($userInfo['role'] == 'member') { ?>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#loans" role="button" aria-expanded="false"
+          aria-controls="collapseExample">
+          <i class="bi bi-bank"></i>
+          <span>
+            Loans
+          </span>
+          <i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+
+        <div class="collapse" id="loans">
+          <ul>
+            <li class="nav-item">
+              <a href="<?= site_url('loans/apply') ?>" class="nav-link collapsed">
+                <i class="bi bi-pencil-square"></i>
+                <span>
+                  Apply Loan
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('loans/my_loans?user' . $userInfo['id']) ?>" class="nav-link collapsed">
+                <i class="bi bi-person-workspace"></i>
+                <span>
+                  My Loans
+                </span>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </li>
+    <?php } ?>
 
 
   </ul>
@@ -233,19 +278,12 @@
         <i class="bi-person-check me-2 h5"></i>
           Users
         </a>
-      </li>
-      <?php } ?>
-      <?php if ($userInfo['role'] == 'member') { ?>
-        <li>
-        <a href="/myPayments" class="nav-link text-white">
-            <i class="bi-cash-stack me-2 h5"></i>
-          My Payments
-        </a>
-      </li>
-      <?php } ?>
+      </li>-->
+<?php } ?>
 
 
-      <li>
+
+<!-- <li> 
         <a href="#" class="nav-link text-white">
         <i class="bi-person-square me-2 h5"></i>
           Profile

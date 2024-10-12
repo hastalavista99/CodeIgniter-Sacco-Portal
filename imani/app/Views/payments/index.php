@@ -73,7 +73,7 @@
                                         <td><?= esc($payment_item['member_no'])?></td>
                                         <td><?= esc(number_format($payment_item['TransAmount'], 2)) ?></td>
                                         <td><?= esc($payment_item['TransID']) ?></td>
-                                        <td><?= esc($payment_item['BillRefNumber']) ?></td>
+                                        <td><a href="<?= site_url('payments/'.$payment_item['BillRefNumber'])?>"><?= esc($payment_item['BillRefNumber']) ?></a></td>
                                         <td><?= esc($payment_item['ShortCode']) ?></td>
                                         <td><?= esc($payment_item['mp_date']) ?></td>
                                         <td><a href="<?= site_url('editPay?id=' . $payment_item['mp_id']) ?>"><i class="bi bi-pencil-square text-success"></i></a></td>

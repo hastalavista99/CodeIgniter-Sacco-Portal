@@ -357,7 +357,7 @@
     new DataTable('#viewsTable', {
       layout: {
         topStart: {
-          buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'print', 'colvis']
+          buttons: ['excelHtml5','pdfHtml5', 'print', 'colvis']
         }
       },
       pagingType: 'simple',
@@ -367,7 +367,7 @@
     new DataTable('#paymentsTable', {
       layout: {
         topStart: {
-          buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'print', 'colvis']
+          buttons: ['excelHtml5', 'pdfHtml5', 'print', 'colvis']
         }
       },
       order: [

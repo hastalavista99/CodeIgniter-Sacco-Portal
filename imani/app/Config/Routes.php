@@ -46,6 +46,8 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('payments/shares', [Payments::class, 'shares']);
     $routes->get('payments/deposits', [Payments::class, 'deposits']);
     $routes->get('payments/repayments', [Payments::class, 'repayments']);
+    $routes->get('payments/group', [Payments::class, 'group']);
+    $routes->get('payments/details/(:any)', 'Payments::payDetails/$1');
     $routes->get('editPay', [Payments::class, 'editPage']);
     $routes->get('filterPay', [Payments::class, 'filter']);
     $routes->post('updatePayment', [Payments::class, 'updatePay']);
@@ -59,6 +61,9 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('loans/approved', 'Loans::approved');
     $routes->get('loans/my_loans', 'Loans::myLoans');
     $routes->post('loans/submit', 'Loans::submit');
+    $routes->get('loans/details', 'Loans::details');
+    $routes->get('loans/print-pdf/(:num)', 'Loans::printLoanPDF/$1');
+    $routes->get('loan/pdf', 'Loans::generatePdf');
     $routes->post('loginMember/changePass', [LoginMember::class, 'changePass']);
     $routes->get('/sms', [LoginMember::class, 'sms']);
     $routes->post('/newMember', [Members::class, 'newMember']);

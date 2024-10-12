@@ -39,40 +39,47 @@ use CodeIgniter\HTTP\SiteURI;
                                     <h5>Step 1 - 5</h5>
                                 </div>
                             </div>
+
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="name" placeholder="Your Name" value="<?= $userInfo['user'] ?>">
+                                        <input type="text" class="form-control" id="name" placeholder="Your Name"
+                                            value="<?= $userInfo['user'] ?>" required>
                                         <label for="name">Your Name</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="memberNumber" placeholder="Membership No.">
+                                        <input type="text" class="form-control" id="memberNumber"
+                                            placeholder="Membership No." required>
                                         <label for="memberNumber">Membership No.</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="memberMobile" placeholder="Mobile Number" value="<?= $userInfo['mobile'] ?>">
+                                        <input type="text" class="form-control" id="memberMobile"
+                                            placeholder="Mobile Number" value="<?= $userInfo['mobile'] ?>" required>
                                         <label for="memberMobile">Mobile Number</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="email" class="form-control" id="memberEmail" placeholder="Your Email" value="<?= $userInfo['email'] ?>">
+                                        <input type="email" class="form-control" id="memberEmail"
+                                            placeholder="Your Email" value="<?= $userInfo['email'] ?>">
                                         <label for="memberEmail">Email Address</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="memberID" placeholder="Id No.">
+                                        <input type="number" class="form-control" id="memberID" placeholder="Id No."
+                                            required>
                                         <label for="memberID">ID No.</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="email" class="form-control" id="employer" placeholder="Your Employer">
+                                        <input type="text" class="form-control" id="employer"
+                                            placeholder="Your Employer">
                                         <label for="employer">Employer</label>
                                     </div>
                                 </div>
@@ -84,13 +91,13 @@ use CodeIgniter\HTTP\SiteURI;
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="pobox" placeholder="P.O. Box">
+                                        <input type="number" class="form-control" id="pobox" placeholder="P.O. Box">
                                         <label for="pobox">P.O. Box</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="poboxCode" placeholder="Code">
+                                        <input type="number" class="form-control" id="poboxCode" placeholder="Code">
                                         <label for="poboxCode">Code</label>
                                     </div>
                                 </div>
@@ -102,7 +109,51 @@ use CodeIgniter\HTTP\SiteURI;
                                 </div>
                             </div>
                         </div>
-                        <button type="button" name="next" class="action-button next my-3 me-2"> Next </button>
+                        <button type="button" name="next" class="action-button next my-3 me-2" id="nextStep1"
+                            disabled>Next</button>
+
+                        <script>
+                            // Function to check if all required fields are filled
+                            function validateRequiredFieldsStep1() {
+                                // Select all required fields in the first fieldset
+                                let requiredFields = document.querySelectorAll('#name, #memberNumber, #memberMobile, #memberID');
+                                let allValid = true;
+
+                                requiredFields.forEach(function (field) {
+                                    // Check if the field is empty
+                                    if (!field.value) {
+                                        field.classList.add('is-invalid'); // Optional: Add Bootstrap's invalid class for better visuals
+                                        allValid = false;
+                                    } else {
+                                        field.classList.remove('is-invalid');
+                                    }
+                                });
+
+                                return allValid;
+                            }
+
+                            // Function to enable/disable the Next button based on field validation
+                            function toggleNextButton() {
+                                const isFormValid = validateRequiredFieldsStep1();
+                                const nextButton = document.getElementById('nextStep1');
+
+                                if (isFormValid) {
+                                    nextButton.disabled = false;  // Enable the Next button if form is valid
+                                } else {
+                                    nextButton.disabled = true;   // Disable the Next button if form is invalid
+                                }
+                            }
+
+                            // Add event listeners to each required field to check validation on input change
+                            document.querySelectorAll('#name, #memberNumber, #memberMobile, #memberID').forEach(function (field) {
+                                field.addEventListener('input', toggleNextButton);
+                            });
+                            // Initial validation check (in case some fields are pre-filled)
+                            toggleNextButton();
+
+                             
+                        </script>
+
                     </fieldset>
                     <fieldset>
                         <div class="form-card">
@@ -127,20 +178,24 @@ use CodeIgniter\HTTP\SiteURI;
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="loanAmount" placeholder="Loan Amount">
+                                        <input type="number" class="form-control" id="loanAmount"
+                                            placeholder="Loan Amount" required>
                                         <label for="loanAmount">Loan Amount <small>(Kshs)</small></label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="repaymentPeriod" placeholder="Repayment Period">
+                                        <input type="number" class="form-control" id="repaymentPeriod"
+                                            placeholder="Repayment Period" required>
                                         <label for="repaymentPeriod">Repayment Period <small>(Months)</small></label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="paymentMode" placeholder="Loan AmountRepayment Period">
-                                        <label for="paymentMode">Mode of Payment <small>(e.g. standing order)</small></label>
+                                        <input type="text" class="form-control" id="paymentMode"
+                                            placeholder="Loan AmountRepayment Period" required>
+                                        <label for="paymentMode">Mode of Payment <small>(e.g. standing
+                                                order)</small></label>
                                     </div>
                                 </div>
 
@@ -159,7 +214,8 @@ use CodeIgniter\HTTP\SiteURI;
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="bankBranch" placeholder="Membership No.">
+                                        <input type="text" class="form-control" id="bankBranch"
+                                            placeholder="Membership No.">
                                         <label for="bankBranch">Bank Branch</label>
                                     </div>
                                 </div>
@@ -171,7 +227,8 @@ use CodeIgniter\HTTP\SiteURI;
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="accountNumber" placeholder="Your Employer">
+                                        <input type="text" class="form-control" id="accountNumber"
+                                            placeholder="Your Employer">
                                         <label for="accountNumber">Account No.</label>
                                     </div>
                                 </div>
@@ -188,7 +245,48 @@ use CodeIgniter\HTTP\SiteURI;
 
 
                             </div>
-                        </div> <input type="button" name="next" class="next action-button" value="Next" /> <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                        </div> <button type="button" name="next" class="action-button next my-2 me-2" id="nextStep2"
+                            disabled>Next</button> <input
+                            type="button" name="previous" class="previous action-button-previous my-2" value="Previous" />
+
+                            <script>
+                                function validateRequiredFieldsStep2() {
+                                // Select all required fields in the first fieldset
+                                let requiredFields = document.querySelectorAll('#loanAmount, #repaymentPeriod, #paymentMode, #bankName, #bankBranch, #accountName, #accountNumber');
+                                let allValid = true;
+
+                                requiredFields.forEach(function (field) {
+                                    // Check if the field is empty
+                                    if (!field.value) {
+                                        field.classList.add('is-invalid'); // Optional: Add Bootstrap's invalid class for better visuals
+                                        allValid = false;
+                                    } else {
+                                        field.classList.remove('is-invalid');
+                                    }
+                                });
+
+                                return allValid;
+                            }
+
+                            // Function to enable/disable the Next button based on field validation
+                            function toggleNextButton2() {
+                                const isForm2Valid = validateRequiredFieldsStep2();
+                                const nextButton2 = document.getElementById('nextStep2');
+
+                                if (isForm2Valid) {
+                                    nextButton2.disabled = false;  // Enable the Next button if form is valid
+                                } else {
+                                    nextButton2.disabled = true;   // Disable the Next button if form is invalid
+                                }
+                            }
+
+                            // Add event listeners to each required field to check validation on input change
+                            document.querySelectorAll('#loanAmount, #repaymentPeriod, #paymentMode, #bankName, #bankBranch, #accountName, #accountNumber').forEach(function (field) {
+                                field.addEventListener('input', toggleNextButton2);
+                            });
+                            // Initial validation check (in case some fields are pre-filled)
+                            toggleNextButton2();
+                            </script>
                     </fieldset>
                     <fieldset>
                         <div class="form-card">
@@ -204,31 +302,36 @@ use CodeIgniter\HTTP\SiteURI;
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="guarantorName" placeholder="Name Here">
+                                        <input type="text" class="form-control" id="guarantorName"
+                                            placeholder="Name Here">
                                         <label for="guarantorName">Member Name</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="guarantorMobile" placeholder="Loan Amount">
+                                        <input type="text" class="form-control" id="guarantorMobile"
+                                            placeholder="Loan Amount">
                                         <label for="guarantorMobile">Member Mobile</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="guarantorNumber" placeholder="Repayment Period">
+                                        <input type="text" class="form-control" id="guarantorNumber"
+                                            placeholder="Repayment Period">
                                         <label for="guarantorNumber">Member Number</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="guarantorID" placeholder="Loan AmountRepayment Period">
+                                        <input type="number" class="form-control" id="guarantorID"
+                                            placeholder="Loan AmountRepayment Period">
                                         <label for="guarantorID">Member ID No.</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="guarantorAmount" placeholder="Loan AmountRepayment Period">
+                                        <input type="number" class="form-control" id="guarantorAmount"
+                                            placeholder="Loan AmountRepayment Period">
                                         <label for="guarantorAmount">Amount Guaranteed</label>
                                     </div>
                                 </div>
@@ -252,10 +355,11 @@ use CodeIgniter\HTTP\SiteURI;
                             <tbody>
                             </tbody>
                         </table>
-                        <button type="button" name="next" class="next action-button" id="nextConfirm">Next</button> <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                        <button type="button" name="next" class="next action-button" id="nextConfirm">Next</button>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                         <script>
                             // Add event listener to the "Add" button
-                            document.getElementById('addBtn').addEventListener('click', function(event) {
+                            document.getElementById('addBtn').addEventListener('click', function (event) {
                                 event.preventDefault(); // This ensures that the page does not reload.
 
                                 // Get the input values
@@ -315,7 +419,9 @@ use CodeIgniter\HTTP\SiteURI;
                             <div class="" id="confirmDetails">
 
                             </div>
-                        </div> <button type="submit" name="next" class="next action-button" id="submitForm">Submit</button> <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                        </div> <button type="submit" name="next" class="next action-button"
+                            id="submitForm">Submit</button> <input type="button" name="previous"
+                            class="previous action-button-previous" value="Previous" />
                     </fieldset>
                     <fieldset>
                         <div class="form-card">
@@ -333,7 +439,8 @@ use CodeIgniter\HTTP\SiteURI;
                                 <p>The SACCO will notify you on Approval/Rejection</p>
                             </div> <br><br>
                             <div class="row justify-content-center">
-                                <button class="action-button text-uppercase">Finish</button>
+                                <a href="<?= site_url('loans/my_loans') ?>"
+                                    class="action-button text-uppercase">Finish</a>
                             </div>
                         </div>
                     </fieldset>
@@ -342,7 +449,7 @@ use CodeIgniter\HTTP\SiteURI;
         </div>
     </div>
     <script>
-        document.getElementById('nextConfirm').addEventListener('click', function(event) {
+        document.getElementById('nextConfirm').addEventListener('click', function (event) {
             const confirmPage = document.getElementById("confirmDetails");
 
             // Clear previous confirmation details
@@ -374,81 +481,81 @@ use CodeIgniter\HTTP\SiteURI;
 
             // Append each input value as a list item
             const inputs = [{
-                    label: 'Name',
-                    value: name
-                },
-                {
-                    label: 'Member Number',
-                    value: memberNumber
-                },
-                {
-                    label: 'Member ID',
-                    value: memberID
-                },
-                {
-                    label: 'Employer',
-                    value: employer
-                },
-                {
-                    label: 'Station',
-                    value: station
-                },
-                {
-                    label: 'Mobile',
-                    value: memberMobile
-                },
-                {
-                    label: 'Email',
-                    value: memberEmail
-                },
-                {
-                    label: 'P.O. Box',
-                    value: pobox
-                },
-                {
-                    label: 'P.O. Box Code',
-                    value: poboxCode
-                },
-                {
-                    label: 'P.O. Box City',
-                    value: poboxCity
-                },
-                {
-                    label: 'Loan Type',
-                    value: loanType
-                },
-                {
-                    label: 'Loan Amount',
-                    value: loanAmount
-                },
-                {
-                    label: 'Repayment Period',
-                    value: repaymentPeriod
-                },
-                {
-                    label: 'Payment Mode',
-                    value: paymentMode
-                },
-                {
-                    label: 'Bank Name',
-                    value: bankName
-                },
-                {
-                    label: 'Bank Branch',
-                    value: bankBranch
-                },
-                {
-                    label: 'Account Name',
-                    value: accountName
-                },
-                {
-                    label: 'Account Number',
-                    value: accountNumber
-                },
-                {
-                    label: 'Payment Type',
-                    value: paymentType
-                }
+                label: 'Name',
+                value: name
+            },
+            {
+                label: 'Member Number',
+                value: memberNumber
+            },
+            {
+                label: 'Member ID',
+                value: memberID
+            },
+            {
+                label: 'Employer',
+                value: employer
+            },
+            {
+                label: 'Station',
+                value: station
+            },
+            {
+                label: 'Mobile',
+                value: memberMobile
+            },
+            {
+                label: 'Email',
+                value: memberEmail
+            },
+            {
+                label: 'P.O. Box',
+                value: pobox
+            },
+            {
+                label: 'P.O. Box Code',
+                value: poboxCode
+            },
+            {
+                label: 'P.O. Box City',
+                value: poboxCity
+            },
+            {
+                label: 'Loan Type',
+                value: loanType
+            },
+            {
+                label: 'Loan Amount',
+                value: loanAmount
+            },
+            {
+                label: 'Repayment Period',
+                value: repaymentPeriod
+            },
+            {
+                label: 'Payment Mode',
+                value: paymentMode
+            },
+            {
+                label: 'Bank Name',
+                value: bankName
+            },
+            {
+                label: 'Bank Branch',
+                value: bankBranch
+            },
+            {
+                label: 'Account Name',
+                value: accountName
+            },
+            {
+                label: 'Account Number',
+                value: accountNumber
+            },
+            {
+                label: 'Payment Type',
+                value: paymentType
+            }
             ];
 
             inputs.forEach(input => {
@@ -492,7 +599,7 @@ use CodeIgniter\HTTP\SiteURI;
             confirmPage.appendChild(ul);
         });
 
-        document.getElementById('submitForm').addEventListener('click', function() {
+        document.getElementById('submitForm').addEventListener('click', function () {
 
             const csrfName = '<?= csrf_token() ?>'; // CSRF Token Name
             const csrfHash = '<?= csrf_hash() ?>'; // CSRF Token Hash
@@ -543,12 +650,12 @@ use CodeIgniter\HTTP\SiteURI;
 
             // Send the data via AJAX to CodeIgniter controller
             fetch('<?= site_url('loans/submit') ?>', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

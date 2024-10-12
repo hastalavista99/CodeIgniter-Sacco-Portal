@@ -12,7 +12,7 @@ class LoansModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'name', 'member_number', 'member_mobile', 'member_email', 'member_id', 'employer', 'station', 'po_box', 'po_code', 'po_city', 'loan_type', 'amount', 'repay_period', 'payment_mode', 'bank', 'branch', 'account_name', 'account_number', 'payment_type', 'loan_number', 'loan_status'];
+    protected $allowedFields    = ['user_id', 'name', 'member_number', 'member_mobile', 'member_email', 'member_id', 'employer', 'station', 'po_box', 'po_code', 'po_city', 'loan_type', 'amount', 'repay_period', 'payment_mode', 'bank', 'branch', 'account_name', 'account_number', 'payment_type', 'loan_number', 'loan_status','apply_date'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

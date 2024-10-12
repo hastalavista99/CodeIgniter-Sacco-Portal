@@ -1,5 +1,5 @@
 <?= $this->extend('layouts/main') ?>
-<?= $this->section('title') ?><?= esc($title)?><?= $this->endSection() ?>
+<?= $this->section('title') ?><?= esc($title) ?><?= $this->endSection() ?>
 
 <div class="row">
     <?= $this->section('content') ?>
@@ -18,15 +18,9 @@
         <?php endif; ?>
 
         <div class="card shadow border-none my-2 px-2">
-            <div class="d-flex justify-content-end mb-3">
-                <div class="pt-1 pb-1 mb-1">
-                    <h4 class="text-capitalize display-6 ps-3">Total: <?= esc($total); ?></h4>
-                </div>
 
-            </div>
             <div class="card-body px-0 pb-2">
-                <div class="col-md-2 ms-3">
-                    <!-- Export Button -->
+                <!--  <div class="col-md-2 ms-3">
                     <button id="exportButton" class="btn btn-success mb-2">Export selected</button>
                 </div>
                 
@@ -44,47 +38,45 @@
                     <div class="form-group col-md-2 mt-3">
                         <button type="submit" class="btn btn-primary ms-2 mt-2">Filter</button>
                     </div>
-                </form>
+                </form> -->
 
 
-                <?php if (!empty($payments) && is_array($payments)) : ?>
-                    <div class="table-responsive-md">
+                <?php if (!empty($loans) && is_array($loans)) : ?>
+                    <div class="table-responsive-md my-3">
                         <table class="table table-hover" id="paymentsTable">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" class="form-check-input" id="checkAll"></th>
                                     <th>#</th>
+                                    <th>Loan Number</th>
                                     <th>Name</th>
                                     <th>Member No.</th>
-                                    <th>Amount</th>
-                                    <th>Trans ID</th>
-                                    <th>BillRefNumber</th>
-                                    <th>Paybill</th>
-                                    <th>Time</th>
+                                    <th>Loan Amount</th>
+                                    <th>Guarantors</th>
+                                    <th>Application Date</th>
+                                    <th>Loan Status</th>
                                     <th>Edit name</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($payments as $payment_item) : ?>
-                                    <tr id="paymentRow-<?= esc($payment_item['mp_id']) ?>" class="<?= $payment_item['exported'] ? 'table-info exported' : '' ?>">
-                                        <td><input type="checkbox" class=" checkPayment" data-id="<?= esc($payment_item['mp_id']) ?>" <?= $payment_item['exported'] ? 'disabled' : '' ?>></td>
-                                        <td><?= esc($payment_item['mp_id']) ?></td>
-                                        <td><?= esc($payment_item['mp_name']) ?></td>
-                                        <td><?= esc($payment_item['member_no'])?></td>
-                                        <td><?= esc(number_format($payment_item['TransAmount'], 2)) ?></td>
-                                        <td><?= esc($payment_item['TransID']) ?></td>
-                                        <td><?= esc($payment_item['BillRefNumber']) ?></td>
-                                        <td><?= esc($payment_item['ShortCode']) ?></td>
-                                        <td><?= esc($payment_item['mp_date']) ?></td>
-                                        <td><a href="<?= site_url('editPay?id=' . $payment_item['mp_id']) ?>"><i class="bi bi-pencil-square text-success"></i></a></td>
+                                <?php foreach ($loans as $loan_item) : ?>
+                                    <tr>
+                                        <td><?= esc($loan_item['id']) ?></td>
+                                        <td><?= esc($loan_item['loan_number']) ?></td>
+                                        <td><?= esc($loan_item['name']) ?></td>
+                                        <td><?= esc($loan_item['member_number']) ?></td>
+                                        <td><?= esc(number_format($loan_item['amount'], 2)) ?></td>
+                                        <td><?= esc($loan_item['guarantor_count']) ?></td>
+                                        <td><?= esc($loan_item['apply_date']) ?></td>
+                                        <td class="text-capitalize fw-bold <?= $loan_item['status'] = 'pending' ? 'text-warning ' : 'text-success' ?>"><?= esc($loan_item['loan_status']) ?></td>
+                                        <td><a class="btn btn-success btn-sm" href="<?= site_url('loans/details?id=' . $loan_item['id']) ?>">Details</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
                 <?php else : ?>
-                    <h3>No Payments</h3>
-                    <p>Unable to find any payments for you.</p>
+                    <h3>No Loans</h3>
+                    <p>Unable to find any loans for you.</p>
                 <?php endif; ?>
             </div>
         </div>
