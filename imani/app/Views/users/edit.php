@@ -35,12 +35,16 @@
 
           <div class="row">
             <div class="mb-3 col-6">
-              <label for="name" class="col-form-label">Name:</label>
+              <label for="name" class="col-form-label">Username:</label>
               <input type="text" name="name" id="name" value="<?= set_value('name', $user['name']) ?>" class="form-control">
             </div>
-            <div class="mb-3 col-6">
+            <div class="mb-3 col-3">
               <label for="mobile" class="col-form-label">Mobile:</label>
               <input type="tel" name="mobile" pattern="[0-9]{10}" id="mobile" value="<?= set_value('mobile', $user['mobile']) ?>" class="form-control">
+            </div>
+            <div class="mb-3 col-3">
+              <label for="memberNumber" class="col-form-label">Member No:</label>
+              <input type="text" name="memberNumber"  id="memberNumber" value="<?= set_value('member_no', $user['member_no']) ?>" class="form-control">
             </div>
             <div class="mb-3 col-6">
               <label for="name" class="col-form-label">Email:</label>
@@ -49,7 +53,7 @@
             <div class="mb-3 col-4">
               <label for="" class="col-form-label">Role</label>
               <select name="role" id="role" class="form-control">
-                <option selected>-- Select role --</option>
+                <option value="<?= $userInfo['role']?>" selected><?= $userInfo['role']?></option>
                 <option value="agent">Agent</option>
                 <option value="member">Member</option>
                 <option value="user">User</option>

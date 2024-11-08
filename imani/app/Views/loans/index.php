@@ -67,7 +67,7 @@
                                         <td><?= esc(number_format($loan_item['amount'], 2)) ?></td>
                                         <td><?= esc($loan_item['guarantor_count']) ?></td>
                                         <td><?= esc($loan_item['apply_date']) ?></td>
-                                        <td class="text-capitalize fw-bold <?= $loan_item['status'] = 'pending' ? 'text-warning ' : 'text-success' ?>"><?= esc($loan_item['loan_status']) ?></td>
+                                        <td class="text-capitalize fw-bold <?= $loan_item['loan_status'] == 'pending' ? 'text-warning' : ($loan_item['loan_status'] == 'rejected' ? 'text-danger' : 'text-success')  ?>"><?= esc($loan_item['loan_status']) ?></td>
                                         <td><a class="btn btn-success btn-sm" href="<?= site_url('loans/details?id=' . $loan_item['id']) ?>">Details</a></td>
                                     </tr>
                                 <?php endforeach; ?>

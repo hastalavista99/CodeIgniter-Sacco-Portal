@@ -119,7 +119,7 @@ use CodeIgniter\HTTP\SiteURI;
                                 let requiredFields = document.querySelectorAll('#name, #memberNumber, #memberMobile, #memberID');
                                 let allValid = true;
 
-                                requiredFields.forEach(function (field) {
+                                requiredFields.forEach(function(field) {
                                     // Check if the field is empty
                                     if (!field.value) {
                                         field.classList.add('is-invalid'); // Optional: Add Bootstrap's invalid class for better visuals
@@ -138,20 +138,18 @@ use CodeIgniter\HTTP\SiteURI;
                                 const nextButton = document.getElementById('nextStep1');
 
                                 if (isFormValid) {
-                                    nextButton.disabled = false;  // Enable the Next button if form is valid
+                                    nextButton.disabled = false; // Enable the Next button if form is valid
                                 } else {
-                                    nextButton.disabled = true;   // Disable the Next button if form is invalid
+                                    nextButton.disabled = true; // Disable the Next button if form is invalid
                                 }
                             }
 
                             // Add event listeners to each required field to check validation on input change
-                            document.querySelectorAll('#name, #memberNumber, #memberMobile, #memberID').forEach(function (field) {
+                            document.querySelectorAll('#name, #memberNumber, #memberMobile, #memberID').forEach(function(field) {
                                 field.addEventListener('input', toggleNextButton);
                             });
                             // Initial validation check (in case some fields are pre-filled)
                             toggleNextButton();
-
-                             
                         </script>
 
                     </fieldset>
@@ -169,9 +167,12 @@ use CodeIgniter\HTTP\SiteURI;
                                 <div class="col-md-4">
                                     <div class="form-floating mb-3">
                                         <select class="form-select" id="loanType" aria-label="State">
-                                            <option selected value="Normal Loan">Normal Loan</option>
-                                            <option value="Emergency Loan">Emergency Loan</option>
-                                            <option value="Fees Loan">School Fees Loan</option>
+                                            <option selected value=""></option>
+                                            <?php
+                                            foreach ($types as $type) :
+                                            ?>
+                                                <option value="<?= $type['type'] ?>"><?= $type['type'] ?></option>
+                                            <?php endforeach ?>
                                         </select>
                                         <label for="loanType">Loan Type</label>
                                     </div>
@@ -249,13 +250,13 @@ use CodeIgniter\HTTP\SiteURI;
                             disabled>Next</button> <input
                             type="button" name="previous" class="previous action-button-previous my-2" value="Previous" />
 
-                            <script>
-                                function validateRequiredFieldsStep2() {
+                        <script>
+                            function validateRequiredFieldsStep2() {
                                 // Select all required fields in the first fieldset
                                 let requiredFields = document.querySelectorAll('#loanAmount, #repaymentPeriod, #paymentMode, #bankName, #bankBranch, #accountName, #accountNumber');
                                 let allValid = true;
 
-                                requiredFields.forEach(function (field) {
+                                requiredFields.forEach(function(field) {
                                     // Check if the field is empty
                                     if (!field.value) {
                                         field.classList.add('is-invalid'); // Optional: Add Bootstrap's invalid class for better visuals
@@ -274,19 +275,19 @@ use CodeIgniter\HTTP\SiteURI;
                                 const nextButton2 = document.getElementById('nextStep2');
 
                                 if (isForm2Valid) {
-                                    nextButton2.disabled = false;  // Enable the Next button if form is valid
+                                    nextButton2.disabled = false; // Enable the Next button if form is valid
                                 } else {
-                                    nextButton2.disabled = true;   // Disable the Next button if form is invalid
+                                    nextButton2.disabled = true; // Disable the Next button if form is invalid
                                 }
                             }
 
                             // Add event listeners to each required field to check validation on input change
-                            document.querySelectorAll('#loanAmount, #repaymentPeriod, #paymentMode, #bankName, #bankBranch, #accountName, #accountNumber').forEach(function (field) {
+                            document.querySelectorAll('#loanAmount, #repaymentPeriod, #paymentMode, #bankName, #bankBranch, #accountName, #accountNumber').forEach(function(field) {
                                 field.addEventListener('input', toggleNextButton2);
                             });
                             // Initial validation check (in case some fields are pre-filled)
                             toggleNextButton2();
-                            </script>
+                        </script>
                     </fieldset>
                     <fieldset>
                         <div class="form-card">
@@ -359,7 +360,7 @@ use CodeIgniter\HTTP\SiteURI;
                         <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                         <script>
                             // Add event listener to the "Add" button
-                            document.getElementById('addBtn').addEventListener('click', function (event) {
+                            document.getElementById('addBtn').addEventListener('click', function(event) {
                                 event.preventDefault(); // This ensures that the page does not reload.
 
                                 // Get the input values
@@ -419,7 +420,7 @@ use CodeIgniter\HTTP\SiteURI;
                             <div class="" id="confirmDetails">
 
                             </div>
-                        </div> <button type="submit" name="next" class="next action-button"
+                        </div> <button type="button" name="next" class="next action-button"
                             id="submitForm">Submit</button> <input type="button" name="previous"
                             class="previous action-button-previous" value="Previous" />
                     </fieldset>
@@ -449,7 +450,7 @@ use CodeIgniter\HTTP\SiteURI;
         </div>
     </div>
     <script>
-        document.getElementById('nextConfirm').addEventListener('click', function (event) {
+        document.getElementById('nextConfirm').addEventListener('click', function(event) {
             const confirmPage = document.getElementById("confirmDetails");
 
             // Clear previous confirmation details
@@ -481,81 +482,81 @@ use CodeIgniter\HTTP\SiteURI;
 
             // Append each input value as a list item
             const inputs = [{
-                label: 'Name',
-                value: name
-            },
-            {
-                label: 'Member Number',
-                value: memberNumber
-            },
-            {
-                label: 'Member ID',
-                value: memberID
-            },
-            {
-                label: 'Employer',
-                value: employer
-            },
-            {
-                label: 'Station',
-                value: station
-            },
-            {
-                label: 'Mobile',
-                value: memberMobile
-            },
-            {
-                label: 'Email',
-                value: memberEmail
-            },
-            {
-                label: 'P.O. Box',
-                value: pobox
-            },
-            {
-                label: 'P.O. Box Code',
-                value: poboxCode
-            },
-            {
-                label: 'P.O. Box City',
-                value: poboxCity
-            },
-            {
-                label: 'Loan Type',
-                value: loanType
-            },
-            {
-                label: 'Loan Amount',
-                value: loanAmount
-            },
-            {
-                label: 'Repayment Period',
-                value: repaymentPeriod
-            },
-            {
-                label: 'Payment Mode',
-                value: paymentMode
-            },
-            {
-                label: 'Bank Name',
-                value: bankName
-            },
-            {
-                label: 'Bank Branch',
-                value: bankBranch
-            },
-            {
-                label: 'Account Name',
-                value: accountName
-            },
-            {
-                label: 'Account Number',
-                value: accountNumber
-            },
-            {
-                label: 'Payment Type',
-                value: paymentType
-            }
+                    label: 'Name',
+                    value: name
+                },
+                {
+                    label: 'Member Number',
+                    value: memberNumber
+                },
+                {
+                    label: 'Member ID',
+                    value: memberID
+                },
+                {
+                    label: 'Employer',
+                    value: employer
+                },
+                {
+                    label: 'Station',
+                    value: station
+                },
+                {
+                    label: 'Mobile',
+                    value: memberMobile
+                },
+                {
+                    label: 'Email',
+                    value: memberEmail
+                },
+                {
+                    label: 'P.O. Box',
+                    value: pobox
+                },
+                {
+                    label: 'P.O. Box Code',
+                    value: poboxCode
+                },
+                {
+                    label: 'P.O. Box City',
+                    value: poboxCity
+                },
+                {
+                    label: 'Loan Type',
+                    value: loanType
+                },
+                {
+                    label: 'Loan Amount',
+                    value: loanAmount
+                },
+                {
+                    label: 'Repayment Period',
+                    value: repaymentPeriod
+                },
+                {
+                    label: 'Payment Mode',
+                    value: paymentMode
+                },
+                {
+                    label: 'Bank Name',
+                    value: bankName
+                },
+                {
+                    label: 'Bank Branch',
+                    value: bankBranch
+                },
+                {
+                    label: 'Account Name',
+                    value: accountName
+                },
+                {
+                    label: 'Account Number',
+                    value: accountNumber
+                },
+                {
+                    label: 'Payment Type',
+                    value: paymentType
+                }
             ];
 
             inputs.forEach(input => {
@@ -599,7 +600,7 @@ use CodeIgniter\HTTP\SiteURI;
             confirmPage.appendChild(ul);
         });
 
-        document.getElementById('submitForm').addEventListener('click', function () {
+        document.getElementById('submitForm').addEventListener('click', function() {
 
             const csrfName = '<?= csrf_token() ?>'; // CSRF Token Name
             const csrfHash = '<?= csrf_hash() ?>'; // CSRF Token Hash
@@ -650,12 +651,12 @@ use CodeIgniter\HTTP\SiteURI;
 
             // Send the data via AJAX to CodeIgniter controller
             fetch('<?= site_url('loans/submit') ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

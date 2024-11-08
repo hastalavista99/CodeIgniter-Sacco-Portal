@@ -9,6 +9,8 @@ use App\Models\LoansModel;
 use App\Models\UserModel;
 use Dompdf\Dompdf;
 use App\Libraries\Pdf;
+use App\Models\LoanFormulaModel;
+use App\Models\LoanTypeModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Loans extends BaseController
@@ -20,10 +22,14 @@ class Loans extends BaseController
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
+        $formulaModel = new LoanFormulaModel();
+        $loanType = new LoanTypeModel();
+        $types = $loanType->findAll();
 
         $data = [
             'title' => 'Loan Application',
             'userInfo' => $userInfo,
+            'types' => $types
         ];
         return view('loans/new', $data);
     }
@@ -110,6 +116,16 @@ class Loans extends BaseController
                 'loan_number' => $loanReference,
                 'responded' => 'No'
             ]);
+
+            $phone = $guarantor['mobile'];
+            $gname = $guarantor['name'];
+            $fname = explode(' ', $gname)[0];
+            $loanee = explode(' ', $name)[0];
+            $gamount = $guarantor['amount'];
+            $msg = "Hello " . $fname . ", You are now a guarantor of Kshs " . number_format($gamount, 0, '.', ',') . " in the loan of " . $loanee . " worth Kshs" . number_format($loanAmount, 0, '.', ',') . ". Loan No. " . $loanReference . "\nContact the office for details\nRegards\nGloha Sacco";
+
+            $sms = new SendSMS();
+            $sms->sendSMS($phone, $msg);
         }
 
         // Complete the transaction
@@ -142,7 +158,8 @@ class Loans extends BaseController
         $data = [
             'userInfo' => $userInfo,
             'loans' => $loans,
-            'title' => 'Loan Applications'
+            'title' => 'Loan Applications',
+            
         ];
 
         return view('loans/index', $data);
@@ -254,6 +271,45 @@ class Loans extends BaseController
         return $pdf->Output('loan_application.pdf', 'I'); // 'I' for inline, 'D' for download
     }
 
+    public function approveLoan($id)
+    {
+        $loanModel = new LoansModel();
+        $loan = $loanModel->find($id);
+        $status = "Approved";
+
+        if ($loan) {
+            // Update the 'loan_status' field with the new status for the given loan ID
+            $approve = $loanModel->update($id, ['loan_status' => $status]);
+
+            if ($approve) {
+                return redirect()->to('loans/details?id=' . $id)->with('success', 'Loan approved successfully.');
+            } else {
+                return redirect()->to('loans/details?id=' . $id)->with('fail', 'Could not approve loan. Please try again later.');
+            }
+        } else {
+            return redirect()->to('loans/details?id=' . $id)->with('fail', 'Loan not found.');
+        }
+    }
+
+    public function rejectLoan($id)
+    {
+        $loanModel = new LoansModel();
+        $loan = $loanModel->find($id);
+        $status = "rejected";
+
+        if ($loan) {
+            // Update the 'loan_status' field with the new status for the given loan ID
+            $approve = $loanModel->update($id, ['loan_status' => $status]);
+
+            if ($approve) {
+                return redirect()->to('loans/details?id=' . $id)->with('success', 'Loan rejected successfully.');
+            } else {
+                return redirect()->to('loans/details?id=' . $id)->with('fail', 'Could not reject loan. Please try again later.');
+            }
+        } else {
+            return redirect()->to('loans/details?id=' . $id)->with('fail', 'Loan not found.');
+        }
+    }
 
     public function approved()
     {
@@ -268,7 +324,7 @@ class Loans extends BaseController
         $builder = $db->table('loan_application');
         $builder->select('loan_application.*, COUNT(guarantors.loan_number) as guarantor_count');
         $builder->join('guarantors', 'guarantors.loan_number = loan_application.loan_number', 'left');
-        $builder->where('loan_application.loan_status', 'approved'); 
+        $builder->where('loan_application.loan_status', 'approved');
         $builder->groupBy('loan_application.loan_number');
         $loans = $builder->get()->getResultArray();
         $data = [
@@ -279,6 +335,57 @@ class Loans extends BaseController
 
         return view('loans/index', $data);
     }
+
+    public function createLoanType()
+    {
+        helper(['form', 'url']);
+
+        $loanTypeModel = new LoanTypeModel();
+        $loanName = $this->request->getPost('loanName');
+        $interestRate = $this->request->getPost('rate');
+        $formulaId = $this->request->getPost('formula');
+
+        $data = [
+            'type' => $loanName,
+            'rate' => $interestRate,
+            'formula_id' => $formulaId
+        ];
+
+        $query = $loanTypeModel->insert($data);
+        if ($query) {
+            return redirect()->to('loans/settings')->with('success', 'Saved successfully');
+        } else {
+            return redirect()->to('loans/settings')->with('fail', 'Something went wrong. Please try again later');
+        }
+    }
+    public function loanSettings()
+    {
+        helper(['form', 'url']);
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $typeModel = new LoanTypeModel();
+        $loanTypes = $typeModel
+            ->select('loan_type.id as loan_type_id, loan_type.*, loan_formula.id as formula_id, loan_formula.formula as formula_name, loan_formula.*')
+            ->join('loan_formula', 'loan_type.formula_id = loan_formula.id')
+            ->findAll();
+
+        $formulaModel = new LoanFormulaModel();
+        $formulas = $formulaModel->findAll();
+
+        $data = [
+            'title' => 'Loan Settings',
+            'types' => $loanTypes,
+            'userInfo' => $userInfo,
+            'formulas' => $formulas
+        ];
+
+        return view('loans/settings', $data);
+    }
+
+
+
     public function myLoans()
     {
         $loanModel = new LoansModel();

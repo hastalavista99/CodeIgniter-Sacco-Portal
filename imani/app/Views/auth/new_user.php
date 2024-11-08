@@ -175,6 +175,13 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-floating mb-2 col-12">
+                                            <input type="text" name="membership" id="membership" class="form-control" value="<?= set_value('membership') ?>" placeholder="membership Here" required minlength="4">
+                                            <label for="membership">Membership No.</label>
+                                            <div class="invalid-feedback">
+                                                Please provide a membership number. (at least 4 characters long)
+                                            </div>
+                                        </div>
                                         <div class="form-floating mb-2">
                                             <input type="password" name="password" id="newPassword" class="form-control" placeholder="Password" required minlength="5">
                                             <label for="newPassword">Password (at least 5 characters)</label>

@@ -153,75 +153,75 @@ class Payments extends BaseController
     }
 
     public function export()
-{
-    if ($this->request->isAJAX()) {
-        // Parse JSON data from the request body
-        $postData = $this->request->getJSON();
-        $paymentIds = $postData->payment_ids ?? [];
-        $title = $postData->title ?? '';
+    {
+        if ($this->request->isAJAX()) {
+            // Parse JSON data from the request body
+            $postData = $this->request->getJSON();
+            $paymentIds = $postData->payment_ids ?? [];
+            $title = $postData->title ?? '';
 
-        $account_number = match ($title) {
-            'Share Capital' => '510100',
-            'Saving Deposits' => '380800',
-            'Loan Repayments' => '110100',
-            default => '211',
-        };
+            $account_number = match ($title) {
+                'Share Capital' => '510100',
+                'Saving Deposits' => '380800',
+                'Loan Repayments' => '110100',
+                default => '211',
+            };
 
-        if (!empty($paymentIds)) {
-            $paymentsModel = new PaymentsModel();
-            $payments = $paymentsModel->whereIn('mp_id', $paymentIds)->findAll();
+            if (!empty($paymentIds)) {
+                $paymentsModel = new PaymentsModel();
+                $payments = $paymentsModel->whereIn('mp_id', $paymentIds)->findAll();
 
-            // Create Excel spreadsheet using PhpSpreadsheet
-            $spreadsheet = new Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-            
-            // Set the header row
-            $sheet->fromArray(['account_number', 'ledger_number', 'transaction_date', 'document_number', 'document_type', 'amount', 'charge_amount', 'loan_number', 'description', 'reference_number', 'reference_type'], null, 'A1'); 
+                // Create Excel spreadsheet using PhpSpreadsheet
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
 
-            // Populate the spreadsheet with payment data
-            $row = 2;
-            foreach ($payments as $payment) {
-                $formattedDate = date('d/m/Y', strtotime($payment['mp_date']));
-                $sheet->fromArray([
-                    $account_number,
-                    $payment['member_no'],
-                    $formattedDate,
-                    '',
-                    'VCH',
-                    $payment['TransAmount'],
-                    '0',
-                    '0',
-                    $title,
-                    '',
-                    ''
-                ], null, 'A' . $row);
-                $row++;
+                // Set the header row
+                $sheet->fromArray(['account_number', 'ledger_number', 'transaction_date', 'document_number', 'document_type', 'amount', 'charge_amount', 'loan_number', 'description', 'reference_number', 'reference_type'], null, 'A1');
+
+                // Populate the spreadsheet with payment data
+                $row = 2;
+                foreach ($payments as $payment) {
+                    $formattedDate = date('d/m/Y', strtotime($payment['mp_date']));
+                    $sheet->fromArray([
+                        $account_number,
+                        $payment['member_no'],
+                        $formattedDate,
+                        '',
+                        'VCH',
+                        $payment['TransAmount'],
+                        '0',
+                        '0',
+                        $title,
+                        '',
+                        ''
+                    ], null, 'A' . $row);
+                    $row++;
+                }
+
+                // Save the file
+                $writer = new Xlsx($spreadsheet);
+                $fileName = 'payments_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+                $filePath = WRITEPATH . 'exports/' . $fileName;
+                $writer->save($filePath);
+
+                // Update payments as exported
+                $paymentsModel->whereIn('mp_id', $paymentIds)->set(['exported' => 1])->update();
+
+                // Trigger file download
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment; filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+                $writer->save('php://output');
+                exit;
+
+                // Respond with JSON success message (file will download)
+                return $this->response->setJSON(['success' => true, 'file' => base_url('exports/' . $fileName)]);
+            } else {
+                return $this->response->setJSON(['success' => false, 'message' => 'No payments selected.']);
             }
-
-            // Save the file
-            $writer = new Xlsx($spreadsheet);
-            $fileName = 'payments_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-            $filePath = WRITEPATH . 'exports/' . $fileName;
-            $writer->save($filePath);
-
-            // Update payments as exported
-            $paymentsModel->whereIn('mp_id', $paymentIds)->set(['exported' => 1])->update();
-
-            // Trigger file download
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment; filename="' . $fileName . '"');
-            header('Cache-Control: max-age=0');
-            $writer->save('php://output');
-            exit;
-
-            // Respond with JSON success message (file will download)
-            return $this->response->setJSON(['success' => true, 'file' => base_url('exports/' . $fileName)]);
-        } else {
-            return $this->response->setJSON(['success' => false, 'message' => 'No payments selected.']);
         }
+        return redirect()->to(site_url('payments'));
     }
-    return redirect()->to(site_url('payments'));
-}
 
 
     public function shares()
@@ -240,7 +240,7 @@ class Payments extends BaseController
             ->orLike('BillRefNumber', 'sha%', 'after')
             ->groupEnd()
             ->findAll();
-            
+
         $total = (!empty($payments)) ? number_format(array_sum(array_column($payments, 'TransAmount')), 2, '.', ',') : '0.00';
         $data = [
             'payments' => $payments,
@@ -341,15 +341,15 @@ class Payments extends BaseController
         $userInfo = $userModel->find($loggedInUserId);
         $model = new PaymentsModel();
 
-        $payments = $model->where('SUBSTRING(BillRefNumber, -10) =', $billReff)->findAll();
-        $totalAmount = $model->selectSum('TransAmount')->where('SUBSTRING(BillRefNumber, -10) =', $billReff)->first()['TransAmount'];
+        $payments = $model->where('BillRefNumber', $billReff)->findAll();
+        $totalAmount = $model->selectSum('TransAmount')->where('BillRefNumber', $billReff)->first()['TransAmount'];
 
         $total = (!empty($payments)) ? number_format(array_sum(array_column($payments, 'TransAmount')), 2, '.', ',') : '0.00';
 
         $data = [
             'payments' => $payments,
             'total' => $total,
-            'title' => 'Group Payments',
+            'title' => 'Payments - ' . $billReff,
             'userInfo' => $userInfo,
         ];
 

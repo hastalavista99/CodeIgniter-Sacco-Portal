@@ -138,11 +138,29 @@
 
                 </section>
 
-                <div class="my-3 d-flex aligns-content-center justify-content-center">
+                <div class="my-3 d-flex align-content-center justify-content-around">
                     <a href="<?= site_url('loans/new') ?>" class="btn btn-success mx-2"><i class="bi-chevron-left"></i>Back</a>
-                    <a href="<?= site_url('loans/print-pdf/' . $loan['id']) ?>" target="_blank" class="btn btn-primary mx-2">
-                        View and Download PDF
-                    </a>
+                    <?php
+                    if ($userInfo['role'] === 'admin') { ?>
+                        <a href="<?= site_url('loans/print-pdf/' . $loan['id']) ?>" target="_blank" class="btn btn-primary mx-2">
+                            View and Download PDF
+                        </a>
+                        <?php
+                        if ($loan['loan_status'] !== 'approved' && $loan['loan_status'] !== 'rejected') {
+                        ?>
+                            <a href="<?= site_url('loans/approve/' . $loan['id']) ?>" class="btn btn-success mx-2">
+                            <i class="bi bi-check2 ms-auto"></i>
+                                Approve
+                            </a>
+                            <a href="<?= site_url('loans/reject/' . $loan['id']) ?>" class="btn btn-danger mx-2">
+                            <i class="bi bi-x-lg ms-auto"></i>
+                                Reject
+                            </a>                            
+                        <?php
+                        }
+                        ?>
+
+                    <?php } ?>
                 </div>
 
 

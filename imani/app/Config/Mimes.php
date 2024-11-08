@@ -98,6 +98,9 @@ class Mimes
             'application/vnd.ms-office',
             'application/msword',
         ],
+        'xlsx' => [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ],
         'ppt' => [
             'application/vnd.ms-powerpoint',
             'application/powerpoint',

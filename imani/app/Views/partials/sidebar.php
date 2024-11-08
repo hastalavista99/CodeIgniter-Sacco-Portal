@@ -119,6 +119,14 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="<?= site_url('loans/settings') ?>" class="nav-link collapsed">
+                <i class="bi bi-gear"></i>
+                <span>
+                  Loan Settings
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="<?= site_url('loans/my_loans?user' . $userInfo['id']) ?>" class="nav-link collapsed">
                 <i class="bi bi-person-workspace"></i>
                 <span>
@@ -168,12 +176,38 @@
         </a>
       </li> -->
       <li class="nav-item">
-        <a href="/users" class="nav-link collapsed">
-          <i class="bi bi-person-check"></i>
-          <span>Users</span>
-
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#settings" role="button" aria-expanded="false"
+          aria-controls="collapseExample">
+          <i class="bi bi-gear
+          "></i>
+          <span>
+            Settings
+          </span>
+          <i class="bi bi-chevron-down ms-auto"></i>
         </a>
+
+        <div class="collapse" id="settings">
+          <ul>
+            <li class="nav-item">
+              <a href="<?= site_url('balances/upload')?>" class="nav-link collapsed">
+                <i class="bi bi-sliders"></i>
+                <span>
+                  Balances
+                </span>
+              </a>
+            </li>
+            
+            <li class="nav-item">
+              <a href="<?=site_url('/users')?>" class="nav-link collapsed">
+                <i class="bi bi-person-check"></i>
+                <span>Users</span>
+
+              </a>
+            </li>
+          </ul>
+        </div>
       </li>
+
       <!-- <li class="nav-item">
         <a href="/sms" class="nav-link collapsed">
           <i class="bi bi-envelope-arrow-up"></i>

@@ -41,6 +41,9 @@ $routes->post('renew/password', 'Auth::resetPassword');
 
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
+    $routes->post('excel/upload', 'Excel::upload');
+    $routes->get('balances/upload', 'Excel::uploadPage');
+    $routes->get('balances/upload/check', 'Excel::checkBalances');
     $routes->get('/members', [Members::class, 'index']);
     $routes->get('/payments', [Payments::class, 'index']);
     $routes->get('payments/shares', [Payments::class, 'shares']);
@@ -58,10 +61,14 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/profile', [LoginMember::class, 'profile']);
     $routes->get('loans/apply', 'Loans::index');
     $routes->get('loans/new', 'Loans::new');
+    $routes->get('loans/approve/(:num)', 'Loans::approveLoan/$1');
+    $routes->get('loans/reject/(:num)', 'Loans::rejectLoan/$1');
     $routes->get('loans/approved', 'Loans::approved');
     $routes->get('loans/my_loans', 'Loans::myLoans');
     $routes->post('loans/submit', 'Loans::submit');
+    $routes->post('loans/type/create', 'Loans::createLoanType');
     $routes->get('loans/details', 'Loans::details');
+    $routes->get('loans/settings', 'Loans::loanSettings');
     $routes->get('loans/print-pdf/(:num)', 'Loans::printLoanPDF/$1');
     $routes->get('loan/pdf', 'Loans::generatePdf');
     $routes->post('loginMember/changePass', [LoginMember::class, 'changePass']);

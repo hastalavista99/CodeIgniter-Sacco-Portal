@@ -46,6 +46,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Username</th>
+                                    <th>Member No.</th>
                                     <th>Mobile</th>
                                     <th>Role</th>
                                     <th>Actions</th>
@@ -56,6 +57,7 @@
                                     <tr>
                                         <td><?= esc($user['id']) ?></td>
                                         <td><?= esc($user['name']) ?></td>
+                                        <td><?= esc($user['member_no']) ?></td>
 
                                         <!-- <div class="main"> -->
                                         <td><?= esc($user['mobile']) ?></td>

@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Libraries\Hash;
 use App\Models\AgentModel;
+use App\Models\MembersModel;
 use App\Models\OTPModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
@@ -173,9 +174,11 @@ class Auth extends BaseController
         $name = $this->request->getPost('name');
         $email = $this->request->getPost('email');
         $mobile = $this->request->getPost('mobile');
+        $member_no = $this->request->getPost('memberNumber');
         $role = $this->request->getPost('role');
         $data = [
             'name' => $name,
+            'member_no' => $member_no,
             'mobile' => $mobile,
             'email' => $email,
             'role' => $role
@@ -265,6 +268,7 @@ class Auth extends BaseController
         }
         $id = $this->request->getGet('user');
         $name = $this->request->getPost('name');
+        $member_no = $this->request->getPost('membership');
         $username = $this->request->getPost('username');
         $pass = $this->request->getPost('password');
 
@@ -278,9 +282,11 @@ class Auth extends BaseController
 
         $insertData = [
             'user' => $name,
+            'member_no' => $member_no,
             'name' => $username,
             'password' => Hash::encrypt($pass),
         ];
+
 
         $query = $authModel->update($id, $insertData);
         if (!$query) {
