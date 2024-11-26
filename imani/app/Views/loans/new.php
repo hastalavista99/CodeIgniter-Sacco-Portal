@@ -51,7 +51,7 @@ use CodeIgniter\HTTP\SiteURI;
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="memberNumber"
-                                            placeholder="Membership No." required>
+                                            placeholder="Membership No." value="<?= $userInfo['member_no'] ?>" required>
                                         <label for="memberNumber">Membership No.</label>
                                     </div>
                                 </div>
@@ -171,10 +171,16 @@ use CodeIgniter\HTTP\SiteURI;
                                             <?php
                                             foreach ($types as $type) :
                                             ?>
-                                                <option value="<?= $type['type'] ?>"><?= $type['type'] ?></option>
+                                                <option value="<?=$type['type']?>"><?= $type['type'] ?> - <?= $type['rate']?>%</option>
                                             <?php endforeach ?>
                                         </select>
                                         <label for="loanType">Loan Type</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="loanFormula" value="">
+                                        <label for="loanFormula">Interest Formula</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -251,6 +257,34 @@ use CodeIgniter\HTTP\SiteURI;
                             type="button" name="previous" class="previous action-button-previous my-2" value="Previous" />
 
                         <script>
+                            document.getElementById('loanType').addEventListener('change', function() {
+                                const loanType = this.value;
+
+                                if (loanType) {
+                                    fetch('<?= base_url('loans/getFormula') ?>', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': '<?= csrf_hash()?>'
+                                            },
+                                            body: JSON.stringify({
+                                                loanType: loanType
+                                            }),
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                document.getElementById('loanFormula').value = data.formula;
+                                            } else {
+                                                document.getElementById('loanFormula').value = 'Formula not found';
+                                            }
+                                        })
+                                        .catch(error => console.error('Error:', error));
+                                } else {
+                                    document.getElementById('loanFormula').value = '';
+                                }
+                            });
+
                             function validateRequiredFieldsStep2() {
                                 // Select all required fields in the first fieldset
                                 let requiredFields = document.querySelectorAll('#loanAmount, #repaymentPeriod, #paymentMode, #bankName, #bankBranch, #accountName, #accountNumber');
@@ -468,6 +502,7 @@ use CodeIgniter\HTTP\SiteURI;
             const poboxCode = document.getElementById('poboxCode').value;
             const poboxCity = document.getElementById('poboxCity').value;
             const loanType = document.getElementById('loanType').value;
+            const loanFormula = document.getElementById('loanFormula').value;
             const loanAmount = document.getElementById('loanAmount').value;
             const repaymentPeriod = document.getElementById('repaymentPeriod').value;
             const paymentMode = document.getElementById('paymentMode').value;
@@ -476,6 +511,12 @@ use CodeIgniter\HTTP\SiteURI;
             const accountName = document.getElementById('accountName').value;
             const accountNumber = document.getElementById('accountNumber').value;
             const paymentType = document.getElementById('paymentType').value;
+
+            // calculate interest ** DRAFT ONLY
+            const interest = loanAmount * 0.1;
+
+            // calculate total amount
+            const totalLoan = parseFloat(loanAmount) + parseFloat(interest);
 
             // Create a list element
             const ul = document.createElement('ul');
@@ -526,8 +567,20 @@ use CodeIgniter\HTTP\SiteURI;
                     value: loanType
                 },
                 {
-                    label: 'Loan Amount',
+                    label: 'Loan Formula',
+                    value: loanFormula
+                },
+                {
+                    label: 'Loan Principal(Kshs)',
                     value: loanAmount
+                },
+                {
+                    label: 'Loan Interest(Kshs)',
+                    value: interest
+                },
+                {
+                    label: 'Loan Total(Kshs)',
+                    value: totalLoan
                 },
                 {
                     label: 'Repayment Period',
@@ -618,6 +671,7 @@ use CodeIgniter\HTTP\SiteURI;
                 poboxCode: document.getElementById('poboxCode').value,
                 poboxCity: document.getElementById('poboxCity').value,
                 loanType: document.getElementById('loanType').value,
+                loanFormula: document.getElementById('loanFormula').value,
                 loanAmount: document.getElementById('loanAmount').value,
                 repaymentPeriod: document.getElementById('repaymentPeriod').value,
                 paymentMode: document.getElementById('paymentMode').value,
@@ -653,7 +707,8 @@ use CodeIgniter\HTTP\SiteURI;
             fetch('<?= site_url('loans/submit') ?>', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '<?= csrf_hash()?>'
                     },
                     body: JSON.stringify(formData)
                 })
@@ -663,6 +718,7 @@ use CodeIgniter\HTTP\SiteURI;
                         alert('Data submitted successfully');
                     } else {
                         alert('Error submitting data. Contact your Sacco for assisstance.');
+                        window.location.reload();
                     }
                 })
                 .catch(error => {

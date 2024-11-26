@@ -376,6 +376,18 @@
       pagingType: 'simple',
       pageLength: 60
     });
+    new DataTable('#loansTable', {
+      layout: {
+        topStart: {
+          buttons: ['excelHtml5', 'pdfHtml5', 'print', 'colvis']
+        }
+      },
+      order: [
+        [0, 'desc']
+      ],
+      pagingType: 'simple',
+      pageLength: 60
+    });
   </script>
 
   <script src="<?= base_url('assets/js/main.js') ?>"></script>

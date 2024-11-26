@@ -59,6 +59,10 @@
                             <div class="col-lg-3 col-md-4 label fw-bold">P.O. Box:</div>
                             <div class="col-lg-9 col-md-8"><?= $loan['po_box'] . "-" . $loan['po_code'] . ", " . $loan['po_city'] ?></div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label fw-bold">Application Date:</div>
+                            <div class="col-lg-9 col-md-8"><?= $loan['apply_date'] ?></div>
+                        </div>
                     </div>
                 </section>
                 <section class="my-3 py2">
@@ -70,8 +74,16 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">Loan Amount:</div>
+                            <div class="col-lg-3 col-md-4 label fw-bold">Loan Principal:</div>
                             <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['amount'], 0, 2) ?></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label fw-bold">Loan Interest:</div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['interest'], 0, 2) ?></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label fw-bold">Total Loan:</div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total'], 0, 2) ?></div>
                         </div>
 
                         <div class="row">

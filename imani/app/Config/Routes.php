@@ -41,6 +41,7 @@ $routes->post('renew/password', 'Auth::resetPassword');
 
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
+    $routes->post('dashboard/updateMemberNo', 'Dashboard::updateMemberNo');
     $routes->post('excel/upload', 'Excel::upload');
     $routes->get('balances/upload', 'Excel::uploadPage');
     $routes->get('balances/upload/check', 'Excel::checkBalances');
@@ -69,6 +70,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('loans/type/create', 'Loans::createLoanType');
     $routes->get('loans/details', 'Loans::details');
     $routes->get('loans/settings', 'Loans::loanSettings');
+    $routes->post('loans/getFormula', 'Loans::getFormula');
     $routes->get('loans/print-pdf/(:num)', 'Loans::printLoanPDF/$1');
     $routes->get('loan/pdf', 'Loans::generatePdf');
     $routes->post('loginMember/changePass', [LoginMember::class, 'changePass']);
@@ -90,8 +92,6 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
 });
 
 $routes->post('auth/uploadImage', [Auth::class, 'uploadImage']);
-
-$routes->get('dashboard', [Dashboard::class, 'index']);
 
 
 $routes->get('logout', [Auth::class, 'logout']);

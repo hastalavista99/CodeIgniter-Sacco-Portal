@@ -15,6 +15,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Loans extends BaseController
 {
+    // apply form page
     public function index()
     {
         helper(['form, url']);
@@ -34,13 +35,37 @@ class Loans extends BaseController
         return view('loans/new', $data);
     }
 
+    // get loan formula from the database
+    public function getFormula()
+    {
+        $request = $this->request->getJSON();
+        $loanType = $request->loanType;
 
+        $loanModel = new \App\Models\LoanTypeModel();
+
+        // Join loan_types with the formula table to fetch the formula
+        $formulaData = $loanModel
+            ->select('loan_formula.formula')
+            ->join('loan_formula', 'loan_type.formula_id = loan_formula.id')
+            ->where('loan_type.type', $loanType)
+            ->first();
+
+        
+        if ($formulaData) {
+            return $this->response->setJSON(['success' => true, 'formula' => $formulaData['formula']]);
+        } else {
+            return $this->response->setJSON(['success' => false]);
+        }
+    }
+
+    // submission and procession of loan application data
     public function submit()
     {
-        helper(['form']);
+        helper(['form', 'url']);
         $json = $this->request->getJSON(true);
 
         // Load models
+        $typeModel = new LoanTypeModel();
         $loanModel = new LoansModel();
         $guarantorsModel = new GuarantorsModel();
 
@@ -57,6 +82,7 @@ class Loans extends BaseController
         $poboxCode = $json['poboxCode'];
         $poboxCity = $json['poboxCity'];
         $loanType = $json['loanType'];
+        $loanFormula = $json['loanFormula'];
         $loanAmount = $json['loanAmount'];
         $repaymentPeriod = $json['repaymentPeriod'];
         $paymentMode = $json['paymentMode'];
@@ -66,6 +92,13 @@ class Loans extends BaseController
         $accountNumber = $json['accountNumber'];
         $paymentType = $json['paymentType'];
         $guarantors = $json['guarantors']; // Array of guarantors
+
+
+        // calculate total and interest
+        $getInterest = $typeModel->where('type', $loanType)->first();
+        $interest = floatval($getInterest['rate'])/100;
+        $loanInterest = floatval($json['loanAmount']) * $interest;
+        $loanTotal = bcadd(strval($loanAmount), strval($loanInterest), 2);
 
         $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $loanReference = substr(str_shuffle($alpha_numeric), 0, 6);
@@ -86,6 +119,8 @@ class Loans extends BaseController
             'po_city' => $poboxCity,
             'loan_type' => $loanType,
             'amount' => $loanAmount,
+            'interest' => $loanInterest,
+            'total' => $loanTotal,
             'repay_period' => $repaymentPeriod,
             'payment_mode' => $paymentMode,
             'bank' => $bankName,
@@ -140,6 +175,7 @@ class Loans extends BaseController
         return $this->response->setJSON(['success' => true]);
     }
 
+    // apply loan page method
     public function new()
     {
         $loanModel = new LoansModel();
@@ -159,12 +195,13 @@ class Loans extends BaseController
             'userInfo' => $userInfo,
             'loans' => $loans,
             'title' => 'Loan Applications',
-            
+
         ];
 
         return view('loans/index', $data);
     }
 
+    // retrive loan details
     public function details()
     {
         helper(['form', 'url']);
@@ -187,6 +224,7 @@ class Loans extends BaseController
         return view('loans/loan_details', $data);
     }
 
+    // this one worked, on localhost though, anyway its printing loan details to PDF
     public function printLoanPDF($loanId)
     {
         // Load models to fetch loan data
@@ -271,6 +309,7 @@ class Loans extends BaseController
         return $pdf->Output('loan_application.pdf', 'I'); // 'I' for inline, 'D' for download
     }
 
+    // Loan approval
     public function approveLoan($id)
     {
         $loanModel = new LoansModel();
@@ -291,6 +330,8 @@ class Loans extends BaseController
         }
     }
 
+
+    // Loan rejection
     public function rejectLoan($id)
     {
         $loanModel = new LoansModel();
@@ -311,6 +352,8 @@ class Loans extends BaseController
         }
     }
 
+
+    // Page for approved loans
     public function approved()
     {
         $loanModel = new LoansModel();
@@ -358,6 +401,8 @@ class Loans extends BaseController
             return redirect()->to('loans/settings')->with('fail', 'Something went wrong. Please try again later');
         }
     }
+
+
     public function loanSettings()
     {
         helper(['form', 'url']);
@@ -385,7 +430,7 @@ class Loans extends BaseController
     }
 
 
-
+    // view individual loans
     public function myLoans()
     {
         $loanModel = new LoansModel();

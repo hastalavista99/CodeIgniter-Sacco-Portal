@@ -95,6 +95,22 @@
         <div class="collapse" id="loans">
           <ul>
             <li class="nav-item">
+              <a href="<?= site_url('loans/apply') ?>" class="nav-link collapsed">
+                <i class="bi bi-pencil-square"></i>
+                <span>
+                  Apply Loan
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('loans/my_loans?user' . $userInfo['id']) ?>" class="nav-link collapsed">
+                <i class="bi bi-person-workspace"></i>
+                <span>
+                  My Loans
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="<?= site_url('loans/new') ?>" class="nav-link collapsed">
                 <i class="bi bi-card-checklist"></i>
                 <span>
@@ -110,14 +126,7 @@
                 </span>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="<?= site_url('loans/apply') ?>" class="nav-link collapsed">
-                <i class="bi bi-pencil-square"></i>
-                <span>
-                  Apply Loan
-                </span>
-              </a>
-            </li>
+            
             <li class="nav-item">
               <a href="<?= site_url('loans/settings') ?>" class="nav-link collapsed">
                 <i class="bi bi-gear"></i>
@@ -126,14 +135,7 @@
                 </span>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="<?= site_url('loans/my_loans?user' . $userInfo['id']) ?>" class="nav-link collapsed">
-                <i class="bi bi-person-workspace"></i>
-                <span>
-                  My Loans
-                </span>
-              </a>
-            </li>
+            
 
           </ul>
         </div>

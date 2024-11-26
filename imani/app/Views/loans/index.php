@@ -43,7 +43,7 @@
 
                 <?php if (!empty($loans) && is_array($loans)) : ?>
                     <div class="table-responsive-md my-3">
-                        <table class="table table-hover" id="paymentsTable">
+                        <table class="table table-hover" id="loansTable">
                             <thead>
                                 <tr>
                                     <th>#</th>

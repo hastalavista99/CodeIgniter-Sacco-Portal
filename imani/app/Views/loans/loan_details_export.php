@@ -126,6 +126,10 @@
             <td><strong>P.O. Box:</strong></td>
             <td><?= esc($loan['po_box'] . '-' . $loan['po_code'] . ', ' . $loan['po_city']) ?></td>
         </tr>
+        <tr>
+            <td><strong>Application Date:</strong></td>
+            <td><?= esc($loan['apply_date'])?></td>
+        </tr>
     </table>
 
     <!-- Loan and Disbursement Details Section (Table) -->
@@ -135,6 +139,8 @@
                 <h3>Loan Details:</h3>
                 <p><strong>Loan Type:</strong> <?= esc($loan['loan_type']) ?></p>
                 <p><strong>Loan Amount:</strong> Ksh <?= number_format($loan['amount'], 2) ?></p>
+                <p><strong>Loan Interest:</strong> Ksh <?= number_format($loan['interest'], 2) ?></p>
+                <p><strong>Total Loan:</strong> Ksh <?= number_format($loan['total'], 2) ?></p>
                 <p><strong>Repayment Period:</strong> <?= esc($loan['repay_period']) ?> months</p>
                 <p><strong>Repayment Mode:</strong> <?= esc($loan['payment_mode']) ?></p>
             </td>

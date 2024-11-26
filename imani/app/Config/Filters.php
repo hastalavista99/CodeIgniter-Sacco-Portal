@@ -102,6 +102,7 @@ class Filters extends BaseFilters
      */
     public array $methods = [
         'POST' => ['csrf'],
+        'json' => ['csrf']
     ];
 
     /**

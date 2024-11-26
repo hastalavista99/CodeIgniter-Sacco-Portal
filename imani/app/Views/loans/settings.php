@@ -31,8 +31,6 @@
             </div>
             <div class="card-body px-0 pb-2">
 
-
-
                 <?php if (!empty($types) && is_array($types)) : 
                     // print_r ($types);?>
                     <div class="table-responsive-md my-3">
@@ -43,7 +41,6 @@
                                     <th>Loan Type</th>
                                     <th>Interest Rate(%)</th>
                                     <th>Formula</th>
-
                                 </tr>
                             </thead>
                             <tbody>
