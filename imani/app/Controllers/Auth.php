@@ -350,6 +350,44 @@ class Auth extends BaseController
         }
     }
 
+    public function resendOTP(){
+        helper(['form', 'url']);
+
+        $userId = session()->get('userId');
+        $userModel = new UserModel();
+        $otpModel = new OTPModel();
+
+
+        $user = $userModel->find($userId);
+        $username = $user['name'];
+        $mobile = $user['mobile'];
+
+        // remove earlier otp
+        $checkUser = $otpModel->where('username', $username)->first();
+        if ($checkUser){
+            $remove = $otpModel->where('username', $username)->delete();
+        }
+        
+        $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $otp = substr(str_shuffle($alpha_numeric), 0, 6);
+        $expires = date("U") + 300;
+        $data = [
+            'username' => $username,
+            'otp' => Hash::encrypt($otp),
+            'expiry' => $expires
+        ];
+
+        $otpQuery = $otpModel->save($data);
+            if ($otpQuery) {
+                $sms = "Use " . $otp . " as your OTP for Password Reset. It will be active for the next 5 minutes";
+                $smsSend = new SendSMS();
+                $smsSend->sendSMS($mobile, $sms);
+            }
+            session()->setFlashdata('success', 'OTP resent to mobile number');
+            return redirect()->to('confirm/otp')->withInput();
+
+    }
+
     public function confirmOTP()
     {
         helper(['form', 'url']);
