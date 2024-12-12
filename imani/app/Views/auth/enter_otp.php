@@ -183,6 +183,7 @@
                                         </div>
                                     </form>
                                 </div>
+                                <h6 class="text-center fw-bold"><a href="<?= site_url('check/otp/resend?user='.$userId)?>">Resend</a></h6>
                             </div>
 
                             <div class="credits">

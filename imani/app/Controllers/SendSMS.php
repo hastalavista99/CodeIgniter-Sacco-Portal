@@ -34,7 +34,7 @@ class SendSMS extends BaseController
                 $curlError = curl_error($ch);
                 log_message('error', 'SMS sending failed: ' . $curlError);
                 curl_close($ch);
-                return redirect()->back()->with('fail', 'Successful but SMS failed to send. Error: ' . $curlError);
+                return redirect()->back()->with('fail', 'Successful but SMS failed to send. Please try again later');
             }
 
             // Close cURL session
@@ -48,7 +48,7 @@ class SendSMS extends BaseController
                 return redirect()->back()->with('success', 'Saved and SMS sent successfully.');
             } else {
                 log_message('error', 'SMS sending failed: ' . $response);
-                return redirect()->back()->with('fail', 'Saved but SMS failed to send. Response: ' . json_encode($responseData));
+                return redirect()->back()->with('fail', 'Saved but SMS failed to send');
             }
         } else {
             return redirect()->back()->with('fail', 'Mobile number or message is empty.');
