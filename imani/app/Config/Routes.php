@@ -36,8 +36,11 @@ $routes->get('confirm/user', [Auth::class, 'confirmUser']);
 $routes->post('check/user', 'Auth::checkUser');
 $routes->get('confirm/otp', "Auth::confirmOTP");
 $routes->post('check/otp', 'Auth::checkOTP');
+$routes->get('check/otp/resend', 'Auth::resendOTP');
 $routes->get('password/forgot', 'Auth::changeAuth');
 $routes->post('renew/password', 'Auth::resetPassword');
+$routes->post('malipo/account', 'Integrations::account');
+$routes->post('malipo/advise', 'Integrations::advise');
 
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
