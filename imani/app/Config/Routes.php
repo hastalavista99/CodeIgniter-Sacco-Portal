@@ -50,6 +50,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('balances/upload/check', 'Excel::checkBalances');
     $routes->get('/members', [Members::class, 'index']);
     $routes->get('/payments', [Payments::class, 'index']);
+    $routes->get('/payments/ac_bank', 'Payments::bankPayments');
     $routes->get('payments/shares', [Payments::class, 'shares']);
     $routes->get('payments/deposits', [Payments::class, 'deposits']);
     $routes->get('payments/repayments', [Payments::class, 'repayments']);

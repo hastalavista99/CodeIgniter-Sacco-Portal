@@ -124,6 +124,10 @@ class Auth extends BaseController
             $userModel = new UserModel();
             $user = $userModel->where('name', $name)->first();
 
+            if (!$user) {
+                $user = $userModel->where('member_no', $name)->first();
+            }
+
             if ($user) {
                 $checkPassword = Hash::check($password, $user['password']);
                 if (! $checkPassword) {
@@ -282,8 +286,8 @@ class Auth extends BaseController
 
         $insertData = [
             'user' => $name,
-            'member_no' => $member_no,
             'name' => $username,
+            'member_no' => $member_no,
             'password' => Hash::encrypt($pass),
         ];
 
@@ -292,7 +296,7 @@ class Auth extends BaseController
         if (!$query) {
             return redirect()->to('set/user')->withInput()->with('fail', 'Something went wrong, try again later');
         }
-        return redirect()->to('set/sucess');
+        return redirect()->to('set/success');
     }
 
     public function setSuccess()

@@ -161,7 +161,7 @@
                   
                     <div class="form-floating mb-1 col-12">
                       <input type="text" name="name" id="floatingInput" class="form-control " placeholder="Username Here" required>
-                      <label for="floatingInput">Username</label>
+                      <label for="floatingInput">Username or Membership No.</label>
                       <div class="invalid-feedback">
                         Please provide your username.
                       </div>

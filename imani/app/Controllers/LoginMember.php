@@ -53,7 +53,6 @@ class LoginMember extends BaseController
     public function changePass()
     {
         helper(['form', 'url']);
-        $model = new MemberLogin();
         // Validation rules
         $rules = [
             'password' => 'required',
@@ -81,8 +80,9 @@ class LoginMember extends BaseController
             return redirect()->back()->with('fail', 'User not found.');
         }
 
+        $checkPassword = Hash::check($currentPass, $user['password']);
         // Verify current password
-        if (!Hash::check($currentPass, $user['password'])) {
+        if (!$checkPassword) {
             return redirect()->to('/profile')->with('fail', 'Incorrect current password.');
         }
 
@@ -93,8 +93,10 @@ class LoginMember extends BaseController
 
         // Update password
         if ($userModel->update($id, $data)) {
+            log_message('success', 'Password change success. User:'.$user['name']. ' UserID:'.$id);
             return redirect()->to('/profile')->with('success', 'Password updated successfully.');
         } else {
+            log_message('error', 'Failed to update password. User:'.$user['name']. ' UserID:'.$id);
             return redirect()->back()->withInput()->with('fail', 'Failed to update password.');
         }
     }
@@ -134,7 +136,4 @@ class LoginMember extends BaseController
         return redirect()->back()->with('success', 'Saved User');
     }
 
-    public function sms()
-    {
-    }
 }

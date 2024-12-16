@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\PaymentsModel;
 use App\Models\UserModel;
 use App\Controllers\BaseController;
+use App\Models\BankModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -58,7 +59,12 @@ class Payments extends BaseController
         }
 
         // Calculate total amount
-        $total = array_sum(array_column($payments, 'TransAmount'));
+        if($payments) {
+            $total = array_sum(array_column($payments, 'TransAmount'));
+        } else {
+            $total = 0;
+        }
+        
 
         return view('payments/index', [
             'payments' => $payments,
@@ -93,12 +99,20 @@ class Payments extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
         $phone = $userInfo['mobile'];
+        $memberNumber = $userInfo['member_no'];
 
-        $payments = $model->where('SUBSTRING(BillRefNumber, -10) =', $phone)->findAll();
-        $totalAmount = $model->selectSum('TransAmount')->where('SUBSTRING(BillRefNumber, -10) =', $phone)->first()['TransAmount'];
+        $payments = $model
+        ->select('*')
+        ->where("(SUBSTRING(BillRefNumber, -10) = '$phone' OR SUBSTRING(BillRefNumber, 1, 6) = '$memberNumber')")
+        ->findAll();
+        $totalAmount = $model->selectSum('TransAmount')->where("(SUBSTRING(BillRefNumber, -10) = '$phone' OR SUBSTRING(BillRefNumber, 1, 6) = '$memberNumber')")->first()['TransAmount'];
 
-        $total = number_to_currency($totalAmount, 'KES', 'en_US', 2);
-
+        if ($totalAmount) {
+            $total = number_to_currency($totalAmount, 'KES', 'en_US', 2);
+        } else {
+            $total = 0;
+        }
+        
         $data = [
             'payments' => $payments,
             'total' => $total,
@@ -355,4 +369,74 @@ class Payments extends BaseController
 
         return view('payments/individual', $data);
     }
+
+    public function bankPayments()
+    {
+        helper('number');
+
+        $bankModel = new BankModel();
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $totalAmount = $bankModel->selectSum('paymentAmount')->first()['paymentAmount'];
+        if($totalAmount) {
+            $total = number_to_currency($totalAmount, 'KES', 'en_US', 2);
+        } else {
+            $total = 0;
+        }
+
+        
+
+        $data = [
+            'payments'  => $bankModel->findAll(),
+            'title' => 'Bank Payments',
+            'userInfo' => $userInfo,
+            'total' => $total,
+            'selectedMonth' => NULL,
+            'selectedYear' => NULL
+        ];
+
+        return view('payments/bank', $data);
+    }
+
+    public function bankFilter()
+    {
+
+        $paymentModel = new BankModel();
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        // Get the start and end dates from the request
+        $startDate = $this->request->getGet('startDate');
+        $endDate = $this->request->getGet('endDate');
+
+        // Fetch payments based on the selected date range
+        $payments = [];
+        if ($startDate && $endDate) {
+            $payments = $paymentModel
+                ->where('mp_date >=', $startDate)
+                ->where('mp_date <=', $endDate)
+                ->findAll();
+        }
+
+        // Calculate total amount
+        if($payments) {
+            $total = array_sum(array_column($payments, 'TransAmount'));
+        } else {
+            $total = 0;
+        }
+        
+
+        return view('payments/bank', [
+            'payments' => $payments,
+            'userInfo' => $userInfo,
+            'title' => 'Payments',
+            'total' => $total,
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ]);
+    }
+
 }

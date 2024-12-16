@@ -43,7 +43,15 @@
               <a href="<?= site_url('/payments') ?>" class="nav-link collapsed">
                 <i class="bi bi-phone"></i>
                 <span>
-                  All Payments
+                  PayBill
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('/payments/ac_bank') ?>" class="nav-link collapsed">
+                <i class="bi bi-bank"></i>
+                <span>
+                  CO-OP
                 </span>
               </a>
             </li>
@@ -135,8 +143,6 @@
                 </span>
               </a>
             </li>
-            
-
           </ul>
         </div>
       </li>
