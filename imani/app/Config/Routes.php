@@ -17,6 +17,10 @@ use App\Controllers\Commissions;
 use App\Controllers\SendSMS;
 use App\Models\MemberLogin;
 
+if (file_exists(APPPATH . 'Modules/Accounting/Config/Routes.php')) {
+    require APPPATH . 'Modules/Accounting/Config/Routes.php';
+}
+
 $routes->get('/', 'Home::index');
 
 $routes->get('auth', [Auth::class, 'index']);

@@ -21,6 +21,7 @@ use CodeIgniter\HTTP\SiteURI;
                     <div class="row">
                         <ul id="progressbar" class="col-sm-12">
                             <li class="active" id="account">Member Info</li>
+                            <li id="employment">Employment Details</li>
                             <li id="personal">Loan Details</li>
                             <li id="payment">Guarantor Details</li>
                             <li id="confirmation">Confirm</li>
@@ -150,6 +151,131 @@ use CodeIgniter\HTTP\SiteURI;
                             });
                             // Initial validation check (in case some fields are pre-filled)
                             toggleNextButton();
+                        </script>
+
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row mb-2">
+                                <div class="col-7 heading-text font-weight-bolder">
+                                    <h5>Member Information:</h5>
+                                </div>
+                                <div class="col-5" style="text-align: right;">
+                                    <h5>Step 1 - 5</h5>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="name" placeholder="Your Name"
+                                            value="<?= $userInfo['user'] ?>" required>
+                                        <label for="name">Your Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="memberNumber"
+                                            placeholder="Membership No." value="<?= $userInfo['member_no'] ?>" required>
+                                        <label for="memberNumber">Membership No.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="memberMobile"
+                                            placeholder="Mobile Number" value="<?= $userInfo['mobile'] ?>" required>
+                                        <label for="memberMobile">Mobile Number</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control" id="memberEmail"
+                                            placeholder="Your Email" value="<?= $userInfo['email'] ?>">
+                                        <label for="memberEmail">Email Address</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="memberID" placeholder="Id No."
+                                            required>
+                                        <label for="memberID">ID No.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="employer"
+                                            placeholder="Your Employer">
+                                        <label for="employer">Employer</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="station" placeholder="Station">
+                                        <label for="station">Station</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="pobox" placeholder="P.O. Box">
+                                        <label for="pobox">P.O. Box</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="poboxCode" placeholder="Code">
+                                        <label for="poboxCode">Code</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="poboxCity" placeholder="Town/City">
+                                        <label for="poboxCity">Town/City</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" name="next" class="action-button next my-3 me-2" id="nextStep0"
+                            disabled>Next</button> <input
+                            type="button" name="previous" class="previous action-button-previous my-2" value="Previous" />
+
+                        <script>
+                            // // Function to check if all required fields are filled
+                            // function validateRequiredFieldsStep1() {
+                            //     // Select all required fields in the first fieldset
+                            //     let requiredFields = document.querySelectorAll('#name, #memberNumber, #memberMobile, #memberID');
+                            //     let allValid = true;
+
+                            //     requiredFields.forEach(function(field) {
+                            //         // Check if the field is empty
+                            //         if (!field.value) {
+                            //             field.classList.add('is-invalid'); // Optional: Add Bootstrap's invalid class for better visuals
+                            //             allValid = false;
+                            //         } else {
+                            //             field.classList.remove('is-invalid');
+                            //         }
+                            //     });
+
+                            //     return allValid;
+                            // }
+
+                            // // Function to enable/disable the Next button based on field validation
+                            // function toggleNextButton() {
+                            //     const isFormValid = validateRequiredFieldsStep1();
+                            //     const nextButton = document.getElementById('nextStep0');
+
+                            //     if (isFormValid) {
+                            //         nextButton.disabled = false; // Enable the Next button if form is valid
+                            //     } else {
+                            //         nextButton.disabled = true; // Disable the Next button if form is invalid
+                            //     }
+                            // }
+
+                            // // Add event listeners to each required field to check validation on input change
+                            // document.querySelectorAll('#name, #memberNumber, #memberMobile, #memberID').forEach(function(field) {
+                            //     field.addEventListener('input', toggleNextButton);
+                            // });
+                            // // Initial validation check (in case some fields are pre-filled)
+                            // toggleNextButton();
                         </script>
 
                     </fieldset>

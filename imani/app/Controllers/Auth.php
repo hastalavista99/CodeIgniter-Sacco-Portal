@@ -75,8 +75,7 @@ class Auth extends BaseController
             'email' => $email,
             'password' => Hash::encrypt($password)
         ];
-
-
+        
         // storing data
         $userModel = new \App\Models\UserModel();
         $query = $userModel->save($data);

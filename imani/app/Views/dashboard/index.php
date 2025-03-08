@@ -1,7 +1,6 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Dashboard <?= $this->endSection() ?>
-
-
+    
 <div class="row">
     <?= $this->section('content') ?>
     <?= $this->include('partials/sidebar') ?>
