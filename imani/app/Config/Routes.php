@@ -102,9 +102,15 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('journals/create', 'Accounting\JournalController::createPage');
         $routes->post('journal-entry', 'Accounting\JournalController::store');
         $routes->get('journal-entry/post/(:num)', 'Accounting\JournalController::post/$1');
+        $routes->get('accounts', 'Accounting\AccountsController::index');
+        $routes->get('accounts/create', 'Accounting\AccountsController::create');
+        $routes->post('accounts/store', 'Accounting\AccountsController::store');
+        $routes->get('accounts/edit/(:num)', 'Accounting\AccountsController::edit/$1');
+        $routes->post('accounts/update/(:num)', 'Accounting\AccountsController::update/$1');
+        $routes->get('accounts/page', 'Accounting\AccountsController::index');
+
 
     });
-    
 });
 
 $routes->post('auth/uploadImage', [Auth::class, 'uploadImage']);
