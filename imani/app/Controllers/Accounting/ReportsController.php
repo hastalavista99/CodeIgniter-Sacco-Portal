@@ -1,8 +1,8 @@
 <?php
-namespace Modules\Accounting\Controllers;
+namespace App\Controllers\Accounting;
 
 use App\Controllers\BaseController;
-use Modules\Accounting\Models\JournalEntryModel;
+use App\Models\Accounting\JournalEntryModel;
 
 class ReportsController extends BaseController
 {

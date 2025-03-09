@@ -17,9 +17,6 @@ use App\Controllers\Commissions;
 use App\Controllers\SendSMS;
 use App\Models\MemberLogin;
 
-if (file_exists(APPPATH . 'Modules/Accounting/Config/Routes.php')) {
-    require APPPATH . 'Modules/Accounting/Config/Routes.php';
-}
 
 $routes->get('/', 'Home::index');
 
@@ -97,6 +94,17 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/deleteMember', [Members::class, 'deleteMember']);
     $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
+    $routes->group('accounting', function ($routes) {
+        $routes->get('trial-balance', 'Accounting\ReportsController::trialBalance');
+        $routes->get('balance-sheet', 'Accounting\ReportsController::balanceSheet');
+        $routes->post('journal-entry', 'Accounting\JournalController::store');
+        $routes->get('journals/page', 'Accounting\JournalController::page');
+        $routes->get('journals/create', 'Accounting\JournalController::createPage');
+        $routes->post('journal-entry', 'Accounting\JournalController::store');
+        $routes->get('journal-entry/post/(:num)', 'Accounting\JournalController::post/$1');
+
+    });
+    
 });
 
 $routes->post('auth/uploadImage', [Auth::class, 'uploadImage']);

@@ -18,6 +18,13 @@
 
         </a>
       </li>
+      <li class="nav-item">
+        <a href="<?= site_url('accounting/journals/page')?>" class="nav-link collapsed">
+          <i class="bi bi-journal-arrow-down"></i>
+          <span>Journals</span>
+
+        </a>
+      </li>
       <!-- <li class="nav-item">
         <a href="/payments" class="nav-link collapsed">
           <i class="bi bi-cash-stack"></i>
