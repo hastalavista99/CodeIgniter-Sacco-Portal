@@ -22,6 +22,13 @@
         <?php
         }
         ?>
+        <?php if (session()->getFlashdata('errors')): ?>
+            <div style="color: red;">
+                <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                    <p><?= esc($error) ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
         <div class="card shadow border-none my-2 px-2">
 
             <div class="card-body px-0 pb-2">
@@ -54,7 +61,7 @@
                                 </tr>
                                 <tr class="p-3">
                                     <td class="px-2">
-                                        <select name="accounts[]" class="form-control" required>
+                                        <select name="accounts[]" class="form-select" required>
                                             <option value="">Select Account</option>
                                             <option value="Cash">Cash</option>
                                             <option value="Revenue">Revenue</option>
@@ -63,7 +70,7 @@
                                     </td>
                                     <td class="px-2"><input type="number" class="form-control" name="debit[]" step="0.01"></td>
                                     <td class="px-2"><input type="number" class="form-control" name="credit[]" step="0.01"></td>
-                                    <td ><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button></td>
                                 </tr>
                             </table>
 
@@ -73,7 +80,7 @@
                     </div>
 
                     <div class="d-flex justify-content-evenly">
-                        <a href="<?= site_url('accounting/journals/page')?>" class="btn btn-info"><i class="bi-arrow-left me-1"></i>Back to List</a>
+                        <a href="<?= site_url('accounting/journals/page') ?>" class="btn btn-info"><i class="bi-arrow-left me-1"></i>Back to List</a>
                         <button type="submit" class="btn btn-success"><i class="bi-journal-arrow-down me-1"></i>Save Journal Entry</button>
 
                     </div>
@@ -108,5 +115,5 @@
         </div>
 
     </div>
-</div>  
+</div>
 <?= $this->endSection() ?>

@@ -34,45 +34,35 @@
 
                 <div class="col-md-2 pt-3">
                     <div>
-
-                        <a href="/accounting/journals/create" class="btn btn-primary mb-3"><i class="bi-journal-plus me-1"></i>Add Journal Entry</a>
+                        <a href="/accounting/accounts/create" class="btn btn-primary mb-3"><i class="bi-journal-plus me-1"></i>Add Account</a>
                     </div>
                 </div>
 
             </div>
             <div class="card-body px-0 pb-2">
 
-                <?php if (!empty($entries) && is_array($entries)) : ?>
+                <?php if (!empty($accounts) && is_array($accounts)) : ?>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Transaction Date</th>
-                                    <th>Reference</th>
-                                    <th>Description</th>
-                                    <th>Created By</th>
-                                    <th>Status</th>
+                                    <th>Account Name</th>
+                                    <th>Account Code</th>
+                                    <th>Account Type</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($entries as $entry): ?>
+                                <?php foreach ($accounts as $account): ?>
                                     <tr>
-                                        <td><?= $entry['id'] ?></td>
-                                        <td><?= $entry['transaction_date'] ?></td>
-                                        <td><?= $entry['reference'] ?></td>
-                                        <td><?= $entry['description'] ?></td>
-                                        <td><?= $entry['created_by'] ?></td>
-                                        <td><?= $entry['posted'] ? 'Posted' : 'Unposted' ?></td>
+                                        <td><?= $account['id'] ?></td>
+                                        <td><?= $account['name'] ?></td>
+                                        <td><?= $account['code'] ?></td>
+                                        <td><?= $account['type'] ?></td>
                                         <td>
-                                            <?php if (!$journal['posted']): ?>
-                                                <a href="<?= site_url('accounting/journal-entry/post/' . $entry['id']) ?>">Post</a>
-                                            <?php else: ?>
-                                                <span>Finalized</span>
-                                            <?php endif; ?>
-                                            <a href="/accounting/journal/view/<?= $entry['id'] ?>" class="btn btn-info btn-sm">View</a>
-                                            <a href="/accounting/journal/delete/<?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                                            <a href="/accounting/accounts/edit/<?= $account['id'] ?>" class="btn btn-info btn-sm">Edit</a>
+                                            <a href="/accounting/accounts/delete/<?= $account['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -83,9 +73,9 @@
 
                 <?php else : ?>
 
-                    <h3>No Entries</h3>
+                    <h3>No Accounts</h3>
 
-                    <p>Unable to find any entries for you.</p>
+                    <p>Unable to find any accounts for you.</p>
 
                 <?php endif ?>
             </div>

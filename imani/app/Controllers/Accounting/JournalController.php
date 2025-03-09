@@ -3,6 +3,7 @@
 namespace App\Controllers\Accounting;
 
 use App\Controllers\BaseController;
+use App\Models\Accounting\AccountsModel;
 use App\Models\Accounting\JournalEntryModel;
 use App\Models\Accounting\JournalDetailsModel;
 
@@ -60,13 +61,15 @@ class JournalController extends BaseController
 
         $journalEntryModel = new JournalEntryModel();
         $journalDetailModel = new JournalDetailsModel();
+        $accountsModel =  new AccountsModel();
+        $user = session()->get('loggedInUser');
 
         // Insert into journal_entries table
         $entryData = [
             'date'             => $this->request->getPost('transaction_date'),
             'description'      => $this->request->getPost('description'),
             'reference'        => $this->request->getPost('reference'),
-            'created_by'       => 1, // Change this to the logged-in user ID
+            'created_by'       => $user, 
         ];
 
         $entryId = $journalEntryModel->insert($entryData);
@@ -83,12 +86,13 @@ class JournalController extends BaseController
             $debit  = !empty($debits[$index]) ? floatval($debits[$index]) : 0;
             $credit = !empty($credits[$index]) ? floatval($credits[$index]) : 0;
 
+            $acc = $accountsModel->select('id')->where('name', $account)->first();
             $totalDebit += $debit;
             $totalCredit += $credit;
 
             $journalDetailModel->insert([
                 'journal_entry_id' => $entryId,
-                'account_name'     => $account,
+                'account_id'       => $acc,
                 'debit'            => $debit,
                 'credit'           => $credit,
             ]);

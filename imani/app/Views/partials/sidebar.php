@@ -19,12 +19,13 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="<?= site_url('accounting/journals/page')?>" class="nav-link collapsed">
-          <i class="bi bi-journal-arrow-down"></i>
+        <a href="<?= site_url('accounting/journals/page') ?>" class="nav-link collapsed">
+          <i class="bi bi-journal"></i>
           <span>Journals</span>
 
         </a>
       </li>
+
       <!-- <li class="nav-item">
         <a href="/payments" class="nav-link collapsed">
           <i class="bi bi-cash-stack"></i>
@@ -141,7 +142,7 @@
                 </span>
               </a>
             </li>
-            
+
             <li class="nav-item">
               <a href="<?= site_url('loans/settings') ?>" class="nav-link collapsed">
                 <i class="bi bi-gear"></i>
@@ -204,16 +205,22 @@
         <div class="collapse" id="settings">
           <ul>
             <li class="nav-item">
-              <a href="<?= site_url('balances/upload')?>" class="nav-link collapsed">
+              <a href="<?= site_url('accounting/accounts/page') ?>" class="nav-link collapsed">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>Chart of Accounts</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('balances/upload') ?>" class="nav-link collapsed">
                 <i class="bi bi-sliders"></i>
                 <span>
                   Balances
                 </span>
               </a>
             </li>
-            
+
             <li class="nav-item">
-              <a href="<?=site_url('/users')?>" class="nav-link collapsed">
+              <a href="<?= site_url('/users') ?>" class="nav-link collapsed">
                 <i class="bi bi-person-check"></i>
                 <span>Users</span>
 
