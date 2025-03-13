@@ -37,9 +37,13 @@ class JournalController extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
+        $accountsModel = new AccountsModel;
+        $accounts = $accountsModel->findAll();
+
         $data = [
             'title' => 'Create New Entry',
-            'userInfo' => $userInfo
+            'userInfo' => $userInfo,
+            'accounts' => $accounts
         ];
         return view('accounting/journal_create', $data);
     }

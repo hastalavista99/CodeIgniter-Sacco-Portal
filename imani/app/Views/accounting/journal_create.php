@@ -63,9 +63,19 @@
                                     <td class="px-2">
                                         <select name="accounts[]" class="form-select" required>
                                             <option value="">Select Account</option>
-                                            <option value="Cash">Cash</option>
-                                            <option value="Revenue">Revenue</option>
-                                            <option value="Expense">Expense</option>
+                                            <?php
+                                            if (!empty($accounts)) {
+                                                foreach ($accounts as $account) {
+                                            ?>
+                                                    <option value="<?= $account['id'] ?>"><?= $account['name'] ?></option>
+                                                <?php
+                                                }
+                                            } else { ?>
+                                                <option value="">No Accounts Available</option>
+                                            <?php
+                                            }
+                                            ?>
+
                                         </select>
                                     </td>
                                     <td class="px-2"><input type="number" class="form-control" name="debit[]" step="0.01"></td>
@@ -93,11 +103,20 @@
                         let row = table.insertRow();
                         row.innerHTML = `
                 <td class="px-2">
-                    <select name="accounts[]" required class="form-control" >
+                    <select name="accounts[]" required class="form-select" >
                         <option value="">Select Account</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Revenue">Revenue</option>
-                        <option value="Expense">Expense</option>
+                        <?php
+                        if (!empty($accounts)) {
+                            foreach ($accounts as $account) {
+                        ?>
+                                                    <option value="<?= $account['id'] ?>"><?= $account['name'] ?></option>
+                                            <?php
+                                        }
+                                    } else { ?>
+                                                <option value="">No Accounts Available</option>
+                                                <?php
+                                            }
+                                                ?>
                     </select>
                 </td>
                 <td class="px-2"><input type="number" class="form-control" name="debit[]" step="0.01"></td>
