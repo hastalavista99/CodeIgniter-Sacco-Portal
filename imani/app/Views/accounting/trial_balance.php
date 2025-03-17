@@ -44,6 +44,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                
                                 <?php foreach ($trialBalance as $entry): ?>
                                     <tr>
                                         <td><?= esc($entry['account_name']) ?></td>
@@ -51,8 +52,20 @@
                                         <td><?= esc($entry['credit']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
+                                <tr>
+                                    <td><strong>Total</strong></td>
+                                    <td><strong><?= esc(number_format($totalDebit, 2)) ?></strong></td>
+                                    <td><strong><?= esc(number_format($totalCredit, 2)) ?></strong></td>
+                                </tr>
                             </tbody>
                         </table>
+                        <p><strong>Status:</strong>
+                            <?php if ($totalDebit === $totalCredit): ?>
+                                ✅ Balanced
+                            <?php else: ?>
+                                ❌ Not Balanced
+                            <?php endif; ?>
+                        </p>
 
                     </div>
 

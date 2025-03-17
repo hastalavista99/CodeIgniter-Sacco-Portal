@@ -15,6 +15,8 @@ class ReportsController extends BaseController
         $accounts = $accountModel->findAll();
 
         $trialBalance = [];
+        $totalDebit = 0;
+        $totalCredit = 0;
 
         foreach ($accounts as $account) {
             $debitSum = (new JournalDetailsModel())->where('account_id', $account['id'])->selectSum('debit')->get()->getRow()->debit ?? 0;
@@ -25,6 +27,8 @@ class ReportsController extends BaseController
                 'debit' => $debitSum,
                 'credit' => $creditSum
             ];
+            $totalDebit += $debitSum;
+            $totalCredit += $creditSum;
         }
 
         $userModel = new UserModel();
@@ -34,7 +38,9 @@ class ReportsController extends BaseController
         $data = [
             'title' => 'Trial Balance',
             'userInfo' => $userInfo,
-            'trialBalance' => $trialBalance
+            'trialBalance' => $trialBalance,
+            'totalDebit' => $totalDebit,
+            'totalCredit' => $totalCredit
         ];
 
         return view('accounting/trial_balance', $data);
