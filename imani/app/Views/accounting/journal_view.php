@@ -42,38 +42,29 @@
             </div>
             <div class="card-body px-0 pb-2">
 
-                <?php if (!empty($entries) && is_array($entries)) : ?>
+                <?php if (!empty($details) && is_array($details)) : ?>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Transaction Date</th>
-                                    <th>Reference</th>
-                                    <th>Description</th>
-                                    <th>Created By</th>
-                                    <th>Status</th>
+                                    <th>Account</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($entries as $entry): ?>
+                                <?php foreach ($details as $detail): ?>
                                     <tr>
-                                        <td><?= $entry['id'] ?></td>
+                                        <td><?= $detail['id'] ?></td>
                                         <td><?= $entry['date'] ?></td>
-                                        <td><?= $entry['reference'] ?></td>
-                                        <td><?= $entry['description'] ?></td>
-                                        <td><?= $entry['created_by'] ?></td>
-                                        <td><?= $entry['posted'] ? 'Posted' : 'Unposted' ?></td>
+                                        <td><?= $detail['account_name'] ?></td>
+                                        <td><?= $detail['debit'] ?></td>
+                                        <td><?= $detail['credit'] ?></td>
                                         <td>
-                                            <?php if (!$entry['posted']): ?>
-                                                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal">Post</button>
-                                                
-                                            <?php else: ?>
-                                                <span class="px-2">Finalized</span>
-                                            <?php endif; ?>
-                                            <a href="/accounting/journals/view/<?= $entry['id'] ?>" class="btn btn-info btn-sm">View</a>
-                                            <!-- <a href="/accounting/journal/delete/<?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a> -->
+                                        <?= $entry['reference'] ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -107,7 +98,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="<?= site_url('accounting/journal-entry/post/' . $entry['id']) ?>" class="btn btn-primary">Post</a>
+                <a href="" class="btn btn-primary">Post</a>
             </div>
         </div>
     </div>

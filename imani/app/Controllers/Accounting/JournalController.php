@@ -73,7 +73,7 @@ class JournalController extends BaseController
             'date'             => $this->request->getPost('transaction_date'),
             'description'      => $this->request->getPost('description'),
             'reference'        => $this->request->getPost('reference'),
-            'created_by'       => $user, 
+            'created_by'       => $user,
         ];
 
         $entryId = $journalEntryModel->insert($entryData);
@@ -129,27 +129,55 @@ class JournalController extends BaseController
         return redirect()->to('accounting/journals/page')->with('success', 'Journal Entry posted successfully.');
     }
 
-    public function view($id)
+    public function view($id=null)
     {
         helper('form');
 
-        $id = $this->request->getGet('id');
         $entryModel = new JournalEntryModel();
         $detailsModel = new JournalDetailsModel();
+        $accountModel = new AccountsModel();
         $entry = $entryModel->find($id);
-        $details = $detailsModel->where('journal_entry_id', $id)->findAll;
+
+        // $debug = "ID being queried: " . $id . "<br>";
+        // $debug .= "Entry found: " . (($entry) ? "Yes" : "No") . "<br>";
+
+        // First check if details exist without the join
+        $detailsModel = new JournalDetailsModel();
+        $simpleDetails = $detailsModel->where('journal_entry_id', $id)->findAll();
+
+        // $debug .= "Details found (simple query): " . count($simpleDetails) . "<br>";
+        // $debug .= "Last query: " . $detailsModel->getLastQuery() . "<br>";
+
+        // Now try with the join
+        $db = db_connect();
+        $builder = $db->table('journal_entry_details');
+        $builder->select('journal_entry_details.*, journal_entry_details.id as detail_id, accounts.id as account_id, accounts.name as account_name');
+        $builder->join('accounts', 'journal_entry_details.account_id = accounts.id', 'left');
+        $builder->where('journal_entry_details.journal_entry_id', $id);
+
+        // Get the SQL for debugging
+        // $debug .= "Join query: " . $builder->getCompiledSelect(false) . "<br>";
+
+        $query = $builder->get();
+        $details = $query->getResultArray();
+
+        // $debug .= "Details with accounts found: " . count($details) . "<br>";
+
+        // For testing purposes, log debug info
+        // log_message('debug', $debug);
 
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
-        
+
         $data = [
             'entry' => $entry,
             'details' => $details,
-            'title' => $entry['reference'],
-            'userInfo' => $userInfo
+            'title' => 'Journal - '.$entry['reference'],
+            'userInfo' => $userInfo,
+
         ];
-        
-        return view('journals/view', $data);
+
+        return view('accounting/journal_view', $data);
     }
 }

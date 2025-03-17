@@ -101,7 +101,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('journals/page', 'Accounting\JournalController::page');
         $routes->get('journals/create', 'Accounting\JournalController::createPage');
         $routes->get('journals/create', 'Accounting\JournalController::createPage');
-        $routes->get('journals/view', 'Accounting\JournalController::view');
+        $routes->get('journals/view/(:num)', 'Accounting\JournalController::view/$1');
         $routes->post('journal-entry', 'Accounting\JournalController::store');
         $routes->get('journal-entry/post/(:num)', 'Accounting\JournalController::post/$1');
         $routes->get('accounts', 'Accounting\AccountsController::index');
