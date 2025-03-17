@@ -60,19 +60,20 @@
                                 <?php foreach ($entries as $entry): ?>
                                     <tr>
                                         <td><?= $entry['id'] ?></td>
-                                        <td><?= $entry['transaction_date'] ?></td>
+                                        <td><?= $entry['date'] ?></td>
                                         <td><?= $entry['reference'] ?></td>
                                         <td><?= $entry['description'] ?></td>
                                         <td><?= $entry['created_by'] ?></td>
                                         <td><?= $entry['posted'] ? 'Posted' : 'Unposted' ?></td>
                                         <td>
-                                            <?php if (!$journal['posted']): ?>
-                                                <a href="<?= site_url('accounting/journal-entry/post/' . $entry['id']) ?>">Post</a>
+                                            <?php if (!$entry['posted']): ?>
+                                                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal">Post</button>
+                                                
                                             <?php else: ?>
-                                                <span>Finalized</span>
+                                                <span class="px-2">Finalized</span>
                                             <?php endif; ?>
                                             <a href="/accounting/journal/view/<?= $entry['id'] ?>" class="btn btn-info btn-sm">View</a>
-                                            <a href="/accounting/journal/delete/<?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                                            <!-- <a href="/accounting/journal/delete/<?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a> -->
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -91,6 +92,24 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<div class="modal fade" id="postJournalModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Post Journal?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                This action cannot be reversed. Are you sure you want to post the Journal
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="<?= site_url('accounting/journal-entry/post/' . $entry['id']) ?>" class="btn btn-primary">Post</a>
+            </div>
+        </div>
     </div>
 </div>
 <?= $this->endSection() ?>

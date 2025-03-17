@@ -26,15 +26,7 @@
         </a>
       </li>
 
-      <!-- <li class="nav-item">
-        <a href="/payments" class="nav-link collapsed">
-          <i class="bi bi-cash-stack"></i>
-          <span>
-            Payments
-          </span>
 
-        </a>
-      </li> -->
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#payments" role="button" aria-expanded="false"
           aria-controls="collapseExample">
@@ -185,12 +177,43 @@
           </ul>
         </div>
       </li>
-      <!-- <li class="nav-item">
-        <a href="/agents" class="nav-link collapsed">
-          <i class="bi bi-person-vcard"></i>
-          <span>Agents</span>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#reports" role="button" aria-expanded="false"
+          aria-controls="collapseExample">
+          <i class="bi bi-receipt"></i>
+          <span>
+            Reports
+          </span>
+          <i class="bi bi-chevron-down ms-auto"></i>
         </a>
-      </li> -->
+
+        <div class="collapse" id="reports">
+          <ul>
+            <li class="nav-item active">
+              <a href="<?= site_url('accounting/reports/trial-balance') ?>" class="nav-link collapsed">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>Trial Balance</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('accounting/reports/balance-sheet') ?>" class="nav-link collapsed">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>
+                  Balance Sheet
+                </span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="<?= site_url('accounting/reports/income-statement') ?>" class="nav-link collapsed">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>Income Statement</span>
+
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#settings" role="button" aria-expanded="false"
           aria-controls="collapseExample">
@@ -230,13 +253,6 @@
         </div>
       </li>
 
-      <!-- <li class="nav-item">
-        <a href="/sms" class="nav-link collapsed">
-          <i class="bi bi-envelope-arrow-up"></i>
-          <span>SMS</span>
-
-        </a>
-      </li> -->
     <?php } ?>
     <?php if ($userInfo['role'] == 'agent') { ?>
       <li class="nav-item">

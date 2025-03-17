@@ -55,8 +55,8 @@ class JournalController extends BaseController
             'reference'        => 'required',
             'description'      => 'required',
             'accounts'         => 'required',
-            'debit'            => 'required_without_all[credit]|decimal',
-            'credit'           => 'required_without_all[debit]|decimal',
+            'debit'            => 'required_without[credit]',
+            'credit'           => 'required_without[debit]',
         ];
 
         if (!$this->validate($validationRules)) {
@@ -90,13 +90,12 @@ class JournalController extends BaseController
             $debit  = !empty($debits[$index]) ? floatval($debits[$index]) : 0;
             $credit = !empty($credits[$index]) ? floatval($credits[$index]) : 0;
 
-            $acc = $accountsModel->select('id')->where('name', $account)->first();
             $totalDebit += $debit;
             $totalCredit += $credit;
 
             $journalDetailModel->insert([
                 'journal_entry_id' => $entryId,
-                'account_id'       => $acc,
+                'account_id'       => $account,
                 'debit'            => $debit,
                 'credit'           => $credit,
             ]);
@@ -128,5 +127,29 @@ class JournalController extends BaseController
         $journalEntryModel->update($id, ['posted' => 1]);
 
         return redirect()->to('accounting/journals/page')->with('success', 'Journal Entry posted successfully.');
+    }
+
+    public function view($id)
+    {
+        helper('form');
+
+        $id = $this->request->getGet('id');
+        $entryModel = new JournalEntryModel();
+        $detailsModel = new JournalDetailsModel();
+        $entry = $entryModel->find($id);
+        $details = $detailsModel->where('journal_entry_id', $id)->findAll;
+
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        
+        $data = [
+            'entry' => $entry,
+            'details' => $details,
+            'title' => $entry['reference'],
+            'userInfo' => $userInfo
+        ];
+        
+        return view('journals/view', $data);
     }
 }

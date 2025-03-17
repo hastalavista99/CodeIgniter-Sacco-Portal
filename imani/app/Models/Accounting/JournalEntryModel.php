@@ -8,4 +8,10 @@ class JournalEntryModel extends Model
     protected $table = 'journal_entries';
     protected $primaryKey = 'id';
     protected $allowedFields = ['date', 'description', 'reference','created_by', 'posted'];
+
+
+    protected function getJournalDetails($id)
+    {
+        return $this->select('*');
+    }
 }

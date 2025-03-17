@@ -25,7 +25,7 @@
         <?php if (session()->getFlashdata('errors')): ?>
             <div style="color: red;">
                 <?php foreach (session()->getFlashdata('errors') as $error): ?>
-                    <p><?= esc($error) ?></p>
+                    <p class="text-danger"><?= esc($error) ?></p>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -103,20 +103,20 @@
                         let row = table.insertRow();
                         row.innerHTML = `
                 <td class="px-2">
-                    <select name="accounts[]" required class="form-select" >
+                    <select name="accounts[]"  class="form-select" >
                         <option value="">Select Account</option>
                         <?php
                         if (!empty($accounts)) {
                             foreach ($accounts as $account) {
                         ?>
-                                                    <option value="<?= $account['id'] ?>"><?= $account['name'] ?></option>
-                                            <?php
-                                        }
-                                    } else { ?>
-                                                <option value="">No Accounts Available</option>
-                                                <?php
-                                            }
-                                                ?>
+                                    <option value="<?= $account['id'] ?>"><?= $account['name'] ?></option>
+                                <?php
+                            }
+                        } else { ?>
+                                    <option value="">No Accounts Available</option>
+                                    <?php
+                                }
+                                    ?>
                     </select>
                 </td>
                 <td class="px-2"><input type="number" class="form-control" name="debit[]" step="0.01"></td>

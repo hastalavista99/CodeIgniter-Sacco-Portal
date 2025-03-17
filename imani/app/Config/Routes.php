@@ -100,6 +100,8 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->post('journal-entry', 'Accounting\JournalController::store');
         $routes->get('journals/page', 'Accounting\JournalController::page');
         $routes->get('journals/create', 'Accounting\JournalController::createPage');
+        $routes->get('journals/create', 'Accounting\JournalController::createPage');
+        $routes->get('journals/view', 'Accounting\JournalController::view');
         $routes->post('journal-entry', 'Accounting\JournalController::store');
         $routes->get('journal-entry/post/(:num)', 'Accounting\JournalController::post/$1');
         $routes->get('accounts', 'Accounting\AccountsController::index');
@@ -108,7 +110,9 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('accounts/edit/(:num)', 'Accounting\AccountsController::edit/$1');
         $routes->post('accounts/update/(:num)', 'Accounting\AccountsController::update/$1');
         $routes->get('accounts/page', 'Accounting\AccountsController::index');
-
+        $routes->get('reports/trial-balance', 'Accounting\ReportsController::trialBalance');
+        $routes->get('reports/balance-sheet', 'Accounting\ReportsController::balanceSheet');
+        $routes->get('reports/income-statement', 'Accounting\ReportsController::incomeStatement');
 
     });
 });
