@@ -7,5 +7,5 @@ class AccountsModel extends Model
 {
     protected $table = 'accounts';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['name', 'code', 'type'];
+    protected $allowedFields = ['account_name', 'account_code', 'category'];
 }

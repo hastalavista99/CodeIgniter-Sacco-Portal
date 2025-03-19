@@ -48,7 +48,7 @@
                                 <option value="asset">Asset</option>
                                 <option value="liability">Liability</option>
                                 <option value="equity">Equity</option>
-                                <option value="revenue">Revenue</option>
+                                <option value="income">Income</option>
                                 <option value="expense">Expense</option>
                             </select>
                         </div>

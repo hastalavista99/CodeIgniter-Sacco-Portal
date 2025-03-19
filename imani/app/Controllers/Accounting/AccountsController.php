@@ -52,9 +52,9 @@ class AccountsController extends BaseController
 
         $accountModel = new AccountsModel();
         $accountModel->insert([
-            'name' => $this->request->getPost('account_name'),
-            'code' => $this->request->getPost('account_code'),
-            'type' => $this->request->getPost('account_type'),
+            'account_name' => $this->request->getPost('account_name'),
+            'account_code' => $this->request->getPost('account_code'),
+            'category' => $this->request->getPost('account_type'),
         ]);
 
         return redirect()->to('accounting/accounts')->with('success', 'Account created successfully.');

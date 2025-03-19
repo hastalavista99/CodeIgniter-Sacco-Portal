@@ -57,9 +57,9 @@
                                 <?php foreach ($accounts as $account): ?>
                                     <tr>
                                         <td><?= $account['id'] ?></td>
-                                        <td><?= $account['name'] ?></td>
-                                        <td><?= $account['code'] ?></td>
-                                        <td><?= $account['type'] ?></td>
+                                        <td><?= $account['account_name'] ?></td>
+                                        <td><?= $account['account_code'] ?></td>
+                                        <td><?= $account['category'] ?></td>
                                         <td>
                                             <a href="/accounting/accounts/edit/<?= $account['id'] ?>" class="btn btn-info btn-sm">Edit</a>
                                             <a href="/accounting/accounts/delete/<?= $account['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>

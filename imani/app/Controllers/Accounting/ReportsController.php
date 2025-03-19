@@ -45,6 +45,49 @@ class ReportsController extends BaseController
 
         return view('accounting/trial_balance', $data);
     }
+
+    public function balanceSheet()
+    {
+
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $accountModel = new AccountsModel();
+        $journalDetailModel = new JournalDetailsModel();
+
+        $categories = ['asset', 'liability', 'equity'];
+        $balanceSheet = [];
+
+        foreach ($categories as $category) {
+            $accounts = $accountModel->where('category', $category)->findAll();
+            $total = 0;
+
+            foreach ($accounts as $account) {
+                $debits = $journalDetailModel->where('account_id', $account['id'])->selectSum('debit')->get()->getRow()->debit ?? 0;
+                $credits = $journalDetailModel->where('account_id', $account['id'])->selectSum('credit')->get()->getRow()->credit ?? 0;
+
+                // Assets: Debit Increases, Credit Decreases
+                // Liabilities & Equity: Credit Increases, Debit Decreases
+                $balance = ($category === 'asset') ? ($debits - $credits) : ($credits - $debits);
+
+                $balanceSheet[$category][] = [
+                    'account_name' => $account['account_name'],
+                    'balance' => $balance
+                ];
+
+                $total += $balance;
+            }
+
+            $balanceSheet['totals'][$category] = $total;
+        }
+
+        $data = [
+            'balanceSheet' => $balanceSheet,
+            'title' => 'Balance Sheet',
+            'userInfo' => $userInfo
+        ];
+
+        return view('accounting/balance_sheet', $data);
+    }
 }
-
-

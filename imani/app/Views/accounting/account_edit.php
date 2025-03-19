@@ -44,7 +44,7 @@
                                 <option value="asset" <?= $account['type'] == 'asset' ? 'selected' : '' ?>>Asset</option>
                                 <option value="liability" <?= $account['type'] == 'liability' ? 'selected' : '' ?>>Liability</option>
                                 <option value="equity" <?= $account['type'] == 'equity' ? 'selected' : '' ?>>Equity</option>
-                                <option value="revenue" <?= $account['type'] == 'revenue' ? 'selected' : '' ?>>Revenue</option>
+                                <option value="income" <?= $account['type'] == 'income' ? 'selected' : '' ?>>Income</option>
                                 <option value="expense" <?= $account['type'] == 'expense' ? 'selected' : '' ?>>Expense</option>
                             </select>
                         </div>
