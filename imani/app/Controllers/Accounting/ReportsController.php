@@ -90,4 +90,41 @@ class ReportsController extends BaseController
 
         return view('accounting/balance_sheet', $data);
     }
+
+    public function incomeStatement()
+    {
+        $accountModel = new AccountsModel();
+        $journalDetailModel = new JournalDetailsModel();
+
+        $categories = ['income', 'expense'];
+        $incomeStatement = [];
+
+        foreach ($categories as $category) {
+            $accounts = $accountModel->where('category', $category)->findAll();
+            $total = 0;
+
+            foreach ($accounts as $account) {
+                $debits = $journalDetailModel->where('account_id', $account['id'])->selectSum('debit')->get()->getRow()->debit ?? 0;
+                $credits = $journalDetailModel->where('account_id', $account['id'])->selectSum('credit')->get()->getRow()->credit ?? 0;
+
+                // Income: Credit Increases, Debit Decreases
+                // Expense: Debit Increases, Credit Decreases
+                $balance = ($category === 'income') ? ($credits - $debits) : ($debits - $credits);
+
+                $incomeStatement[$category][] = [
+                    'account_name' => $account['account_name'],
+                    'balance' => $balance
+                ];
+
+                $total += $balance;
+            }
+
+            $incomeStatement['totals'][$category] = $total;
+        }
+
+        // Calculate Net Profit
+        $incomeStatement['net_profit'] = $incomeStatement['totals']['income'] - $incomeStatement['totals']['expense'];
+
+        return view('accounting/income_statement', ['incomeStatement' => $incomeStatement]);
+    }
 }

@@ -33,106 +33,71 @@
 
             <div class="card-body px-0 pb-2 mt-3">
 
-                <?php if (!empty($balanceSheet) && is_array($balanceSheet)) : ?>
+                <?php if (!empty($incomeStatement) && is_array($incomeStatement)) : ?>
                     <div class="table-responsive">
-                        <h3>Assets</h3>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Account Name</th>
-                                    <th>Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <?php foreach ($balanceSheet['asset'] as $entry): ?>
-                                    <tr>
-                                        <td><?= esc($entry['account_name']) ?></td>
-                                        <td><?= esc(number_format($entry['balance'], 2)) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            Total Assets
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        <strong>
-                                            <?= esc(number_format($balanceSheet['totals']['asset'], 2)) ?>
-                                        </strong>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <h3>Liabilities</h3>
+                        <h3>Revenue</h3>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Account</th>
-                                    <th>Balance</th>
+                                    <th>Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($balanceSheet['liability'] as $entry): ?>
+                                <?php foreach ($incomeStatement['income'] as $entry): ?>
                                     <tr>
                                         <td><?= esc($entry['account_name']) ?></td>
                                         <td><?= esc(number_format($entry['balance'], 2)) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr>
-                                    <td>
-                                        <strong>Total Liabilities</strong>
-                                    </td>
-                                    <td>
-                                        <strong><?= esc(number_format($balanceSheet['totals']['liability'], 2)) ?></strong>
-                                    </td>
+                                    <td><strong>Total Revenue</strong></td>
+                                    <td><strong><?= esc(number_format($incomeStatement['totals']['income'], 2)) ?></strong></td>
                                 </tr>
                             </tbody>
 
                         </table>
 
-                        <h3>Equity</h3>
+                        <h3>Expenses</h3>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Account</th>
-                                    <th>Balance</th>
+                                    <th>Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($balanceSheet['equity'] as $entry): ?>
+                                <?php foreach ($incomeStatement['expense'] as $entry): ?>
                                     <tr>
                                         <td><?= esc($entry['account_name']) ?></td>
                                         <td><?= esc(number_format($entry['balance'], 2)) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr>
-                                    <td>
-                                        <strong>Total Equity</strong>
-                                    </td>
-                                    <td>
-                                        <strong><?= esc(number_format($balanceSheet['totals']['equity'], 2)) ?></strong>
-                                    </td>
+                                    <td><strong>Total Expenses</strong></td>
+                                    <td><strong><?= esc(number_format($incomeStatement['totals']['expense'], 2)) ?></strong></td>
                                 </tr>
                             </tbody>
 
                         </table>
-                        <h3>Check:</h3>
+
+                        <h3>Net Profit</h3>
                         <p>
-                            <strong>Total Assets:</strong>
-                            <?= esc(number_format($balanceSheet['totals']['asset'], 2)) ?>
-                        </p>
-                        <p>
-                            <strong>Total Liabilities + Equity:</strong>
-                            <?= esc(number_format($balanceSheet['totals']['liability'] + $balanceSheet['totals']['equity'], 2)) ?>
+                            <strong>Net Income:</strong>
+                            <?= esc(number_format($incomeStatement['net_profit'], 2)) ?>
                         </p>
 
                         <p>
-                            <strong>
-                                Status:
-                            </strong>
-                            <?php if ($balanceSheet['totals']['asset'] === ($balanceSheet['totals']['liability'] + $balanceSheet['totals']['equity'])): ?>
+                            <strong>Status:</strong>
+                            <?php if ($incomeStatement['net_profit'] >= 0): ?>
+                                ✅ Profitable
+                            <?php else: ?>
+                                ❌ Loss
+                            <?php endif; ?>
+                        </p>
+                        <p>
+                            <strong>Status:</strong>
+                            <?php if ($totalDebit === $totalCredit): ?>
                                 ✅ Balanced
                             <?php else: ?>
                                 ❌ Not Balanced
