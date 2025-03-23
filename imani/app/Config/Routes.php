@@ -94,6 +94,8 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/deleteMember', [Members::class, 'deleteMember']);
     $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
+    $routes->get('members/create', [Members::class, 'createPage']);
+
     $routes->group('accounting', function ($routes) {
         $routes->get('trial-balance', 'Accounting\ReportsController::trialBalance');
         $routes->get('balance-sheet', 'Accounting\ReportsController::balanceSheet');

@@ -170,4 +170,20 @@ class Members extends BaseController
             return redirect()->to('/members')->with('fail', 'Failed to delete member.');
         }
     }
+
+    public function createPage()
+    {
+        helper('form');
+
+        $userModel = model(UserModel::class);
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $data = [
+            'title' => 'Create Member',
+            'userInfo' => $userInfo
+        ];
+
+        return view('members/create', $data);
+    }
 }

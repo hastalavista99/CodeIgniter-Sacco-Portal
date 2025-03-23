@@ -33,6 +33,7 @@
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal"><i class="bi-person-plus me-1"></i>
               Add
             </button>
+            <a href="<?= site_url('members/create')?>" class="btn btn-info">New</a>
           </div>
         </div>
 
