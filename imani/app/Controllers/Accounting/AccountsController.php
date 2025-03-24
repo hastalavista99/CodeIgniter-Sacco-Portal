@@ -41,9 +41,9 @@ class AccountsController extends BaseController
     public function store()
     {
         $validationRules = [
-            'account_code' => 'required|is_unique[accounts.code]',
+            'account_code' => 'required|is_unique[accounts.account_code]',
             'account_name' => 'required',
-            'account_type' => 'required|in_list[asset,liability,equity,revenue,expense]',
+            'account_type' => 'required|in_list[asset,liability,equity,income,expense]',
         ];
 
         if (!$this->validate($validationRules)) {
@@ -84,7 +84,7 @@ class AccountsController extends BaseController
     {
         $validationRules = [
             'account_name' => 'required',
-            'account_type' => 'required|in_list[asset,liability,equity,revenue,expense]',
+            'account_type' => 'required|in_list[asset,liability,equity,income,expense]',
         ];
 
         if (!$this->validate($validationRules)) {

@@ -67,7 +67,7 @@
                                             if (!empty($accounts)) {
                                                 foreach ($accounts as $account) {
                                             ?>
-                                                    <option value="<?= $account['id'] ?>"><?= $account['name'] ?></option>
+                                                    <option value="<?= $account['id'] ?>"><?= $account['account_name'] ?></option>
                                                 <?php
                                                 }
                                             } else { ?>
@@ -109,7 +109,7 @@
                         if (!empty($accounts)) {
                             foreach ($accounts as $account) {
                         ?>
-                                    <option value="<?= $account['id'] ?>"><?= $account['name'] ?></option>
+                                    <option value="<?= $account['id'] ?>"><?= $account['account_name'] ?></option>
                                 <?php
                             }
                         } else { ?>

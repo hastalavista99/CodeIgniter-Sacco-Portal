@@ -30,10 +30,10 @@
         <div class="col-md-2 pt-3">
           <div>
 
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal"><i class="bi-person-plus me-1"></i>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal">
               Add
             </button>
-            <a href="<?= site_url('members/create')?>" class="btn btn-info">New</a>
+            <a href="<?= site_url('members/create')?>" class="btn btn-success"><i class="bi-person-plus me-1"></i>Add Member</a>
           </div>
         </div>
 

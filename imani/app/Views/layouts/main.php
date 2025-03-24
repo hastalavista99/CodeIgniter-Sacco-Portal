@@ -28,6 +28,38 @@
 
 
   <style>
+      .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+        .step-indicator {
+            margin-bottom: 30px;
+        }
+        .step-indicator .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin: 0 auto;
+        }
+        .step-indicator .step.active {
+            background-color: #0d6efd;
+        }
+        .step-indicator .step.completed {
+            background-color: #198754;
+        }
+        .step-label {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 5px;
+        }
     .exported {
 
       background-color: #e0f7fa !important;
