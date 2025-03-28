@@ -48,7 +48,8 @@
                 </div>
 
                 <!-- Form -->
-                <form id="multiStepForm">
+                <form id="memberForm">
+                    <?= csrf_field()?>
                     <!-- Step 1: Personal Information -->
                     <div class="form-step active" id="step-1">
                         <h5 class="mb-4">Step 1: Personal Information</h5>
@@ -228,44 +229,44 @@
 
 <!-- Success Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="successModalLabel">Success!</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="successModalLabel">Success!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="modal-icon success">
+                    <i class="bi bi-check-circle-fill"></i>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <div class="modal-icon success">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </div>
-                    <h4>Registration Successful!</h4>
-                    <p class="mb-4">Your information has been submitted successfully. We will contact you shortly.</p>
-                    <div class="d-flex justify-content-center">
-                        <div class="bg-light rounded p-3 mb-3">
-                            <div class="d-flex align-items-center">
-                                <div class="me-3">
-                                    <i class="bi bi-envelope-check fs-3 text-success"></i>
-                                </div>
-                                <div class="text-start">
-                                    <p class="mb-0">Confirmation email sent to:</p>
-                                    <strong id="confirmationEmail">user@example.com</strong>
-                                </div>
+                <h4>Registration Successful!</h4>
+                <p class="mb-4">Your information has been submitted successfully. We will contact you shortly.</p>
+                <div class="d-flex justify-content-center">
+                    <div class="bg-light rounded p-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-envelope-check fs-3 text-success"></i>
+                            </div>
+                            <div class="text-start">
+                                <p class="mb-0">Confirmation email sent to:</p>
+                                <strong id="confirmationEmail">user@example.com</strong>
                             </div>
                         </div>
                     </div>
-                    <p>Your reference number: <strong id="referenceNumber">REF-123456</strong></p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Continue</button>
-                </div>
+                <p>Your reference number: <strong id="referenceNumber">REF-123456</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Continue</button>
             </div>
         </div>
     </div>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Form steps navigation
-        const form = document.getElementById('multiStepForm');
+        const form = document.getElementById('memberForm');
         const steps = document.querySelectorAll('.form-step');
         const nextButtons = document.querySelectorAll('.next-step');
         const prevButtons = document.querySelectorAll('.prev-step');
@@ -336,19 +337,19 @@
 
         // Form submission
         form.addEventListener('submit', function(e) {
+            console.log('form submitted')
             e.preventDefault();
 
-            // Here you would typically collect all form data and submit it
-            // For demonstration, we'll just show an alert
-            alert('Form submitted successfully! Form data would be sent to the server here.');
-
-            // You can collect form data with:
+           fetch('<?= site_url('') ?>', {
+                method: 'POST',
+                body: new FormData(form)
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err));
             // const formData = new FormData(form);
-            // Or manually collect each field:
-            // const data = {
-            //     firstName: document.getElementById('firstName').value,
-            //     ... other fields
-            // };
+
+
         });
     });
 </script>
