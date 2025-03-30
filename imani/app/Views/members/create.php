@@ -226,41 +226,7 @@
     </div>
 </div>
 
-<!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="successModalLabel">Success!</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <div class="modal-icon success">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </div>
-                    <h4>Registration Successful!</h4>
-                    <p class="mb-4">Your information has been submitted successfully. We will contact you shortly.</p>
-                    <div class="d-flex justify-content-center">
-                        <div class="bg-light rounded p-3 mb-3">
-                            <div class="d-flex align-items-center">
-                                <div class="me-3">
-                                    <i class="bi bi-envelope-check fs-3 text-success"></i>
-                                </div>
-                                <div class="text-start">
-                                    <p class="mb-0">Confirmation email sent to:</p>
-                                    <strong id="confirmationEmail">user@example.com</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <p>Your reference number: <strong id="referenceNumber">REF-123456</strong></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Continue</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -334,22 +300,288 @@
             });
         });
 
-        // Form submission
+        createFeedbackModal();
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Here you would typically collect all form data and submit it
-            // For demonstration, we'll just show an alert
-            alert('Form submitted successfully! Form data would be sent to the server here.');
+            // Create FormData object
+            const formData = new FormData();
 
-            // You can collect form data with:
-            // const formData = new FormData(form);
-            // Or manually collect each field:
-            // const data = {
-            //     firstName: document.getElementById('firstName').value,
-            //     ... other fields
-            // };
+            formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
+            // Personal Information (Step 1)
+            formData.append('firstName', document.getElementById('firstName').value);
+            formData.append('lastName', document.getElementById('lastName').value);
+            formData.append('dob', document.getElementById('dob').value);
+            formData.append('joinDate', document.getElementById('joinDate').value);
+            formData.append('gender', document.getElementById('gender').value);
+            formData.append('nationality', document.getElementById('nationality').value);
+            formData.append('maritalStatus', document.getElementById('maritalStatus').value);
+            formData.append('idNumber', document.getElementById('idNumber').value);
+            formData.append('termsAccepted', document.getElementById('termsAccepted').checked ? '1' : '0');
+
+            // Contact Details (Step 2)
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phoneNumber', document.getElementById('phoneNumber').value);
+            formData.append('alternatePhone', document.getElementById('alternatePhone').value);
+            formData.append('streetAddress', document.getElementById('streetAddress').value);
+            formData.append('addressLine2', document.getElementById('addressLine2').value);
+            formData.append('city', document.getElementById('city').value);
+            formData.append('county', document.getElementById('county').value);
+            formData.append('zipCode', document.getElementById('zipCode').value);
+
+            // Handle file upload
+            const photoInput = document.getElementById('photo');
+            if (photoInput.files.length > 0) {
+                formData.append('photo', photoInput.files[0]);
+            }
+
+            // Beneficiary Details (Step 3)
+            formData.append('beneficiaryFirstName', document.getElementById('beneficiaryFirstName').value);
+            formData.append('beneficiaryLastName', document.getElementById('beneficiaryLastName').value);
+            formData.append('beneficiaryDOB', document.getElementById('beneficiaryDOB').value);
+            formData.append('beneficiaryPhone', document.getElementById('beneficiaryPhone').value);
+            formData.append('beneficiaryRelationship', document.getElementById('beneficiaryRelationship').value);
+            formData.append('isBeneficiary', document.getElementById('isBeneficiary').checked ? '1' : '0');
+            formData.append('entitlementPercentage', document.getElementById('emergencyContactName').value); // Note: ID seems incorrectly named
+
+            // Send the data using fetch
+            fetch('<?= site_url('/members/create') ?>', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    return response.json().then(data => {
+                        // Add status to the data object
+                        return {
+                            ...data,
+                            status: response.status
+                        };
+                    });
+                })
+                .then(data => {
+                    // Hide loading state
+                    showLoadingState(false);
+
+                    if (data.success) {
+                        // Show success modal
+                        showFeedbackModal(true, 'Success!', 'Member created successfully.');
+
+                        // Redirect after a delay
+                        setTimeout(() => {
+                            window.location.href = '<?= site_url('/members') ?>';
+                        }, 2000);
+                    } else {
+                        // Show error modal
+                        let errorMessage = data.message || 'An error occurred';
+
+                        // If we have validation errors, format them
+                        if (data.errors) {
+                            errorMessage += ':<br><ul>';
+                            for (const field in data.errors) {
+                                errorMessage += `<li>${data.errors[field]}</li>`;
+                            }
+                            errorMessage += '</ul>';
+                        }
+
+                        showFeedbackModal(false, 'Error', errorMessage);
+                    }
+                })
+                .catch(error => {
+                    // Hide loading state
+                    showLoadingState(false);
+
+                    // Show error modal
+                    showFeedbackModal(
+                        false,
+                        'Submission Error',
+                        'An error occurred while submitting the form. Please try again.'
+                    );
+                    console.error('Error:', error);
+                });
         });
+
+        // Function to create the feedback modal elements
+        function createFeedbackModal() {
+            // Check if modal already exists
+            if (document.getElementById('feedbackModal')) {
+                return;
+            }
+
+            // Create modal container
+            const modalContainer = document.createElement('div');
+            modalContainer.id = 'feedbackModal';
+            modalContainer.className = 'modal fade';
+            modalContainer.tabIndex = '-1';
+            modalContainer.setAttribute('aria-hidden', 'true');
+
+            // Create modal HTML
+            modalContainer.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="feedbackModalTitle">Notification</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="feedback-icon mb-4">
+                            <!-- Icon will be inserted here -->
+                        </div>
+                        <div id="feedbackMessage"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            // Add modal to body
+            document.body.appendChild(modalContainer);
+
+            // Add CSS for icons
+            const style = document.createElement('style');
+            style.textContent = `
+            .success-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+                border-radius: 50%;
+                border: 4px solid #4CAF50;
+                padding: 0;
+                position: relative;
+                box-sizing: content-box;
+            }
+            .success-icon:before {
+                content: '';
+                position: absolute;
+                width: 5px;
+                height: 30px;
+                background-color: #4CAF50;
+                left: 28px;
+                top: 12px;
+                border-radius: 2px;
+                transform: rotate(45deg);
+            }
+            .success-icon:after {
+                content: '';
+                position: absolute;
+                width: 5px;
+                height: 55px;
+                background-color: #4CAF50;
+                left: 46px;
+                top: 3px;
+                border-radius: 2px;
+                transform: rotate(-45deg);
+            }
+            .error-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+                border-radius: 50%;
+                border: 4px solid #F44336;
+                padding: 0;
+                position: relative;
+                box-sizing: content-box;
+            }
+            .error-icon:before {
+                content: '';
+                position: absolute;
+                width: 5px;
+                height: 60px;
+                background-color: #F44336;
+                left: 37px;
+                top: 10px;
+                border-radius: 2px;
+                transform: rotate(45deg);
+            }
+            .error-icon:after {
+                content: '';
+                position: absolute;
+                width: 5px;
+                height: 60px;
+                background-color: #F44336;
+                left: 37px;
+                top: 10px;
+                border-radius: 2px;
+                transform: rotate(-45deg);
+            }
+            .spinner-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+                border-radius: 50%;
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #3498db;
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+            document.head.appendChild(style);
+
+            // Create loading overlay
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'loadingOverlay';
+            loadingOverlay.style.cssText = `
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        `;
+
+            loadingOverlay.innerHTML = `
+            <div class="spinner-icon"></div>
+        `;
+
+            document.body.appendChild(loadingOverlay);
+        }
+
+        // Function to show the feedback modal
+        function showFeedbackModal(isSuccess, title, message) {
+            const modal = document.getElementById('feedbackModal');
+            const modalTitle = document.getElementById('feedbackModalTitle');
+            const messageContainer = document.getElementById('feedbackMessage');
+            const iconContainer = modal.querySelector('.feedback-icon');
+
+            // Set title and message
+            modalTitle.textContent = title;
+            messageContainer.innerHTML = message;
+
+            // Set icon based on success/error
+            if (isSuccess) {
+                iconContainer.innerHTML = '<div class="success-icon"></div>';
+                modal.querySelector('.modal-content').style.borderTop = '5px solid #4CAF50';
+            } else {
+                iconContainer.innerHTML = '<div class="error-icon"></div>';
+                modal.querySelector('.modal-content').style.borderTop = '5px solid #F44336';
+            }
+
+            // Show the modal
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
+
+        // Function to show/hide loading state
+        function showLoadingState(isLoading) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (isLoading) {
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
     });
 </script>
 
