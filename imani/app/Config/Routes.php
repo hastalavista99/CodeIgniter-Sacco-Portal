@@ -93,6 +93,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/deleteMember', [Members::class, 'deleteMember']);
     $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
+    $routes->get('/settings', 'Settings::index');
     
     $routes->group('members', function ($routes) {
         $routes->get('/', 'Members::index');
@@ -103,6 +104,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->group('accounting', function ($routes) {
         $routes->get('trial-balance', 'Accounting\ReportsController::trialBalance');
         $routes->get('balance-sheet', 'Accounting\ReportsController::balanceSheet');
+        $routes->get('remittances', 'Accounting\JournalController::remittances');
         $routes->post('journal-entry', 'Accounting\JournalController::store');
         $routes->get('journals/page', 'Accounting\JournalController::page');
         $routes->get('journals/create', 'Accounting\JournalController::createPage');

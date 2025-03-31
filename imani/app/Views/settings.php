@@ -234,10 +234,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // handle dates
-        let today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-        document.getElementById("dob").value = today;
-        document.getElementById("joinDate").value = today; // Set default value
         // Form steps navigation
         const form = document.getElementById('multiStepForm');
         const steps = document.querySelectorAll('.form-step');

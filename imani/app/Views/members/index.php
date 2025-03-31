@@ -29,7 +29,7 @@
         
         <div class="col-md-2 pt-3">
           <div>
-            <a href="<?= site_url('members/create')?>" class="btn btn-success"><i class="bi-person-plus me-1"></i>Add Member</a>
+            <a href="<?= site_url('members/new')?>" class="btn btn-success"><i class="bi-person-plus me-1"></i>Add Member</a>
           </div>
         </div>
 

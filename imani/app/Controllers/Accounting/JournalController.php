@@ -180,4 +180,20 @@ class JournalController extends BaseController
 
         return view('accounting/journal_view', $data);
     }
+
+    public function remittances()
+    {
+        helper('form');
+
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $data = [
+            'title' => 'Remittances',
+            'userInfo' => $userInfo,
+
+        ];
+        return view('accounting/remittances', $data);
+    }
 }
