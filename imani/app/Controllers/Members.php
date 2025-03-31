@@ -23,7 +23,7 @@ class Members extends BaseController
         $userInfo = $userModel->find($loggedInUserId);
 
         $data = [
-            'members'  => $model->getMembers(),
+            'members'  => $model->findAll(),
             'title' => 'Members',
             'userInfo' => $userInfo,
         ];
@@ -31,22 +31,6 @@ class Members extends BaseController
         return view('members/index', $data);
     }
 
-    public function show()
-    {
-        $model = model(MembersModel::class);
-
-        $data['members'] = $model->getMembers();
-
-        if (empty($data['members'])) {
-            throw new PageNotFoundException('Cannot find the news item: ');
-        }
-
-        $data['title'] = $data['members'];
-
-        return view('templates/header', $data)
-            . view('members/view')
-            . view('templates/footer');
-    }
 
     public function create()
     {
@@ -71,6 +55,7 @@ class Members extends BaseController
         
         // Prepare member data
         $memberData = [
+            'member_number' => $this->request->getPost('memberNumber'),
             'first_name' => $this->request->getPost('firstName'),
             'last_name' => $this->request->getPost('lastName'),
             'dob' => $this->request->getPost('dob'),

@@ -54,11 +54,15 @@
                         <h5 class="mb-4">Step 1: Personal Information</h5>
 
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-2">
+                                <label for="memberNumber" class="form-label">Member No *</label>
+                                <input type="text" class="form-control" id="memberNumber" required>
+                            </div>
+                            <div class="col-md-5">
                                 <label for="firstName" class="form-label">First Name *</label>
                                 <input type="text" class="form-control" id="firstName" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <label for="lastName" class="form-label">Last Name *</label>
                                 <input type="text" class="form-control" id="lastName" required>
                             </div>
@@ -103,7 +107,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="idNumber" class="form-label">ID Number</label>
+                            <label for="idNumber" class="form-label">Member Number</label>
                             <input type="text" class="form-control" id="idNumber">
                         </div>
                         <div class="form-check mb-3">
@@ -310,6 +314,7 @@
             formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
 
             // Personal Information (Step 1)
+            formData.append('memberNumber', document.getElementById('memberNumber').value);
             formData.append('firstName', document.getElementById('firstName').value);
             formData.append('lastName', document.getElementById('lastName').value);
             formData.append('dob', document.getElementById('dob').value);

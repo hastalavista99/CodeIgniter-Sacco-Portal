@@ -29,10 +29,6 @@
         
         <div class="col-md-2 pt-3">
           <div>
-
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal">
-              Add
-            </button>
             <a href="<?= site_url('members/create')?>" class="btn btn-success"><i class="bi-person-plus me-1"></i>Add Member</a>
           </div>
         </div>
@@ -50,22 +46,22 @@
                   <th>Member No.</th>
                   <th>Name</th>
                   <th>Phone</th>
+                  <th>Email</th>
                   <th>Joined</th>
-                  <th>Edit</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <?php foreach ($members as $member) : ?>
                   <tr>
-                    <td><?= esc($member['pk_member_id']) ?></td>
+                    <td><?= esc($member['id']) ?></td>
                     <td><?= esc($member['member_number']) ?></td>
-                    <td><?= esc($member['member_name']) ?></td>
-
-                    <!-- <div class="main"> -->
-                    <td><?= esc($member['member_phone']) ?></td>
-                    <td><?= esc($member['member_date']) ?></td>
-                    <td><a href="/editMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
-                    <a href="/deleteMember?id=<?= $member['pk_member_id'] ?>" class="btn btn-sm btn-danger" ><i class="bi-trash3"></i></a></td>
+                    <td><?= esc($member['first_name']) ?> <?= esc($member['first_name']) ?></td>
+                    <td><?= esc($member['phone_number']) ?></td>
+                    <td><?= esc($member['email']) ?></td>
+                    <td><?= esc($member['join_date']) ?></td>
+                    <td><a href="#" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
+                    <a href="#" class="btn btn-sm btn-danger" ><i class="bi-trash3"></i></a></td>
                   </tr>
 
 
@@ -87,73 +83,5 @@
   </div>
 </div>
 
- <!-- Add Member Modal -->
-<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">New Member</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form method="post" action="/newMember" class="form-floating mb-3">
-          <?= csrf_field() ?>
-          <div class="mb-3">
-            <label for="first-name" class="col-form-label">Member Number:</label>
-            <input type="text" class="form-control" id="first-name" name="memberNumber">
-          </div>
-          <div class="mb-3">
-            <label for="first-name" class="col-form-label">First Name:</label>
-            <input type="text" class="form-control" id="first-name" name="first-name">
-          </div>
-          <div class="mb-3">
-            <label for="last-name" class="col-form-label">Last Name:</label>
-            <input type="text" class="form-control" id="last-name" name="last-name">
-          </div>
-          <div class="mb-3">
-            <label for="mobile" class="col-form-label">Mobile No.</label>
-            <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
-          </div>
-          <div class="d-flex flex-row-reverse">
-            <input type="submit" value="Create" class="btn btn-info">
-          </div>
 
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- // Edit Member Modal -->
-<div class="modal fade" id="editMemberModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form method="post" action="/newMember" class="form-floating mb-3">
-          <?= csrf_field() ?>
-          <div class="mb-3">
-            <label for="first-name" class="col-form-label">First Name:</label>
-            <input type="text" class="form-control" id="first-name" name="first-name">
-          </div>
-          <div class="mb-3">
-            <label for="last-name" class="col-form-label">Last Name:</label>
-            <input type="text" class="form-control" id="last-name" name="last-name">
-          </div>
-          <div class="mb-3">
-            <label for="mobile" class="col-form-label">Mobile No.</label>
-            <input type="text" class="form-control" id="mobile" name="mobile">
-          </div>
-          <div class="d-flex flex-row-reverse">
-            <input type="submit" value="Apply Changes" class="btn btn-info">
-          </div>
-
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 <?= $this->endSection() ?>

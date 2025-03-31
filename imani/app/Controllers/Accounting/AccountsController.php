@@ -31,9 +31,13 @@ class AccountsController extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
+        $accountsModel = new AccountsModel;
+        $accounts = $accountsModel->findAll();
+
         $data = [
             'title' => "Create Account",
             'userInfo' => $userInfo,
+            'accounts' => $accounts
         ];
         return view('accounting/account_create', $data);
     }
@@ -44,6 +48,7 @@ class AccountsController extends BaseController
             'account_code' => 'required|is_unique[accounts.account_code]',
             'account_name' => 'required',
             'account_type' => 'required|in_list[asset,liability,equity,income,expense]',
+            'account_contra' => 'required',
         ];
 
         if (!$this->validate($validationRules)) {
@@ -55,10 +60,12 @@ class AccountsController extends BaseController
             'account_name' => $this->request->getPost('account_name'),
             'account_code' => $this->request->getPost('account_code'),
             'category' => $this->request->getPost('account_type'),
+            'parent_id' => $this->request->getPost('account_contra'),
         ]);
 
         return redirect()->to('accounting/accounts')->with('success', 'Account created successfully.');
     }
+    
     public function edit($id)
     {
         $accountModel = new AccountsModel();
