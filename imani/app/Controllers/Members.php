@@ -10,6 +10,8 @@ use App\Controllers\SendSMS;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\RESTful\ResourceController;
 
 class Members extends BaseController
 {
@@ -21,7 +23,7 @@ class Members extends BaseController
         $userInfo = $userModel->find($loggedInUserId);
 
         $data = [
-            'members'  => $model->getMembers(),
+            'members'  => $model->findAll(),
             'title' => 'Members',
             'userInfo' => $userInfo,
         ];
@@ -29,149 +31,90 @@ class Members extends BaseController
         return view('members/index', $data);
     }
 
-    public function show()
+
+    public function create()
     {
-        $model = model(MembersModel::class);
+        log_message('debug', 'Request method received: ' . $this->request->getMethod());
 
-        $data['members'] = $model->getMembers();
-
-        if (empty($data['members'])) {
-            throw new PageNotFoundException('Cannot find the news item: ');
+        // Handle form submission
+        if ($this->request->getMethod() !== 'POST') {
+            return $this->response->setStatusCode(405)->setJSON([
+                'success' => false,
+                'message' => 'Invalid request method'
+            ]);
         }
-
-        $data['title'] = $data['members'];
-
-        return view('templates/header', $data)
-            . view('members/view')
-            . view('templates/footer');
-    }
-
-    public function newMember()
-    {
-        helper('form');
-        // validate user input
-        if (!$this->request->is('post')) {
-            return view('/members');
+        
+        // Handle file upload first
+        $photoPath = null;
+        $photo = $this->request->getFile('photo');
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+            $newName = $photo->getRandomName();
+            $photo->move(WRITEPATH . 'uploads', $newName);
+            $photoPath = 'uploads/' . $newName;
         }
-
-        // save the user
-        $fname = $this->request->getPost('first-name');
-        $lname = $this->request->getPost('last-name');
-        $mobile = $this->request->getPost('mobile');
-        $memberNumber = $this->request->getPost('memberNumber');
-
-        $data = [
-            'member_name' => $fname . ' ' . $lname,
-            'member_phone' => $mobile,
-            'member_number' => $memberNumber
+        
+        // Prepare member data
+        $memberData = [
+            'member_number' => $this->request->getPost('memberNumber'),
+            'first_name' => $this->request->getPost('firstName'),
+            'last_name' => $this->request->getPost('lastName'),
+            'dob' => $this->request->getPost('dob'),
+            'join_date' => $this->request->getPost('joinDate'),
+            'gender' => $this->request->getPost('gender'),
+            'nationality' => $this->request->getPost('nationality'),
+            'marital_status' => $this->request->getPost('maritalStatus'),
+            'id_number' => $this->request->getPost('idNumber'),
+            'terms_accepted' => $this->request->getPost('termsAccepted'),
+            'email' => $this->request->getPost('email'),
+            'phone_number' => $this->request->getPost('phoneNumber'),
+            'alternate_phone' => $this->request->getPost('alternatePhone'),
+            'street_address' => $this->request->getPost('streetAddress'),
+            'address_line2' => $this->request->getPost('addressLine2'),
+            'city' => $this->request->getPost('city'),
+            'county' => $this->request->getPost('county'),
+            'zip_code' => $this->request->getPost('zipCode'),
+            'photo_path' => $photoPath,
         ];
-
-
-        // storing data
-        $memberModel = new \App\Models\MembersModel();
-        $query = $memberModel->save($data);
-        if (!$query) {
-            return redirect()->back()->with('fail', 'Saving User failed');
-        }
-
-
-        $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $pass = substr(str_shuffle($alpha_numeric), 0, 8);
-
-        $createUser = new \App\Models\UserModel();
-        new \App\Libraries\Hash();
-
-        $data = [
-            'name' => $fname,
-            'email' => '',
-            'mobile' => $mobile,
-            'password' => Hash::encrypt($pass),
-            'role' => 'member',
+        
+        // Prepare beneficiary data
+        $beneficiaryData = [
+            'first_name' => $this->request->getPost('beneficiaryFirstName'),
+            'last_name' => $this->request->getPost('beneficiaryLastName'),
+            'dob' => $this->request->getPost('beneficiaryDOB'),
+            'phone_number' => $this->request->getPost('beneficiaryPhone'),
+            'relationship' => $this->request->getPost('beneficiaryRelationship'),
+            'is_beneficiary' => $this->request->getPost('isBeneficiary'),
+            'entitlement_percentage' => $this->request->getPost('entitlementPercentage'),
         ];
-        $insert = $createUser->save($data);
-        if (!$insert) {
-            return redirect()->back()->with('fail', 'Saving User failed');
+        
+        $model = new MembersModel();
+        
+        // Validate and save
+        if (!$model->validate($memberData)) {
+            return $this->response->setStatusCode(400)->setJSON([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $model->errors()
+            ]);
+        }
+        
+        $memberId = $model->insertMemberWithBeneficiary($memberData, $beneficiaryData);
+        
+        if ($memberId) {
+            return $this->response->setStatusCode(201)->setJSON([
+                'success' => true,
+                'message' => 'Member created successfully',
+                'member_id' => $memberId
+            ]);
         } else {
-            $msg = "Hi, $fname \n Welcome to Gloha Sacco Login to https://app.gloha-sacco.co.ke to view your transactions.\nUsername: $fname\nPassword: $pass; \n Regards \n Gloha Sacco Manager";
-
-            $sms = new SendSMS();
-
-            $sms->sendSMS($mobile, $msg);
-        }
-        return redirect()->back()->with('Success', 'Saved User');
-    }
-
-    public function editMember()
-    {
-        helper('form');
-        $id = $this->request->getGet('id');
-        $model = model(MembersModel::class);
-        $userModel = model(UserModel::class);
-        $loggedInUserId = session()->get('loggedInUser');
-        $userInfo = $userModel->find($loggedInUserId);
-        $member = $model->find($id);
-        $data = [
-            'member'  => $member,
-            'title' => 'Edit Member',
-            'userInfo' => $userInfo,
-            'id' => $id
-        ];
-        return view('members/edit', $data);
-    }
-
-    public function updateMember()
-    {
-        helper(['form', 'url']);
-        $id = $this->request->getGet('id');
-        $name = $this->request->getPost('name');
-        $mobile = $this->request->getPost('mobile');
-        $memberNumber = $this->request->getPost('memberNumber');
-        $data = [
-            'member_name' => $name,
-            'member_phone' => $mobile,
-            'member_number' => $memberNumber
-        ];
-
-        $model = model(MembersModel::class);
-
-        if ($model->update($id, $data)) {
-            // Update successful
-            return redirect()->to('/members')->with('success', 'Member updated successfully.');
-        } else {
-            // Update failed
-            return redirect()->back()->withInput()->with('fail', 'Failed to update member.');
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Failed to create member'
+            ]);
         }
     }
 
-    public function deleteMember()
-    {
-        helper(['form', 'url']);
-
-        $id = $this->request->getGet('id');
-        $model = model(MembersModel::class);
-        $paymentModel = new PaymentsModel();
-
-        // Check if member exists
-        $member = $model->find($id);
-        if (!$member) {
-            return redirect()->to('/members')->with('fail', 'Member not found.');
-        }
-
-        // Check if member has transactions
-        $transactions = $paymentModel->where('MSISDN', $member['member_phone'])->findAll();
-        if ($transactions) {
-            return redirect()->to('/members')->with('fail', 'Failed! Member has transactions.');
-        }
-
-        // Delete member
-        if ($model->delete($id)) {
-            return redirect()->to('/members')->with('success', 'Member deleted successfully.');
-        } else {
-            return redirect()->to('/members')->with('fail', 'Failed to delete member.');
-        }
-    }
-
-    public function createPage()
+    public function new()
     {
         helper('form');
 

@@ -34,7 +34,7 @@
                 <form action="<?= site_url('accounting/accounts/store') ?>" method="post">
                     <?= csrf_field() ?>
                     <div class="row mt-3">
-                        <div class="col-4 mb-3">
+                        <div class="col-2 mb-3">
                             <label for="account_code" class="form-label">Account Code:</label>
                             <input type="text" id="account_code" class="form-control" name="account_code" required>
                         </div>
@@ -42,7 +42,7 @@
                             <label for="account_name" class="form-label">Account Name:</label>
                             <input type="text" id="account_name" class="form-control" name="account_name" required>
                         </div>
-                        <div class="col-4 mb-3">
+                        <div class="col-3 mb-3">
                             <label for="account_type" class="form-label">Account Type:</label>
                             <select id="account_type" class="form-select" name="account_type" required>
                                 <option value="asset">Asset</option>
@@ -50,6 +50,24 @@
                                 <option value="equity">Equity</option>
                                 <option value="income">Income</option>
                                 <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <label for="account_contra" class="form-label">Default Contra Account:</label>
+                            <select id="account_contra" class="form-select" name="account_contra" required>
+                                <option value="">-- Select Account --</option>
+                                <?php
+                                if (!empty($accounts)) {
+                                    foreach ($accounts as $account) {
+                                ?>
+                                        <option value="<?= $account['id'] ?>"><?= $account['account_name'] ?></option>
+                                    <?php
+                                    }
+                                } else { ?>
+                                    <option value="">No Accounts Available</option>
+                                <?php
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>

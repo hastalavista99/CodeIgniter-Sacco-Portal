@@ -48,8 +48,7 @@
                 </div>
 
                 <!-- Form -->
-                <form id="memberForm">
-                    <?= csrf_field()?>
+                <form id="multiStepForm">
                     <!-- Step 1: Personal Information -->
                     <div class="form-step active" id="step-1">
                         <h5 class="mb-4">Step 1: Personal Information</h5>
@@ -235,12 +234,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // handle dates
-        let today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-        document.getElementById("dob").value = today;
-        document.getElementById("joinDate").value = today; // Set default value
         // Form steps navigation
-        const form = document.getElementById('memberForm');
+        const form = document.getElementById('multiStepForm');
         const steps = document.querySelectorAll('.form-step');
         const nextButtons = document.querySelectorAll('.next-step');
         const prevButtons = document.querySelectorAll('.prev-step');
@@ -311,7 +306,6 @@
 
         createFeedbackModal();
         form.addEventListener('submit', function(e) {
-            console.log('form submitted')
             e.preventDefault();
 
             // Create FormData object
