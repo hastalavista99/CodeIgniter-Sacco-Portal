@@ -23,7 +23,7 @@ class ReportsController extends BaseController
             $creditSum = (new JournalDetailsModel())->where('account_id', $account['id'])->selectSum('credit')->get()->getRow()->credit ?? 0;
 
             $trialBalance[] = [
-                'account_name' => $account['name'],
+                'account_name' => $account['account_name'],
                 'debit' => $debitSum,
                 'credit' => $creditSum
             ];
@@ -93,6 +93,11 @@ class ReportsController extends BaseController
 
     public function incomeStatement()
     {
+
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        
         $accountModel = new AccountsModel();
         $journalDetailModel = new JournalDetailsModel();
 
@@ -124,7 +129,12 @@ class ReportsController extends BaseController
 
         // Calculate Net Profit
         $incomeStatement['net_profit'] = $incomeStatement['totals']['income'] - $incomeStatement['totals']['expense'];
+        $data = [
+            'incomeStatement' => $incomeStatement,
+            'title' => 'Income Statement',
+            'userInfo' =>$userInfo
+        ];
 
-        return view('accounting/income_statement', ['incomeStatement' => $incomeStatement]);
+        return view('accounting/income_statement', $data);
     }
 }

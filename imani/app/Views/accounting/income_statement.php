@@ -95,14 +95,7 @@
                                 ❌ Loss
                             <?php endif; ?>
                         </p>
-                        <p>
-                            <strong>Status:</strong>
-                            <?php if ($totalDebit === $totalCredit): ?>
-                                ✅ Balanced
-                            <?php else: ?>
-                                ❌ Not Balanced
-                            <?php endif; ?>
-                        </p>
+                        
 
                     </div>
 

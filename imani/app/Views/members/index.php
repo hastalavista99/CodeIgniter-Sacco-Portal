@@ -60,8 +60,8 @@
                     <td><?= esc($member['phone_number']) ?></td>
                     <td><?= esc($member['email']) ?></td>
                     <td><?= esc($member['join_date']) ?></td>
-                    <td><a href="#" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
-                    <a href="#" class="btn btn-sm btn-danger" ><i class="bi-trash3"></i></a></td>
+                    <td><a href="<?= site_url('members/view/'. $member['id'])?>" class="btn btn-sm btn-success" ><i class="bi-eye"></i></a>
+                    <a href="<?= site_url('members/edit/'. $member['id'])?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a></td>
                   </tr>
 
 

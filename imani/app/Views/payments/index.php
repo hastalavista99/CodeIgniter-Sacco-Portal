@@ -25,27 +25,6 @@
 
             </div>
             <div class="card-body px-0 pb-2">
-                <div class="col-md-2 ms-3">
-                    <!-- Export Button -->
-                    <button id="exportButton" class="btn btn-success mb-2">Export selected</button>
-                </div>
-                
-                <form method="GET" action="<?= site_url('filterPay') ?>" class="form-inline mb-3 row ms-1">
-                    <div class="form-group col-md-3">
-                        <label for="startDate">Start Date:</label>
-                        <input type="date" name="startDate" id="startDate" class="form-control" value="<?= esc($startDate ?? '') ?>">
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="endDate">End Date:</label>
-                        <input type="date" name="endDate" id="endDate" class="form-control" value="<?= esc($endDate ?? '') ?>">
-                    </div>
-
-                    <div class="form-group col-md-2 mt-3">
-                        <button type="submit" class="btn btn-primary ms-2 mt-2">Filter</button>
-                    </div>
-                </form>
-
 
                 <?php if (!empty($payments) && is_array($payments)) : ?>
                     <div class="table-responsive-md">
