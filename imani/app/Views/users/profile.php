@@ -85,7 +85,7 @@
 
                             <div class="row">
                                 <div class="col-lg-3 col-md-4 label fw-bold">Company:</div>
-                                <div class="col-lg-9 col-md-8">Gloha Sacco Society</div>
+                                <div class="col-lg-9 col-md-8">Sacco Society</div>
                             </div>
 
                             <div class="row">

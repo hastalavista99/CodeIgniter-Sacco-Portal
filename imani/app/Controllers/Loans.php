@@ -157,7 +157,7 @@ class Loans extends BaseController
             $fname = explode(' ', $gname)[0];
             $loanee = explode(' ', $name)[0];
             $gamount = $guarantor['amount'];
-            $msg = "Hello " . $fname . ", You are now a guarantor of Kshs " . number_format($gamount, 0, '.', ',') . " in the loan of " . $loanee . " worth Kshs" . number_format($loanAmount, 0, '.', ',') . ". Loan No. " . $loanReference . "\nContact the office for details\nRegards\nGloha Sacco";
+            $msg = "Hello " . $fname . ", You are now a guarantor of Kshs " . number_format($gamount, 0, '.', ',') . " in the loan of " . $loanee . " worth Kshs" . number_format($loanAmount, 0, '.', ',') . ". Loan No. " . $loanReference . "\nContact the office for details\nRegards\nSacco";
 
             $sms = new SendSMS();
             $sms->sendSMS($phone, $msg);

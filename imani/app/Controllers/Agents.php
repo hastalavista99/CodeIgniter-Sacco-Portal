@@ -86,7 +86,7 @@ class Agents extends BaseController
         if (!$userQuery) {
             return redirect()->back()->with('fail', 'Saving Agent failed');
         } else {
-            $msg = "Hi, $name \n Welcome to Gloha Sacco. Log in to https://app.gloha-sacco.co.ke to view your transactions.\nUsername: $name\nPassword: $pass \n Regards \n Gloha Sacco Manager";
+            $msg = "Hi, $name \n Welcome to Sacco. Log in to https://app.gloha-sacco.co.ke to view your transactions.\nUsername: $name\nPassword: $pass \n Regards \n Sacco Manager";
 
             $sms = new SendSMS();
             $sms->sendSMS($mobile, $msg);

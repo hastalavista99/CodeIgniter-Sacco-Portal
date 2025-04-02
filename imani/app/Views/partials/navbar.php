@@ -3,7 +3,7 @@
       <div class="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-between">
         <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none display-6">
             <i class="bi-wallet2"></i> 
-          Imaniline Sacco
+          Sacco
         </a>
 
         

@@ -239,7 +239,7 @@
     <div class="d-flex align-items-center justify-content-between">
       <a href="<?= site_url('dashboard') ?>" class="logo d-flex align-items-center">
         <img src="<?= base_url('assets/images/logo-sm.png') ?>" alt="logo">
-        <span class="d-none d-lg-block" style="color:#009833;">Gloha Sacco</span>
+        <span class="d-none d-lg-block" style="color:#000000;">Sacco</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
