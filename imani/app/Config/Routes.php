@@ -101,10 +101,13 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->post('create', 'Members::create');
         $routes->get('view/(:num)', 'Members::view/$1');
         $routes->get('edit/(:num)', 'Members::edit/$1');
+        
 
     });
 
     $routes->group('accounting', function ($routes) {
+        $routes->get('remittances/get-member/(:segment)', 'Members::getMember/$1');
+        $routes->post('remittances/create', 'Accounting\JournalController::remittanceCreate');
         $routes->get('trial-balance', 'Accounting\ReportsController::trialBalance');
         $routes->get('balance-sheet', 'Accounting\ReportsController::balanceSheet');
         $routes->get('remittances', 'Accounting\JournalController::remittances');

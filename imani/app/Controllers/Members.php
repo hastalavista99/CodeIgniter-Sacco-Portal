@@ -43,7 +43,7 @@ class Members extends BaseController
                 'message' => 'Invalid request method'
             ]);
         }
-        
+
         // Handle file upload first
         $photoPath = null;
         $photo = $this->request->getFile('photo');
@@ -52,7 +52,7 @@ class Members extends BaseController
             $photo->move(WRITEPATH . 'uploads', $newName);
             $photoPath = 'uploads/' . $newName;
         }
-        
+
         // Prepare member data
         $memberData = [
             'member_number' => $this->request->getPost('memberNumber'),
@@ -75,7 +75,7 @@ class Members extends BaseController
             'zip_code' => $this->request->getPost('zipCode'),
             'photo_path' => $photoPath,
         ];
-        
+
         // Prepare beneficiary data
         $beneficiaryData = [
             'first_name' => $this->request->getPost('beneficiaryFirstName'),
@@ -86,9 +86,9 @@ class Members extends BaseController
             'is_beneficiary' => $this->request->getPost('isBeneficiary'),
             'entitlement_percentage' => $this->request->getPost('entitlementPercentage'),
         ];
-        
+
         $model = new MembersModel();
-        
+
         // Validate and save
         if (!$model->validate($memberData)) {
             return $this->response->setStatusCode(400)->setJSON([
@@ -97,9 +97,9 @@ class Members extends BaseController
                 'errors' => $model->errors()
             ]);
         }
-        
+
         $memberId = $model->insertMemberWithBeneficiary($memberData, $beneficiaryData);
-        
+
         if ($memberId) {
             return $this->response->setStatusCode(201)->setJSON([
                 'success' => true,
@@ -128,5 +128,20 @@ class Members extends BaseController
         ];
 
         return view('members/create', $data);
+    }
+
+    public function getMember($memberNo)
+    {
+        $model = new MembersModel();
+        $member = $model->where('member_number', $memberNo)->first();
+
+        if ($member) {
+            return $this->response->setJSON([
+                'name' => $member['first_name'] ." ".  $member['last_name'],
+                'mobile' => $member['phone_number']
+            ]);
+        }
+
+        return $this->response->setJSON(['error' => 'Member not found'])->setStatusCode(404);
     }
 }

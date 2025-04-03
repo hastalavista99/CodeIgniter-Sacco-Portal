@@ -6,7 +6,8 @@ use App\Controllers\BaseController;
 use App\Models\Accounting\AccountsModel;
 use App\Models\Accounting\JournalEntryModel;
 use App\Models\Accounting\JournalDetailsModel;
-
+use App\Models\Accounting\TransactionsModel;
+use App\Models\MembersModel;
 use App\Models\UserModel;
 
 class JournalController extends BaseController
@@ -129,7 +130,7 @@ class JournalController extends BaseController
         return redirect()->to('accounting/journals/page')->with('success', 'Journal Entry posted successfully.');
     }
 
-    public function view($id=null)
+    public function view($id = null)
     {
         helper('form');
 
@@ -173,7 +174,7 @@ class JournalController extends BaseController
         $data = [
             'entry' => $entry,
             'details' => $details,
-            'title' => 'Journal - '.$entry['reference'],
+            'title' => 'Journal - ' . $entry['reference'],
             'userInfo' => $userInfo,
 
         ];
@@ -189,11 +190,92 @@ class JournalController extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
+        $memberModel = new MembersModel();
+        $members = $memberModel->findAll();
+
         $data = [
             'title' => 'Remittances',
             'userInfo' => $userInfo,
+            'members' => $members
 
         ];
         return view('accounting/remittances', $data);
+    }
+
+    public function remittanceCreate()
+    {
+        $journalModel = new JournalEntryModel();
+        $journalDetailsModel = new JournalDetailsModel();
+        $transactionModel = new TransactionsModel();
+
+        $transactions = $this->request->getJSON(true)['transactions'];
+
+        foreach ($transactions as $tx) {
+            $transactionData = [
+                'member_number' => $tx['memberNumber'],
+                'service_transaction' => $tx['service'],
+                'transaction_type' => $tx['transactionType'],
+                'amount' => $tx['amount'],
+                'payment_method' => $tx['paymentMethod'],
+                'transaction_date' => $tx['date'],
+                'description' => $tx['description']
+            ];
+            $transactionID = $transactionModel->insert($transactionData);
+            // Step 1: Create a Journal Entry
+            $journalData = [
+                'date' => $tx['date'],
+                'description' => $tx['description'],
+                'reference' => 'TXN-' . time(), // Unique reference number
+                'created_by' => session()->get('loggedInUser'),
+                'posted' => 0 // Not posted yet
+            ];
+            $journalEntryID = $journalModel->insert($journalData);
+
+            // Step 2: Identify Debit & Credit Accounts
+            $debitAccount = $this->getDebitAccount($tx['service']);
+            $creditAccount = $this->getCreditAccount($tx['paymentMethod']);
+
+            // Step 3: Save Journal Entry Details (Debit & Credit)
+            $journalDetailsModel->insert([
+                'journal_entry_id' => $journalEntryID,
+                'account_id' => $debitAccount,
+                'debit' => $tx['amount'],
+                'credit' => 0.00,
+                'transaction_id' => $transactionID
+            ]);
+
+            $journalDetailsModel->insert([
+                'journal_entry_id' => $journalEntryID,
+                'account_id' => $creditAccount,
+                'debit' => 0.00,
+                'credit' => $tx['amount'],
+                'transaction_id' => $transactionID
+            ]);
+        }
+
+        return $this->response->setJSON(['success' => true]);
+    }
+
+    // Function to determine the Debit Account
+    private function getDebitAccount($serviceTransaction)
+    {
+        $accounts = [
+            'savings' => 74, // Current Bank Account (Asset)
+            'loans' => 2, // Interest on Loans (Income)
+            'entrance_fee' => 75, // Entrance Fee (Equity)
+            'share_deposits' => 73, // Customer Deposits (Equity)
+        ];
+        return $accounts[$serviceTransaction] ?? 2; // Default to Debtors
+    }
+
+    // Function to determine the Credit Account
+    private function getCreditAccount($paymentMethod)
+    {
+        $accounts = [
+            'cash' => 5, // Cash in Hand (Asset)
+            'bank' => 3, // Current Bank Account (Asset)
+            'mobile' => 4, // Savings Bank Account (Asset)
+        ];
+        return $accounts[$paymentMethod] ?? 5; // Default to Cash in Hand
     }
 }
