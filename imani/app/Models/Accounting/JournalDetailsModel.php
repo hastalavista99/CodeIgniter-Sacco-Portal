@@ -8,7 +8,7 @@ class JournalDetailsModel extends Model
 {
     protected $table = 'journal_entry_details';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['journal_entry_id', 'account_id', 'debit', 'credit'];
+    protected $allowedFields = ['journal_entry_id', 'account_id', 'debit', 'credit', 'transaction_id'];
 
     public function getTotalByType($type, $year)
     {

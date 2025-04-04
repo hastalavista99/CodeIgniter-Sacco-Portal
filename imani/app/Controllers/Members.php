@@ -144,4 +144,24 @@ class Members extends BaseController
 
         return $this->response->setJSON(['error' => 'Member not found'])->setStatusCode(404);
     }
+
+
+    public function view($id)
+    {
+        helper('form');
+
+        $model = new MembersModel();
+        $member = $model->where('id', $id)->first();
+
+        $userModel = model(UserModel::class);
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+        
+        $data = [
+            'member' => $member,
+            'userInfo' => $userInfo,
+            'title' => 'View - ' . $member['member_number']
+        ];
+        return view('members/view', $data);
+    }
 }
