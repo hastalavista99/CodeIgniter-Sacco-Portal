@@ -49,7 +49,7 @@
 
                 <!-- Form -->
                 <form id="memberForm">
-                    <?= csrf_field()?>
+                    <?= csrf_field() ?>
                     <!-- Step 1: Personal Information -->
                     <div class="form-step active" id="step-1">
                         <h5 class="mb-4">Step 1: Personal Information</h5>
@@ -57,35 +57,35 @@
                         <div class="row mb-3">
                             <div class="col-md-2">
                                 <label for="memberNumber" class="form-label">Member No *</label>
-                                <input type="text" class="form-control" id="memberNumber" required>
+                                <input type="text" class="form-control" id="memberNumber" value="<?= isset($member) ? esc($member['member_number']) : '' ?>" required>
                             </div>
                             <div class="col-md-5">
                                 <label for="firstName" class="form-label">First Name *</label>
-                                <input type="text" class="form-control" id="firstName" required>
+                                <input type="text" class="form-control" id="firstName" value="<?= isset($member) ? esc($member['first_name']) : '' ?>" required>
                             </div>
                             <div class="col-md-5">
                                 <label for="lastName" class="form-label">Last Name *</label>
-                                <input type="text" class="form-control" id="lastName" required>
+                                <input type="text" class="form-control" id="lastName" value="<?= isset($member) ? esc($member['last_name']) : '' ?>" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="dob" class="form-label">Date of Birth *</label>
-                                <input type="date" class="form-control" id="dob" required>
+                                <input type="date" class="form-control" id="dob" value="<?= isset($member) ? esc($member['dob']) : '' ?>" required>
                             </div>
                             <div class="col-md-4">
                                 <label for="joinDate" class="form-label">Join Date *</label>
-                                <input type="date" class="form-control" id="joinDate" required>
+                                <input type="date" class="form-control" id="joinDate" value="<?= isset($member) ? esc($member['join_date']) : '' ?>" required>
                             </div>
                             <div class="col-md-4">
                                 <label for="gender" class="form-label">Gender *</label>
                                 <select class="form-select" id="gender" required>
                                     <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                    <option value="prefer-not-to-say">Prefer not to say</option>
+                                    <option value="male" <?= (isset($member) && $member['gender'] == 'male') ? 'selected' : '' ?>>Male</option>
+                                    <option value="female" <?= (isset($member) && $member['gender'] == 'female') ? 'selected' : '' ?>>Female</option>
+                                    <!-- <option value="other">Other</option>
+                                    <option value="prefer-not-to-say">Prefer not to say</option> -->
                                 </select>
                             </div>
                         </div>
@@ -93,33 +93,33 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="nationality" class="form-label">Nationality *</label>
-                                <input type="text" class="form-control" id="nationality" required>
+                                <input type="text" class="form-control" id="nationality" value="<?= isset($member) ? esc($member['nationality']) : '' ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="maritalStatus" class="form-label">Marital Status</label>
                                 <select class="form-select" id="maritalStatus">
                                     <option value="">Select Marital Status</option>
-                                    <option value="single">Single</option>
-                                    <option value="married">Married</option>
-                                    <option value="divorced">Divorced</option>
-                                    <option value="widowed">Widowed</option>
+                                    <option value="single" <?= (isset($member) && $member['marital_status'] == 'single') ? 'selected' : '' ?>>Single</option>
+                                    <option value="married" <?= (isset($member) && $member['marital_status'] == 'married') ? 'selected' : '' ?>>Married</option>
+                                    <option value="divorced" <?= (isset($member) && $member['marital_status'] == 'divorced') ? 'selected' : '' ?>>Divorced</option>
+                                    <option value="widowed" <?= (isset($member) && $member['marital_status'] == 'widowed') ? 'selected' : '' ?>>Widowed</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="idNumber" class="form-label">Member Number</label>
-                            <input type="text" class="form-control" id="idNumber">
+                            <label for="idNumber" class="form-label">ID Number</label>
+                            <input type="text" class="form-control" id="idNumber" value="<?= isset($member) ? esc($member['id_number']) : '' ?>">
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="termsAccepted">
-                            <label class="form-check-label" for="termsAccepted">
+                            <input class="form-check-input" type="checkbox" id="terms_accepted" checked>
+                            <label class="form-check-label" for="terms_accepted">
                                 I accept the terms and conditions *
                             </label>
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <a class="btn btn-secondary next-step" href="<?= site_url('/members') ?>">Back to List</a>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                            <a class="btn btn-secondary " href="<?= site_url('/members') ?>"><i class="bi bi-arrow-left me-2"></i>Back to List</a>
                             <button type="button" class="btn btn-primary next-step" data-step="1">Next: Contact Details</button>
                         </div>
                     </div>
@@ -130,54 +130,54 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address *</label>
-                            <input type="email" class="form-control" id="email" required>
+                            <input type="email" class="form-control" id="email" value="<?= isset($member) ? esc($member['email']) : '' ?>" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="phoneNumber" class="form-label">Phone Number *</label>
-                            <input type="tel" class="form-control" id="phoneNumber" required>
+                            <input type="tel" class="form-control" id="phoneNumber" value="<?= isset($member) ? esc($member['phone_number']) : '' ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="alternatePhone" class="form-label">Alternate Phone Number</label>
-                            <input type="tel" class="form-control" id="alternatePhone">
+                            <input type="tel" class="form-control" id="alternatePhone" value="<?= isset($member) ? esc($member['alternate_phone']) : '' ?>">
                         </div>
 
                         <div class="mb-3">
                             <label for="streetAddress" class="form-label">Street Address *</label>
-                            <input type="text" class="form-control" id="streetAddress" required>
+                            <input type="text" class="form-control" id="streetAddress" value="<?= isset($member) ? esc($member['street_address']) : '' ?>" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="addressLine2" class="form-label">Address Line 2</label>
-                            <input type="text" class="form-control" id="addressLine2">
+                            <input type="text" class="form-control" id="addressLine2" value="<?= isset($member) ? esc($member['address_line2']) : '' ?>">
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="city" class="form-label">Town/City *</label>
-                                <input type="text" class="form-control" id="city" required>
+                                <input type="text" class="form-control" id="city" value="<?= isset($member) ? esc($member['city']) : '' ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="county" class="form-label">County*</label>
-                                <input type="text" class="form-control" id="county" required>
+                                <input type="text" class="form-control" id="county" value="<?= isset($member) ? esc($member['county']) : '' ?>" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="zipCode" class="form-label">Zip/Postal Code *</label>
-                                <input type="text" class="form-control" id="zipCode" required>
+                                <input type="text" class="form-control" id="zipCode" value="<?= isset($member) ? esc($member['zip_code']) : '' ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="photo" class="form-label">Passport Photo</label>
-                                <input type="file" class="form-control" id="photo">
+                                <input type="file" class="form-control" id="photo" value="<?= isset($member) ? esc($member['photo_path']) : '' ?>">
                             </div>
 
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
                             <button type="button" class="btn btn-secondary prev-step" data-step="2">Previous: Personal Information</button>
-                            <button type="button" class="btn btn-primary next-step" data-step="2">Next: Professional Info</button>
+                            <button type="button" class="btn btn-primary next-step" data-step="2">Next: Beneficiary Information</button>
                         </div>
                     </div>
 
@@ -189,39 +189,43 @@
                         <div class="row mb-3">
                             <div class="mb-3 col-md-6">
                                 <label for="beneficiaryFirstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="beneficiaryFirstName">
+                                <input type="text" class="form-control" id="beneficiaryFirstName" value="<?= isset($beneficiary) ? esc($beneficiary['first_name']) : '' ?>">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="beneficiaryLastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="beneficiaryLastName">
+                                <input type="text" class="form-control" id="beneficiaryLastName" value="<?= isset($beneficiary) ? esc($beneficiary['last_name']) : '' ?>">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="beneficiaryDOB" class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="beneficiaryDOB">
+                                <input type="date" class="form-control" id="beneficiaryDOB" value="<?= isset($beneficiary) ? esc($beneficiary['dob']) : '' ?>">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="beneficiaryPhone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="beneficiaryPhone">
+                                <input type="tel" class="form-control" id="beneficiaryPhone" value="<?= isset($beneficiary) ? esc($beneficiary['phone_number']) : '' ?>">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="beneficiaryRelationship" class="form-label">Relationship to Client</label>
-                                <input type="text" class="form-control" id="beneficiaryRelationship">
+                                <input type="text" class="form-control" id="beneficiaryRelationship" value="<?= isset($beneficiary) ? esc($beneficiary['relationship']) : '' ?>">
                             </div>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="isBeneficiary">
+                            <input class="form-check-input" type="checkbox" id="isBeneficiary" checked>
                             <label class="form-check-label" for="isBeneficiary">Is Beneficiary?</label>
                         </div>
 
                         <div class="mb-3">
-                            <label for="emergencyContactName" class="form-label">% Entitlement</label>
-                            <input type="text" class="form-control" id="emergencyContactName">
+                            <label for="entitlement_percentage" class="form-label">% Entitlement</label>
+                            <input type="text" class="form-control" id="entitlement_percentage" value="<?= isset($beneficiary) ? esc($beneficiary['entitlement_percentage']) : '' ?>">
                         </div>
+                        <?php if (isset($member)): ?>
+                            <input type="hidden" name="member_id" value="<?= esc($member['id']) ?>">
+                            <input type="hidden" name="is_edit" value="1">
+                        <?php endif; ?>
 
-
-                        <div class="d-flex justify-content-between mt-4">
-                            <button type="button" class="btn btn-secondary prev-step" data-step="4">Previous: Professional Info</button>
-                            <button type="submit" class="btn btn-success">Submit Form</button>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                            <button type="button" class="btn btn-secondary me-md-2 prev-step" data-step="3">Previous: Contact Details</button>
+                            <button type="submit" class="btn btn-success"><?= isset($member) ? 'Update Member' : 'Submit Form' ?></button>
                         </div>
                     </div>
                 </form>
@@ -313,6 +317,7 @@
         form.addEventListener('submit', function(e) {
             console.log('form submitted')
             e.preventDefault();
+            showLoadingState(true);
 
             // Create FormData object
             const formData = new FormData();
@@ -329,7 +334,7 @@
             formData.append('nationality', document.getElementById('nationality').value);
             formData.append('maritalStatus', document.getElementById('maritalStatus').value);
             formData.append('idNumber', document.getElementById('idNumber').value);
-            formData.append('termsAccepted', document.getElementById('termsAccepted').checked ? '1' : '0');
+            formData.append('termsAccepted', document.getElementById('terms_accepted').checked ? '1' : '0');
 
             // Contact Details (Step 2)
             formData.append('email', document.getElementById('email').value);
@@ -354,10 +359,24 @@
             formData.append('beneficiaryPhone', document.getElementById('beneficiaryPhone').value);
             formData.append('beneficiaryRelationship', document.getElementById('beneficiaryRelationship').value);
             formData.append('isBeneficiary', document.getElementById('isBeneficiary').checked ? '1' : '0');
-            formData.append('entitlementPercentage', document.getElementById('emergencyContactName').value); // Note: ID seems incorrectly named
+            formData.append('entitlementPercentage', document.getElementById('entitlement_percentage').value); // Note: ID seems incorrectly named
+
+            // Check if this is an edit operation
+            const memberIdInput = document.querySelector('input[name="member_id"]');
+            const isEditInput = document.querySelector('input[name="is_edit"]');
+
+            let url = '<?= site_url('/members/create') ?>';
+
+            // If this is an edit operation, change the URL and add the member ID
+            if (memberIdInput && isEditInput) {
+                url = '<?= site_url('/members/update/'.$member['id']) ?>';
+                formData.append('member_id', memberIdInput.value);
+                formData.append('is_edit', isEditInput.value);
+            }
+
 
             // Send the data using fetch
-            fetch('<?= site_url('/members/create') ?>', {
+            fetch(url, {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -379,7 +398,7 @@
 
                     if (data.success) {
                         // Show success modal
-                        showFeedbackModal(true, 'Success!', 'Member created successfully.');
+                        showFeedbackModal(true, 'Success!', 'Member details added successfully.');
 
                         // Redirect after a delay
                         setTimeout(() => {

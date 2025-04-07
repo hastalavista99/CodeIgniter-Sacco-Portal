@@ -80,6 +80,10 @@
                     <p>Unable to find any entries for you.</p>
 
                 <?php endif ?>
+
+                <div class="d-flex justify-content-start">
+                    <a href="<?= site_url('accounting/journals/page')?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i>Back to list</a>
+                </div>
             </div>
         </div>
 

@@ -101,7 +101,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->post('create', 'Members::create');
         $routes->get('view/(:num)', 'Members::view/$1');
         $routes->get('edit/(:num)', 'Members::edit/$1');
-        
+        $routes->post('update/(:num)', 'Members::update/$1');
 
     });
 

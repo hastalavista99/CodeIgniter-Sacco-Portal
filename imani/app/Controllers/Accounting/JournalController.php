@@ -152,7 +152,7 @@ class JournalController extends BaseController
         // Now try with the join
         $db = db_connect();
         $builder = $db->table('journal_entry_details');
-        $builder->select('journal_entry_details.*, journal_entry_details.id as detail_id, accounts.id as account_id, accounts.name as account_name');
+        $builder->select('journal_entry_details.*, journal_entry_details.id as detail_id, accounts.id as account_id, accounts.account_name as account_name');
         $builder->join('accounts', 'journal_entry_details.account_id = accounts.id', 'left');
         $builder->where('journal_entry_details.journal_entry_id', $id);
 

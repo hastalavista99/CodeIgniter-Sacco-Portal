@@ -32,7 +32,7 @@ class MembersModel extends Model
         'join_date'     => 'required|valid_date',
         'gender'        => 'required',
         'nationality'   => 'required',
-        'email'         => 'required|valid_email|is_unique[members.email,id,{id}]',
+        'email'         => 'required|valid_email|',
         'phone_number'  => 'required',
         'street_address'=> 'required',
         'city'          => 'required',
@@ -41,11 +41,7 @@ class MembersModel extends Model
         'terms_accepted'=> 'required'
     ];
     
-    protected $validationMessages = [
-        'email' => [
-            'is_unique' => 'This email is already registered in our system.'
-        ]
-    ];
+    
     
     public function insertMemberWithBeneficiary($memberData, $beneficiaryData)
     {
