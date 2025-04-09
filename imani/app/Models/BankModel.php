@@ -12,7 +12,7 @@ class BankModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['transactionReferenceCode', 'transactionDate', 'totalAmount', 'currency', 'documentReferenceNumber', 'bankCode', 'branchCode', 'paymentDate', 'paymentReferenceCode', 'paymentCode', 'paymentMode', 'paymentAmount', 'additionalInfo', 'accountNumber', 'accountName', 'institutionCode', 'institutionName8.0'];
+    protected $allowedFields    = ['transactionReferenceCode', 'transactionDate', 'totalAmount', 'currency', 'documentReferenceNumber', 'bankCode', 'branchCode', 'paymentDate', 'paymentReferenceCode', 'paymentCode', 'paymentMode', 'paymentAmount', 'additionalInfo', 'accountNumber', 'accountName', 'institutionCode', 'institutionName'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
