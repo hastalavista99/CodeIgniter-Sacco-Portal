@@ -379,22 +379,11 @@ class Payments extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
-        $totalAmount = $bankModel->selectSum('paymentAmount')->first()['paymentAmount'];
-        if($totalAmount) {
-            $total = number_to_currency($totalAmount, 'KES', 'en_US', 2);
-        } else {
-            $total = 0;
-        }
-
-        
 
         $data = [
             'payments'  => $bankModel->findAll(),
             'title' => 'Bank Payments',
             'userInfo' => $userInfo,
-            'total' => $total,
-            'selectedMonth' => NULL,
-            'selectedYear' => NULL
         ];
 
         return view('payments/bank', $data);
