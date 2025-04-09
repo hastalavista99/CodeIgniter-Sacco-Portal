@@ -222,7 +222,7 @@
                             <input type="hidden" name="is_edit" value="1">
                         <?php endif; ?>
 
-                        
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
                             <button type="button" class="btn btn-secondary me-md-2 prev-step" data-step="3">Previous: Contact Details</button>
                             <button type="submit" class="btn btn-success"><?= isset($member) ? 'Update Member' : 'Submit Form' ?></button>
@@ -313,7 +313,7 @@
             });
         });
 
-        createFeedbackModal();
+        
         form.addEventListener('submit', function(e) {
             console.log('form submitted')
             e.preventDefault();
@@ -369,7 +369,7 @@
 
             // If this is an edit operation, change the URL and add the member ID
             if (memberIdInput && isEditInput) {
-                url = '<?= site_url('/members/update/'.$member['id']) ?>';
+                url = '<?= site_url('/members/update/' . $member['id']) ?>';
                 formData.append('member_id', memberIdInput.value);
                 formData.append('is_edit', isEditInput.value);
             }
@@ -434,168 +434,44 @@
                 });
         });
 
-        // Function to create the feedback modal elements
-        function createFeedbackModal() {
-            // Check if modal already exists
-            if (document.getElementById('feedbackModal')) {
-                return;
+        /**
+         * Shows or hides the loading overlay
+         * @param {boolean} show - True to show the loading overlay, false to hide it
+         */
+        function showLoadingState(show) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = show ? 'flex' : 'none';
             }
-
-            // Create modal container
-            const modalContainer = document.createElement('div');
-            modalContainer.id = 'feedbackModal';
-            modalContainer.className = 'modal fade';
-            modalContainer.tabIndex = '-1';
-            modalContainer.setAttribute('aria-hidden', 'true');
-
-            // Create modal HTML
-            modalContainer.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="feedbackModalTitle">Notification</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="feedback-icon mb-4">
-                            <!-- Icon will be inserted here -->
-                        </div>
-                        <div id="feedbackMessage"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-            // Add modal to body
-            document.body.appendChild(modalContainer);
-
-            // Add CSS for icons
-            const style = document.createElement('style');
-            style.textContent = `
-            .success-icon {
-                width: 80px;
-                height: 80px;
-                margin: 0 auto;
-                border-radius: 50%;
-                border: 4px solid #4CAF50;
-                padding: 0;
-                position: relative;
-                box-sizing: content-box;
-            }
-            .success-icon:before {
-                content: '';
-                position: absolute;
-                width: 5px;
-                height: 30px;
-                background-color: #4CAF50;
-                left: 28px;
-                top: 12px;
-                border-radius: 2px;
-                transform: rotate(45deg);
-            }
-            .success-icon:after {
-                content: '';
-                position: absolute;
-                width: 5px;
-                height: 55px;
-                background-color: #4CAF50;
-                left: 46px;
-                top: 3px;
-                border-radius: 2px;
-                transform: rotate(-45deg);
-            }
-            .error-icon {
-                width: 80px;
-                height: 80px;
-                margin: 0 auto;
-                border-radius: 50%;
-                border: 4px solid #F44336;
-                padding: 0;
-                position: relative;
-                box-sizing: content-box;
-            }
-            .error-icon:before {
-                content: '';
-                position: absolute;
-                width: 5px;
-                height: 60px;
-                background-color: #F44336;
-                left: 37px;
-                top: 10px;
-                border-radius: 2px;
-                transform: rotate(45deg);
-            }
-            .error-icon:after {
-                content: '';
-                position: absolute;
-                width: 5px;
-                height: 60px;
-                background-color: #F44336;
-                left: 37px;
-                top: 10px;
-                border-radius: 2px;
-                transform: rotate(-45deg);
-            }
-            .spinner-icon {
-                width: 80px;
-                height: 80px;
-                margin: 0 auto;
-                border-radius: 50%;
-                border: 4px solid #f3f3f3;
-                border-top: 4px solid #3498db;
-                animation: spin 1s linear infinite;
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
-            document.head.appendChild(style);
-
-            // Create loading overlay
-            const loadingOverlay = document.createElement('div');
-            loadingOverlay.id = 'loadingOverlay';
-            loadingOverlay.style.cssText = `
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        `;
-
-            loadingOverlay.innerHTML = `
-            <div class="spinner-icon"></div>
-        `;
-
-            document.body.appendChild(loadingOverlay);
         }
 
-        // Function to show the feedback modal
+        /**
+         * Shows a feedback modal with success or error styling
+         * @param {boolean} isSuccess - True for success style, false for error style
+         * @param {string} title - The title to display in the modal header
+         * @param {string} message - The message to display in the modal body (can include HTML)
+         */
         function showFeedbackModal(isSuccess, title, message) {
             const modal = document.getElementById('feedbackModal');
             const modalTitle = document.getElementById('feedbackModalTitle');
             const messageContainer = document.getElementById('feedbackMessage');
             const iconContainer = modal.querySelector('.feedback-icon');
+            const modalContent = modal.querySelector('.modal-content');
 
             // Set title and message
             modalTitle.textContent = title;
             messageContainer.innerHTML = message;
 
+            // Remove previous border classes
+            modalContent.classList.remove('success-border', 'error-border');
+
             // Set icon based on success/error
             if (isSuccess) {
-                iconContainer.innerHTML = '<div class="success-icon"></div>';
-                modal.querySelector('.modal-content').style.borderTop = '5px solid #4CAF50';
+                iconContainer.innerHTML = '<div class="success-icon"><span class="succ display-4"><i class="bi bi-check-lg"><i/></span></div>';
+                modalContent.classList.add('success-border');
             } else {
-                iconContainer.innerHTML = '<div class="error-icon"></div>';
-                modal.querySelector('.modal-content').style.borderTop = '5px solid #F44336';
+                iconContainer.innerHTML = '<div class="error-icon"><span class="err display-4"><i class="bi bi-x"><i/></span></div>';
+                modalContent.classList.add('error-border');
             }
 
             // Show the modal

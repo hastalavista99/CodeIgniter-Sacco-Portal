@@ -43,6 +43,10 @@ $routes->post('renew/password', 'Auth::resetPassword');
 $routes->post('malipo/account', 'Integrations::account');
 $routes->post('malipo/advise', 'Integrations::advise');
 
+$routes->post('bank/receive', 'BankController::receive');
+$routes->post('bank/validate', 'BankController::validateMember');
+ //Bank API Integration
+
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
     $routes->post('dashboard/updateMemberNo', 'Dashboard::updateMemberNo');

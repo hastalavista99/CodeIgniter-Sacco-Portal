@@ -28,38 +28,45 @@
 
 
   <style>
-      .form-step {
-            display: none;
-        }
-        .form-step.active {
-            display: block;
-        }
-        .step-indicator {
-            margin-bottom: 30px;
-        }
-        .step-indicator .step {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #ccc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            margin: 0 auto;
-        }
-        .step-indicator .step.active {
-            background-color: #0d6efd;
-        }
-        .step-indicator .step.completed {
-            background-color: #198754;
-        }
-        .step-label {
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 5px;
-        }
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    .step-indicator {
+      margin-bottom: 30px;
+    }
+
+    .step-indicator .step {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      margin: 0 auto;
+    }
+
+    .step-indicator .step.active {
+      background-color: #0d6efd;
+    }
+
+    .step-indicator .step.completed {
+      background-color: #198754;
+    }
+
+    .step-label {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 5px;
+    }
+
     .exported {
 
       background-color: #e0f7fa !important;
@@ -147,8 +154,7 @@
     .bd-mode-toggle .dropdown-menu .active .bi {
       display: block !important;
     }
-  </style>
-  <style>
+
     .bd-placeholder-img {
       font-size: 1.125rem;
       text-anchor: middle;
@@ -224,6 +230,117 @@
 
     .bd-mode-toggle .dropdown-menu .active .bi {
       display: block !important;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      border-radius: 50%;
+      border: 4px solid #4CAF50;
+      padding: 0;
+      position: relative;
+      box-sizing: content-box;
+    }
+
+    .succ {
+      color: #4CAF50;
+    }
+
+    .err {
+      color: #F44336;
+    }
+/* 
+    .success-icon:before {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 30px;
+      background-color: #4CAF50;
+      left: 28px;
+      top: 12px;
+      border-radius: 2px;
+      transform: rotate(45deg);
+    }
+
+    .success-icon:after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 55px;
+      background-color: #4CAF50;
+      left: 46px;
+      top: 3px;
+      border-radius: 2px;
+      transform: rotate(-45deg);
+    } */
+
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      border-radius: 50%;
+      border: 4px solid #F44336;
+      padding: 0;
+      position: relative;
+      box-sizing: content-box;
+    }
+
+    /* .error-icon:before {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 60px;
+      background-color: #F44336;
+      left: 37px;
+      top: 10px;
+      border-radius: 2px;
+      transform: rotate(45deg);
+    }
+
+    .error-icon:after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 60px;
+      background-color: #F44336;
+      left: 37px;
+      top: 10px;
+      border-radius: 2px;
+      transform: rotate(-45deg);
+    } */
+
+    .spinner-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      border-radius: 50%;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
     }
   </style>
 </head>
@@ -326,6 +443,32 @@
 
   </main>
 
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalTitle">Notification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="feedback-icon mb-4">
+                    <!-- Icon will be inserted here -->
+                </div>
+                <div id="feedbackMessage"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay">
+    <div class="spinner-icon"></div>
+</div>
+
 
 
   <footer id="footer" class="footer">
@@ -389,7 +532,7 @@
     new DataTable('#viewsTable', {
       layout: {
         topStart: {
-          buttons: ['excelHtml5','pdfHtml5', 'print', 'colvis']
+          buttons: ['excelHtml5', 'pdfHtml5', 'print', 'colvis']
         }
       },
       pagingType: 'simple',
