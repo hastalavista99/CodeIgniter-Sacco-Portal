@@ -12,9 +12,27 @@ class BankController extends ResourceController
 
     public function receive()
     {
+
+        // Basic Authentication (Postman "Authorization" tab)
+        $validUsername = getenv('BANK_API_USER');
+        $validPassword = getenv('BANK_API_PASS');
+
+        $authUser = $this->request->getServer('PHP_AUTH_USER');
+        $authPass = $this->request->getServer('PHP_AUTH_PW');
+
+        if ($authUser !== $validUsername || $authPass !== $validPassword) {
+            return $this->respond([
+                'header' => [
+                    'messageID' => '',
+                    'statusCode' => '401',
+                    'statusDescription' => 'Unauthorized: Invalid Basic Auth credentials.'
+                ]
+            ], 401);
+        }
+
         $json = $this->request->getJSON(true); // true = assoc array
 
-        // 1. Validate JSON structure
+        // Validate JSON structure
         if (!$json || !isset($json['header'], $json['request'])) {
             return $this->respond([
                 'header' => [
@@ -28,18 +46,18 @@ class BankController extends ResourceController
         $header = $json['header'];
         $request = $json['request'];
 
-        // 2. (Optional) Check authorization
-        if ($header['connectionID'] !== 'UOE' || $header['connectionPassword'] !== '8786%$') {
-            return $this->respond([
-                'header' => [
-                    'messageID' => $header['messageID'],
-                    'statusCode' => '401',
-                    'statusDescription' => 'The caller is not authorized for this request.'
-                ]
-            ], 401);
-        }
+        // (Optional) Check authorization
+        // if ($header['connectionID'] !== 'UOE' || $header['connectionPassword'] !== '8786%$') {
+        //     return $this->respond([
+        //         'header' => [
+        //             'messageID' => $header['messageID'],
+        //             'statusCode' => '401',
+        //             'statusDescription' => 'The caller is not authorized for this request.'
+        //         ]
+        //     ], 401);
+        // }
 
-        // 3. Check for duplicate transaction
+        // Check for duplicate transaction
         $bankModel = new BankModel();
         $exists = $bankModel->where('paymentDate', $request['PaymentDate'])->first();
         if ($exists) {
@@ -52,7 +70,7 @@ class BankController extends ResourceController
             ], 402);
         }
 
-        // 4. Try insert
+        // TRY insert
         try {
             $data = [
                 'transactionReferenceCode'   => $request['TransactionReferenceCode'] ?? '',
@@ -109,11 +127,11 @@ class BankController extends ResourceController
     public function validateMember()
     {
         $json = $this->request->getJSON(true);
-    
+
         // Save incoming request to a log file
         $logFile = WRITEPATH . 'logs/bank_validation_' . date('Ymd') . '.log';
         file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] " . json_encode($json, JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
-    
+
         // Validate required fields
         if (
             !isset($json['request']['TransactionReferenceCode']) ||
@@ -128,16 +146,16 @@ class BankController extends ResourceController
                 'response' => []
             ]);
         }
-    
+
         $referenceCode = trim($json['request']['TransactionReferenceCode']);
         $transactionDate = $json['request']['TransactionDate'];
-    
+
         // Load your model (adjust if your model name is different)
         $memberModel = new \App\Models\MembersModel();
-    
+
         // Check if member exists
         $member = $memberModel->where('member_number', $referenceCode)->first();
-    
+
         if (!$member) {
             return $this->response->setStatusCode(404)->setJSON([
                 'header' => [
@@ -148,7 +166,7 @@ class BankController extends ResourceController
                 'response' => []
             ]);
         }
-    
+
         // Successful validation
         return $this->response->setStatusCode(200)->setJSON([
             'header' => [
@@ -161,9 +179,9 @@ class BankController extends ResourceController
                 'TransactionDate' => $transactionDate,
                 'TotalAmount' => 0.0,
                 'Currency' => '',
-                'AdditionalInfo' => $member['first_name']. ' ' .$member['last_name'],
+                'AdditionalInfo' => $member['first_name'] . ' ' . $member['last_name'],
                 'AccountNumber' => $member['member_number'],
-                'AccountName' => $member['first_name']. ' ' .$member['last_name'],
+                'AccountName' => $member['first_name'] . ' ' . $member['last_name'],
                 'InstitutionCode' => '2100082',
                 'InstitutionName' => 'Eldoret University'
             ]
