@@ -17,19 +17,6 @@ class BankController extends ResourceController
         $validUsername = getenv('BANK_API_USER');
         $validPassword = getenv('BANK_API_PASS');
 
-        $authUser = $this->request->getServer('PHP_AUTH_USER');
-        $authPass = $this->request->getServer('PHP_AUTH_PW');
-
-        if ($authUser !== $validUsername || $authPass !== $validPassword) {
-            return $this->respond([
-                'header' => [
-                    'messageID' => '',
-                    'statusCode' => '401',
-                    'statusDescription' => 'Unauthorized: Invalid Basic Auth credentials.'
-                ]
-            ], 401);
-        }
-
         $json = $this->request->getJSON(true); // true = assoc array
 
         // Validate JSON structure
@@ -46,16 +33,19 @@ class BankController extends ResourceController
         $header = $json['header'];
         $request = $json['request'];
 
-        // (Optional) Check authorization
-        // if ($header['connectionID'] !== 'UOE' || $header['connectionPassword'] !== '8786%$') {
-        //     return $this->respond([
-        //         'header' => [
-        //             'messageID' => $header['messageID'],
-        //             'statusCode' => '401',
-        //             'statusDescription' => 'The caller is not authorized for this request.'
-        //         ]
-        //     ], 401);
-        // }
+
+        if (
+            $header['connectionID'] !== $validUsername ||
+            $header['connectionPassword'] !== $validPassword
+        ) {
+            return $this->respond([
+                'header' => [
+                    'messageID' => $header['messageID'],
+                    'statusCode' => '401',
+                    'statusDescription' => 'The caller is not authorized for this request.'
+                ]
+            ], 401);
+        }
 
         // Check for duplicate transaction
         $bankModel = new BankModel();
@@ -126,11 +116,29 @@ class BankController extends ResourceController
 
     public function validateMember()
     {
+        $validUsername = getenv('BANK_API_USER');
+        $validPassword = getenv('BANK_API_PASS');
         $json = $this->request->getJSON(true);
+        $header = $json['header'];
+        
 
-        // Save incoming request to a log file
-        $logFile = WRITEPATH . 'logs/bank_validation_' . date('Ymd') . '.log';
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] " . json_encode($json, JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
+
+        if (
+            $header['connectionID'] !== $validUsername ||
+            $header['connectionPassword'] !== $validPassword
+        ) {
+            return $this->respond([
+                'header' => [
+                    'messageID' => $header['messageID'],
+                    'statusCode' => '401',
+                    'statusDescription' => 'The caller is not authorized for this request.'
+                ]
+            ], 401);
+        }
+
+        // // Save incoming request to a log file
+        // $logFile = WRITEPATH . 'logs/bank_validation_' . date('Ymd') . '.log';
+        // file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] " . json_encode($json, JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
 
         // Validate required fields
         if (
@@ -182,8 +190,8 @@ class BankController extends ResourceController
                 'AdditionalInfo' => $member['first_name'] . ' ' . $member['last_name'],
                 'AccountNumber' => $member['member_number'],
                 'AccountName' => $member['first_name'] . ' ' . $member['last_name'],
-                'InstitutionCode' => '2100082',
-                'InstitutionName' => 'Eldoret University'
+                'InstitutionCode' => $json['request']['InstitutionCode'],
+                'InstitutionName' => 'GlohaSacco'
             ]
         ]);
     }
