@@ -1,5 +1,5 @@
 <?php
-namespace App\Accounting\Models;
+namespace App\Models\Accounting;
 
 use CodeIgniter\Model;
 

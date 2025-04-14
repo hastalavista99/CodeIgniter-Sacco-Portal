@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Accounting;
 
 use CodeIgniter\Model;
 
-class ShareAccountModel extends Model
+class SharesAccountModel extends Model
 {
     protected $table = 'share_accounts';
     protected $primaryKey = 'id';

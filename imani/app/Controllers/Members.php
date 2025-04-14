@@ -9,7 +9,8 @@ use App\Libraries\Hash;
 use App\Controllers\SendSMS;
 use App\Controllers\BaseController;
 use App\Models\BeneficiaryModel;
-use App\Accounting\Models\SavingsAccountModel;
+use App\Models\Accounting\SavingsAccountModel;
+use App\Models\Accounting\SharesAccountModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\API\ResponseTrait;
@@ -150,7 +151,7 @@ class Members extends BaseController
 
     private function createMemberShareAccount(int $memberId)
     {
-        $shareAccountModel = new \App\Models\ShareAccountModel();
+        $shareAccountModel = new SharesAccountModel();
 
         // The main control account ID for share capital
         $shareCapitalAccountId = 73; 
