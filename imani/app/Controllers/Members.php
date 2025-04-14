@@ -9,6 +9,7 @@ use App\Libraries\Hash;
 use App\Controllers\SendSMS;
 use App\Controllers\BaseController;
 use App\Models\BeneficiaryModel;
+use App\Accounting\Models\SavingsAccountModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\API\ResponseTrait;
@@ -109,6 +110,11 @@ class Members extends BaseController
         }
 
         if ($memberId) {
+            // Create member savings account
+            $this->createMemberSavingsAccount($memberId);
+
+            // Create share capital account
+            $this->createMemberShareAccount($memberId);
             return $this->response->setStatusCode(201)->setJSON([
                 'success' => true,
                 'message' => 'Member created successfully',
@@ -121,6 +127,44 @@ class Members extends BaseController
             ]);
         }
     }
+
+    private function createMemberSavingsAccount(int $memberId)
+    {
+        $savingsAccountModel = new SavingsAccountModel();
+
+        // The main control account ID for member savings (from your chart of accounts)
+        $savingsControlAccountId = 74;
+
+        // Optional: Generate a unique account number (you can customize this)
+        $accountNumber = 'SAV' . str_pad($memberId, 5, '0', STR_PAD_LEFT);
+
+        $data = [
+            'member_id' => $memberId,
+            'account_id' => $savingsControlAccountId,
+            'account_number' => $accountNumber,
+            'account_type' => 'normal', // optional
+        ];
+
+        return $savingsAccountModel->insert($data);
+    }
+
+    private function createMemberShareAccount(int $memberId)
+    {
+        $shareAccountModel = new \App\Models\ShareAccountModel();
+
+        // The main control account ID for share capital
+        $shareCapitalAccountId = 73; 
+
+        $data = [
+            'member_id' => $memberId,
+            'account_id' => $shareCapitalAccountId,
+            'shares_owned' => 0, // start with zero, increase on deposit
+        ];
+
+        return $shareAccountModel->insert($data);
+    }
+
+
 
     public function new()
     {
