@@ -22,9 +22,9 @@
 
                 <div class="col-md-2 pt-3">
                     <div>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTypeModal"><i class="bi-plus"></i>
+                        <a class="btn btn-success" href="<?= site_url('loan_type_settings')?>"><i class="bi-plus"></i>
                             Add Type
-                        </button>
+        </a>
                     </div>
                 </div>
 

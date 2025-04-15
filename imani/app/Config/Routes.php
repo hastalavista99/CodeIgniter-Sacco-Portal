@@ -98,6 +98,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
     $routes->get('/settings', 'Settings::index');
+    $routes->get('loan_type_settings', 'Loans::settingsPage');
     
     $routes->group('members', function ($routes) {
         $routes->get('/', 'Members::index');
