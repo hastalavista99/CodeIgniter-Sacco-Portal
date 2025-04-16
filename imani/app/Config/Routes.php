@@ -105,6 +105,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('/', 'Loans::index');
         $routes->get('type/settings', 'Loans::settingsPage');
         $routes->post('type/create', 'Loans::createLoantype');
+        $routes->get('get-interest/(:num)', 'Loans::getInterest/$1');
     });
     
     $routes->group('members', function ($routes) {

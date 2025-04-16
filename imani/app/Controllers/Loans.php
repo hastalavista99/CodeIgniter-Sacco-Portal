@@ -77,6 +77,33 @@ class Loans extends BaseController
     }
 
 
+    public function getInterest($id=null)
+    {
+        $loanTypeModel = new LoanTypeModel();
+        $loanType = $loanTypeModel->find($id);
+
+        if ($loanType) {
+            $interestTypeId = $loanType['interest_type_id'];
+        } else {
+            $interestTypeId = 1;
+        }
+        $interestTypeModel = new InterestTypeModel();
+        $interest = $interestTypeModel->find($interestTypeId);
+
+        if ($interest) {
+            return $this->response->setJSON([
+                'name' => $interest['name'],
+                'interest' => $loanType['interest_rate'],
+                'crb_amount' => $loanType['crb_amount'],
+                'service_charge' => $loanType['service_charge'],
+                'insurance_premium' => $loanType['insurance_premium']                 
+            ]);
+        }
+
+        return $this->response->setJSON(['error' => 'Interest not found'])->setStatusCode(404);
+    }
+
+
     // public function loanSettings()
     // {
     //     helper(['form', 'url']);

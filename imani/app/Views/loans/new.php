@@ -60,30 +60,42 @@ use CodeIgniter\HTTP\SiteURI;
                                 <select class="form-select" id="loan_type" required>
                                     <option value="">Select Loan</option>
                                     <?php foreach ($loanTypes as $type): ?>
-        <option value="<?= $type['id'] ?>"><?= esc($type['loan_name']) ?></option>
-    <?php endforeach; ?>
+                                        <option value="<?= $type['id'] ?>"><?= esc($type['loan_name']) ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="interest_method" class="form-label">Interest Method *</label>
-                                <select class="form-select" id="interest_method" required>
-                                    <option value="">Select Interest Method</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                    <option value="prefer-not-to-say">Prefer not to say</option>
-                                </select>
+                                <input type="text" name="interest_method" id="interest_method" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="interest_rate" class="form-label">Interest Rate(monthly)</label>
+                                <input type="number" class="form-control" id="interest_rate" name="interest_rate" disabled>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="insurance_premium" class="form-label">Insurance Premium(%)</label>
+                                <input type="number" class="form-control" id="insurance_premium" name="insurance_premium" disabled>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="crb_amount" class="form-label">CRB Amount</label>
+                                <input type="number" class="form-control" id="crb_amount" disabled>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="service_charge" class="form-label">Service Charge(%)</label>
+                                <input type="number" class="form-control" id="service_charge" disabled>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="principal" class="form-label">Principal Amount *</label>
-                                <input type="number" class="form-control" id="principal" required>
+                                <input type="number" class="form-control" id="principal" value="1000000" required>
                             </div>
                             <div class="col-md-4">
-                                <label for="principal" class="form-label">Repayment Period(Months) *</label>
-                                <input type="number" class="form-control" id="principal" required>
+                                <label for="repayment_period" class="form-label">Repayment Period(Months) *</label>
+                                <input type="number" class="form-control" id="repayment_period" required>
                             </div>
                             <div class="col-md-4">
                                 <label for="date" class="form-label">Request Date *</label>
@@ -93,20 +105,24 @@ use CodeIgniter\HTTP\SiteURI;
                         <h4>Repayment Details</h4>
                         <div class="row mb-3">
                             <div class="col-md-3">
-                                <label for="principal" class="form-label">Total Loan Amount *</label>
-                                <input type="number" class="form-control" id="principal" >
+                                <label for="total_loan" class="form-label">Total Loan Amount *</label>
+                                <input type="number" class="form-control" id="total_loan" name="total_loan" disabled>
                             </div>
-                            <div class="col-md-3">
-                                <label for="principal" class="form-label">Total Interest *</label>
-                                <input type="number" class="form-control" id="principal" >
+                            <div class="col-md-2">
+                                <label for="total_interest" class="form-label">Total Interest *</label>
+                                <input type="number" class="form-control" id="total_interest" name="total_interest" disabled>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="fees" class="form-label">Fees & Charges *</label>
-                                <input type="number" class="form-control" id="fees">
+                                <input type="number" class="form-control" id="fees" disabled>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="monthly_repayment" class="form-label">Monthly Repayment *</label>
+                                <input type="number" class="form-control" id="monthly_repayment" disabled>
                             </div>
                             <div class="col-md-3">
                                 <label for="disburse_amount" class="form-label">Disburse Amount *</label>
-                                <input type="number" class="form-control" id="disburse_amount" >
+                                <input type="number" class="form-control" id="disburse_amount" disabled>
                             </div>
                         </div>
 
@@ -122,9 +138,9 @@ use CodeIgniter\HTTP\SiteURI;
                         <div id="guarantorForm">
                             <div class="col-md-6">
                                 <label for="guarantor-number" class="form-label">Member Number</label>
-                                <input type="text" name="guarantor-number" id="guarantor-number" class="form-control" required>
+                                <input type="text" name="guarantor-number" id="guarantor-number" class="form-control">
                             </div>
-                            <button type="button" id="fetchguarantorBtn" class="btn btn-primary mt-2">Fetch guarantor</button>
+                            <button type="button" id="fetchGuarantorBtn" class="btn btn-primary mt-2">Fetch guarantor</button>
                         </div>
 
                         <div class="row mb-3">
@@ -164,8 +180,6 @@ use CodeIgniter\HTTP\SiteURI;
                             <button type="button" class="btn btn-primary next-step" data-step="2">Next: Details Confirmation</button>
                         </div>
                     </div>
-
-
 
                     <!-- Step 3: Details Confirmation -->
                     <div class="form-step" id="step-3">
@@ -345,17 +359,179 @@ use CodeIgniter\HTTP\SiteURI;
                     })
                     .then(data => {
                         if (data.name) {
-                            document.getElementById('guarantor-name').value = data.name;
-                            document.getElementById('guarantor-mobile').value = data.mobile;
+                            document.getElementById('member-name').value = data.name;
+                            document.getElementById('member-mobile').value = data.mobile;
                         } else {
                             alert("Member not found!");
-                            document.getElementById('guarantor-name').value = "";
-                            document.getElementById('guarantor-mobile').value = "";
+                            document.getElementById('member-name').value = "";
+                            document.getElementById('member-mobile').value = "";
                         }
                     })
                     .catch(error => console.error('Fetch error:', error));
             });
         }
+
+        // Fetch interest Method
+        const loanType = document.getElementById('loan_type');
+
+        loanType.addEventListener('change', function() {
+            let loanId = loanType.value;
+
+            fetch(`/loans/get-interest/${encodeURIComponent(loanId)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.name) {
+                        document.getElementById('interest_method').value = data.name;
+                        document.getElementById('interest_rate').value = data.interest;
+                        document.getElementById('insurance_premium').value = data.insurance_premium;
+                        document.getElementById('crb_amount').value = data.crb_amount;
+                        document.getElementById('service_charge').value = data.service_charge;
+                    } else {
+                        alert("Interest Method not found!");
+                        document.getElementById('interest_method').value = "";
+                        document.getElementById('interest_rate').value = "";
+                        document.getElementById('insurance_premium').value = "";
+                        document.getElementById('crb_amount').value = "";
+                        document.getElementById('service_charge').value = "";
+                    }
+                })
+                .catch(error => console.error('Fetch error:', error));
+        })
+
+        // fetch guarantor details
+        const fetchGuarantorBtn = document.getElementById('fetchGuarantorBtn');
+
+        fetchGuarantorBtn.addEventListener('click', function() {
+            let guarantorNumber = document.getElementById('guarantor-number').value.trim();
+            if (guarantorNumber === '') {
+                alert("Please enter a valid Member Number.");
+                return;
+            }
+
+            fetch(`/accounting/remittances/get-member/${encodeURIComponent(guarantorNumber)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.name) {
+                        document.getElementById('guarantor-name').value = data.name;
+                        document.getElementById('guarantor-mobile').value = data.mobile;
+                    } else {
+                        alert("Guarantor not found!");
+                        document.getElementById('guarantor-name').value = "";
+                        document.getElementById('guarantor-mobile').value = "";
+                    }
+                })
+                .catch(error => console.error('Guarantor fetch error: ', error));
+        });
+
+        const repaymentPeriodInput = document.getElementById('repayment_period');
+        const principalInput = document.getElementById('principal');
+        const interestMethodInput = document.getElementById('interest_method');
+
+        const totalLoanInput = document.getElementById('total_loan');
+        const totalInterestInput = document.getElementById('total_interest');
+        const repaymentInput = document.getElementById('monthly_repayment');
+
+        
+
+        function calculateLoanDetails() {
+            const monthlyInterestRate = document.getElementById('interest_rate').value;
+            const monthlyRate = monthlyInterestRate / 100; // interest rate per month / 100 to get the decimal
+            const interestMethod = interestMethodInput.value;
+            const loanPrincipal = parseFloat(principalInput.value);
+            const repaymentPeriod = parseInt(repaymentPeriodInput.value);
+
+            // Validate inputs
+            if (isNaN(loanPrincipal) || isNaN(repaymentPeriod) || repaymentPeriod <= 0) {
+                totalLoanInput.value = '';
+                totalInterestInput.value = '';
+                repaymentInput.value = '';
+                return;
+            }
+
+
+            let interest = 0;
+            let totalLoan = 0;
+            let repayment = 0;
+
+            if (interestMethod === 'Flat Rate') {
+                interest = loanPrincipal * monthlyRate * repaymentPeriod;
+                totalLoan = loanPrincipal + interest;
+                repayment = totalLoan / repaymentPeriod;
+
+            } else if (interestMethod === 'Reducing Balance') {
+                const r = monthlyRate;
+                const n = repaymentPeriod;
+                const P = loanPrincipal;
+
+                repayment = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                totalLoan = repayment * n;
+                interest = totalLoan - loanPrincipal;
+            }
+
+            totalLoanInput.value = totalLoan.toFixed(2);
+            totalInterestInput.value = interest.toFixed(2);
+            repaymentInput.value = repayment.toFixed(2);
+        }
+
+        // Recalculate when any relevant input changes
+        repaymentPeriodInput.addEventListener('input', calculateLoanDetails);
+        principalInput.addEventListener('input', calculateLoanDetails);
+        interestMethodInput.addEventListener('change', calculateLoanDetails);
+
+
+        // Add guarantors to table 
+        const addBtn = document.getElementById('addBtn');
+
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent form submission 
+
+            const number = document.getElementById('guarantor-number').value.trim();
+            const name = document.getElementById('guarantor-name').value.trim();
+            const mobile = document.getElementById('guarantor-mobile').value.trim();
+            const amount = document.getElementById('guarantor-amount').value.trim();
+
+            // Validate required fields
+            if (!number || !name || !mobile || !amount) {
+                alert("Please make sure all fields are filled.");
+                return;
+            }
+
+            // check if amount is a valid number
+            if (isNaN(amount) || parseFloat(amount) <= 0) {
+                alert("Please enter a valid guaranteed amount.");
+                return;
+            }
+
+            // Create new row
+            const tbody = document.querySelector('#guarantorTable tbody');
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+        <td>${number}</td>
+        <td>${name}</td>
+        <td>${mobile}</td>
+        <td>${amount}</td>
+    `;
+
+            tbody.appendChild(newRow);
+
+            // Clear inputs for next entry
+            document.getElementById('guarantor-number').value = '';
+            document.getElementById('guarantor-name').value = '';
+            document.getElementById('guarantor-mobile').value = '';
+            document.getElementById('guarantor-amount').value = '';
+        });
+
 
     });
 </script>
