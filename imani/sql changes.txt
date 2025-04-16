@@ -74,3 +74,36 @@ ALTER TABLE `tbl_bank`
 ALTER TABLE `tbl_bank`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
+
+
+CREATE TABLE loan_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    loan_name VARCHAR(100) NOT NULL,
+    service_charge DECIMAL(5,2) NOT NULL,
+    interest_type_id INT, -- FK to a separate table for interest types (optional)
+    interest_rate DECIMAL(5,2),
+    insurance_premium DECIMAL(5,2),
+    crb_amount DECIMAL(10,2),
+    min_repayment_period INT,
+    max_repayment_period INT,
+    min_loan_limit DECIMAL(12,2),
+    max_loan_limit DECIMAL(12,2),
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE interest_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+
+ALTER TABLE loan_types
+ADD CONSTRAINT fk_interest_type
+FOREIGN KEY (interest_type_id) REFERENCES interest_types(id);

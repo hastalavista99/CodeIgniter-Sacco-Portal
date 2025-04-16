@@ -46,11 +46,6 @@ use CodeIgniter\HTTP\SiteURI;
                         <div class="step" id="step-indicator-3"><i class="bi bi-list-check"></i></div>
                         <div class="step-label">Details Confirmation</div>
                     </div>
-                    <!--
-                            <div class="col-3">
-                                <div class="step" id="step-indicator-4">4</div>
-                                <div class="step-label">Additional Details</div>
-                            </div> -->
                 </div>
 
                 <!-- Form -->
@@ -64,10 +59,9 @@ use CodeIgniter\HTTP\SiteURI;
                                 <label for="loan_type" class="form-label">Loan Type *</label>
                                 <select class="form-select" id="loan_type" required>
                                     <option value="">Select Loan</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                    <option value="prefer-not-to-say">Prefer not to say</option>
+                                    <?php foreach ($loanTypes as $type): ?>
+        <option value="<?= $type['id'] ?>"><?= esc($type['loan_name']) ?></option>
+    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="col-md-6">

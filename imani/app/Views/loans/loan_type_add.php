@@ -35,8 +35,9 @@
                             <label for="interest-type" class="form-label">Loan Interest Type *</label>
                             <select name="interest-type" id="interest-type" class="form-select">
                                 <option value="">Select Interest Type</option>
-                                <option value=""></option>
-                                <option value=""></option>
+                                <?php foreach ($interestTypes as $type): ?>
+                                    <option value="<?= $type['id'] ?>"><?= esc($type['name']) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -53,7 +54,7 @@
                             <label for="crb" class="form-label">CRB Amount</label>
                             <input type="number" name="crb" id="crb" class="form-control">
                         </div>
-                        
+
                     </div>
                     <h4>Default Limits</h4>
                     <div class="row mb-3">
@@ -78,7 +79,7 @@
                         <label for="description" class="form-label">Description</label>
                         <textarea name="description" id="description" class="form-control"></textarea>
                     </div>
-                    
+
                     <div class="d-flex justify-content-end mt-2">
                         <button class="btn btn-info">
                             Submit
@@ -89,5 +90,41 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loanTypeForm');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+
+                fetch('/loans/type/create', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            // 'Content-Type' is NOT needed for FormData
+                            // If using CSRF protection, add it here
+                            // 'X-CSRF-TOKEN': 'your-csrf-token'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('Loan type created successfully!');
+                            form.reset();
+                        } else {
+                            alert('Something went wrong: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Something went wrong. Check console for details.');
+                    });
+            });
+        });
+    </script>
+
 
     <?= $this->endSection() ?>

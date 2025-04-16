@@ -99,6 +99,13 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
     $routes->get('/settings', 'Settings::index');
     $routes->get('loan_type_settings', 'Loans::settingsPage');
+
+    
+    $routes->group('loans', function ($routes) {
+        $routes->get('/', 'Loans::index');
+        $routes->get('type/settings', 'Loans::settingsPage');
+        $routes->post('type/create', 'Loans::createLoantype');
+    });
     
     $routes->group('members', function ($routes) {
         $routes->get('/', 'Members::index');

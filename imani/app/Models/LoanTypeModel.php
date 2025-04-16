@@ -6,41 +6,24 @@ use CodeIgniter\Model;
 
 class LoanTypeModel extends Model
 {
-    protected $table            = 'loan_type';
-    protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = ['type', 'rate','formula_id', 'created_at'];
+    protected $table = 'loan_types';
+    protected $primaryKey = 'id';
 
-    protected bool $allowEmptyInserts = false;
-    protected bool $updateOnlyChanged = true;
+    protected $allowedFields = [
+        'loan_name',
+        'service_charge',
+        'interest_type_id',
+        'interest_rate',
+        'insurance_premium',
+        'crb_amount',
+        'min_repayment_period',
+        'max_repayment_period',
+        'min_loan_limit',
+        'max_loan_limit',
+        'description'
+    ];
 
-    protected array $casts = [];
-    protected array $castHandlers = [];
-
-    // Dates
-    protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
+    protected $useTimestamps = true;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
-
-    // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
 }
