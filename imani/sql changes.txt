@@ -21,3 +21,56 @@ CREATE TABLE share_accounts (
     FOREIGN KEY (member_id) REFERENCES members(id),
     FOREIGN KEY (account_id) REFERENCES accounts(id)
 );
+
+
+CREATE TABLE `tbl_bank` (
+  `id` int(11) NOT NULL,
+  `transactionReferenceCode` varchar(255) NOT NULL,
+  `transactionDate` varchar(255) NOT NULL,
+  `totalAmount` varchar(255) NOT NULL,
+  `currency` varchar(255) NOT NULL,
+  `documentReferenceNumber` varchar(255) NOT NULL,
+  `bankCode` varchar(255) NOT NULL,
+  `branchCode` varchar(255) NOT NULL,
+  `paymentDate` varchar(255) NOT NULL,
+  `paymentReferenceCode` varchar(255) NOT NULL,
+  `paymentCode` varchar(255) NOT NULL,
+  `paymentMode` varchar(255) NOT NULL,
+  `paymentAmount` varchar(255) NOT NULL,
+  `additionalInfo` text NOT NULL,
+  `accountNumber` varchar(255) NOT NULL,
+  `accountName` varchar(255) NOT NULL,
+  `institutionCode` varchar(255) NOT NULL,
+  `institutionName` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_bank`
+--
+
+INSERT INTO `tbl_bank` (`id`, `transactionReferenceCode`, `transactionDate`, `totalAmount`, `currency`, `documentReferenceNumber`, `bankCode`, `branchCode`, `paymentDate`, `paymentReferenceCode`, `paymentCode`, `paymentMode`, `paymentAmount`, `additionalInfo`, `accountNumber`, `accountName`, `institutionCode`, `institutionName`, `created_at`) VALUES
+(1, 'IB116cd8a1d1b44IDP', '2019-08-28T17:32:02.7460598+03:00', '12', 'KES', 'DOC1234', '45', '01', '2019-08-29', 'PAY1234', 'PC001', 'MPESA', '12', 'Test payment', 'EDA/1140/13', 'John Doe', '2100082', 'Eldoret University', '2025-04-09 19:38:56'),
+(2, 'IB116cd8a1d1b44IDP', '2019-08-28T17:32:02.7460598+03:00', '12', 'KES', 'DOC1234', '45', '01', '2019-08-24', 'PAY1234', 'PC001', 'MPESA', '12', 'Test payment', 'EDA/1140/13', 'John Doe', '2100082', 'Eldoret University', '2025-04-11 04:00:26'),
+(3, 'SAC001', '2019-08-28T17:32:02.7460598+03:00', '12000', 'KES', 'SAC001', '00011', '00011001', '2019-08-28T17:32:02.7460598+03:00', '', '', '1', '12000', 'SAC001', 'SAC001', '', '', '', '2025-04-11 04:34:21');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_bank`
+--
+ALTER TABLE `tbl_bank`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_bank`
+--
+ALTER TABLE `tbl_bank`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+COMMIT;
