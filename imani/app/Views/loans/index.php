@@ -20,26 +20,6 @@
         <div class="card shadow border-none my-2 px-2">
 
             <div class="card-body px-0 pb-2">
-                <!--  <div class="col-md-2 ms-3">
-                    <button id="exportButton" class="btn btn-success mb-2">Export selected</button>
-                </div>
-                
-                <form method="GET" action="<?= site_url('filterPay') ?>" class="form-inline mb-3 row ms-1">
-                    <div class="form-group col-md-3">
-                        <label for="startDate">Start Date:</label>
-                        <input type="date" name="startDate" id="startDate" class="form-control" value="<?= esc($startDate ?? '') ?>">
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="endDate">End Date:</label>
-                        <input type="date" name="endDate" id="endDate" class="form-control" value="<?= esc($endDate ?? '') ?>">
-                    </div>
-
-                    <div class="form-group col-md-2 mt-3">
-                        <button type="submit" class="btn btn-primary ms-2 mt-2">Filter</button>
-                    </div>
-                </form> -->
-
 
                 <?php if (!empty($loans) && is_array($loans)) : ?>
                     <div class="table-responsive-md my-3">
@@ -47,28 +27,28 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Loan Number</th>
-                                    <th>Name</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
                                     <th>Member No.</th>
-                                    <th>Loan Amount</th>
-                                    <th>Guarantors</th>
-                                    <th>Application Date</th>
+                                    <th>Loan Taken</th>
+                                    <th>Loan Type</th>
+                                    <th>Interest Method</th>
                                     <th>Loan Status</th>
-                                    <th>Edit name</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($loans as $loan_item) : ?>
                                     <tr>
                                         <td><?= esc($loan_item['id']) ?></td>
-                                        <td><?= esc($loan_item['loan_number']) ?></td>
-                                        <td><?= esc($loan_item['name']) ?></td>
+                                        <td><?= esc($loan_item['member_first_name']) ?></td>
+                                        <td><?= esc($loan_item['member_last_name']) ?></td>
                                         <td><?= esc($loan_item['member_number']) ?></td>
-                                        <td><?= esc(number_format($loan_item['amount'], 2)) ?></td>
-                                        <td><?= esc($loan_item['guarantor_count']) ?></td>
-                                        <td><?= esc($loan_item['apply_date']) ?></td>
-                                        <td class="text-capitalize fw-bold <?= $loan_item['loan_status'] == 'pending' ? 'text-warning' : ($loan_item['loan_status'] == 'rejected' ? 'text-danger' : 'text-success')  ?>"><?= esc($loan_item['loan_status']) ?></td>
-                                        <td><a class="btn btn-success btn-sm" href="<?= site_url('loans/details?id=' . $loan_item['id']) ?>">Details</a></td>
+                                        <td><?= esc($loan_item['principal']) ?></td>
+                                        <td><?= esc($loan_item['loan_name']) ?></td>
+                                        <td><?= esc($loan_item['created_at']) ?></td>
+                                        <td class="text-capitalize fw-bold"></td>
+                                        <td><a class="btn btn-success btn-sm" href="<?= site_url('loans/view/' . $loan_item['id']) ?>">Details</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

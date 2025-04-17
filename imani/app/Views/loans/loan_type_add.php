@@ -54,8 +54,14 @@
                             <label for="crb" class="form-label">CRB Amount</label>
                             <input type="number" name="crb" id="crb" class="form-control">
                         </div>
+                        
 
                     </div>
+                    <p>Main account code for loans is 110. Add additional account code in increments of 10</p>
+                    <div class="col-md-3 mb-3">
+                            <label for="account-code" class="form-label">Account Code(110...)</label>
+                            <input type="number" name="account-code" id="account-code" class="form-control">
+                        </div>
                     <h4>Default Limits</h4>
                     <div class="row mb-3">
                         <div class="col-md-3">

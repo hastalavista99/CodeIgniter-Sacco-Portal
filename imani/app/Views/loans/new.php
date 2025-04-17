@@ -32,6 +32,9 @@ use CodeIgniter\HTTP\SiteURI;
                         <label for="member-mobile" class="form-label">Mobile Number</label>
                         <input type="text" name="member-mobile" id="member-mobile" class="form-control" disabled>
                     </div>
+
+                    <!--  hidden input to have member id after fetching it from the backend  -->
+                    <input type="hidden" name="member-id" id="member-id">
                 </div>
                 <div class="row step-indicator mb-4">
                     <div class="col-4">
@@ -185,71 +188,8 @@ use CodeIgniter\HTTP\SiteURI;
                     <div class="form-step" id="step-3">
                         <h5 class="mb-4">Step 3: Details Confirmation</h5>
 
-                        <div class="mb-3">
-                            <label for="howDidYouHear" class="form-label">How did you hear about us?</label>
-                            <select class="form-select" id="howDidYouHear">
-                                <option value="">Select an option</option>
-                                <option value="search-engine">Search Engine</option>
-                                <option value="social-media">Social Media</option>
-                                <option value="friend">Friend/Family</option>
-                                <option value="advertisement">Advertisement</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
+                        <div class="mb-3" id="confirm-details-div">
 
-                        <div class="mb-3">
-                            <label for="interestReason" class="form-label">Why are you interested?</label>
-                            <textarea class="form-control" id="interestReason" rows="2"></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="preferences" class="form-label">Preferences</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="prefersEmail">
-                                <label class="form-check-label" for="prefersEmail">Email updates</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="prefersSMS">
-                                <label class="form-check-label" for="prefersSMS">SMS notifications</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="prefersNewsletter">
-                                <label class="form-check-label" for="prefersNewsletter">Monthly newsletter</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="prefersPromo">
-                                <label class="form-check-label" for="prefersPromo">Promotional offers</label>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="availabilityDate" class="form-label">Available Start Date</label>
-                            <input type="date" class="form-control" id="availabilityDate">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="emergencyContactName" class="form-label">Emergency Contact Name</label>
-                            <input type="text" class="form-control" id="emergencyContactName">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="emergencyContactRelation" class="form-label">Relationship to Emergency Contact</label>
-                            <input type="text" class="form-control" id="emergencyContactRelation">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="emergencyContactPhone" class="form-label">Emergency Contact Phone</label>
-                            <input type="tel" class="form-control" id="emergencyContactPhone">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="additionalInfo" class="form-label">Additional Information</label>
-                            <textarea class="form-control" id="additionalInfo" rows="3"></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="dietaryRestrictions" class="form-label">Dietary Restrictions</label>
-                            <input type="text" class="form-control" id="dietaryRestrictions">
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
@@ -342,7 +282,7 @@ use CodeIgniter\HTTP\SiteURI;
         let fetchMemberBtn = document.getElementById('fetchMemberBtn');
         if (fetchMemberBtn) {
             fetchMemberBtn.addEventListener('click', function() {
-                console.log("Fetch Member button clicked");
+                // console.log("Fetch Member button clicked");
 
                 let memberNo = document.getElementById('member-number').value.trim();
                 if (memberNo === '') {
@@ -359,10 +299,12 @@ use CodeIgniter\HTTP\SiteURI;
                     })
                     .then(data => {
                         if (data.name) {
+                            document.getElementById('member-id').value = data.id;
                             document.getElementById('member-name').value = data.name;
                             document.getElementById('member-mobile').value = data.mobile;
                         } else {
                             alert("Member not found!");
+                            document.getElementById('member-id').value = "";
                             document.getElementById('member-name').value = "";
                             document.getElementById('member-mobile').value = "";
                         }
@@ -441,7 +383,7 @@ use CodeIgniter\HTTP\SiteURI;
         const totalInterestInput = document.getElementById('total_interest');
         const repaymentInput = document.getElementById('monthly_repayment');
 
-        
+
 
         function calculateLoanDetails() {
             const monthlyInterestRate = document.getElementById('interest_rate').value;
@@ -457,7 +399,6 @@ use CodeIgniter\HTTP\SiteURI;
                 repaymentInput.value = '';
                 return;
             }
-
 
             let interest = 0;
             let totalLoan = 0;
@@ -535,6 +476,161 @@ use CodeIgniter\HTTP\SiteURI;
 
     });
 </script>
+
+<!-- Submission of Loan Data -->
+<script>
+    document.getElementById('loanApplicationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        showLoadingState(true);
+
+        // Gather loan application data
+        const data = {
+            member_id: document.getElementById('member-id').value,
+            loan_type: document.getElementById('loan_type').value,
+            interest_method: document.getElementById('interest_method').value,
+            interest_rate: document.getElementById('interest_rate').value,
+            insurance_premium: document.getElementById('insurance_premium').value,
+            crb_amount: document.getElementById('crb_amount').value,
+            service_charge: document.getElementById('service_charge').value,
+            principal: document.getElementById('principal').value,
+            repayment_period: document.getElementById('repayment_period').value,
+            request_date: document.getElementById('date').value,
+            total_loan: document.getElementById('total_loan').value,
+            total_interest: document.getElementById('total_interest').value,
+            fees: document.getElementById('fees').value,
+            monthly_repayment: document.getElementById('monthly_repayment').value,
+            disburse_amount: document.getElementById('disburse_amount').value,
+            guarantors: []
+        };
+
+        // Gather guarantor data from the table
+        const table = document.querySelector('#guarantorTable tbody');
+        const rows = table.querySelectorAll('tr');
+        rows.forEach(row => {
+            const cols = row.querySelectorAll('td');
+            data.guarantors.push({
+                member_number: cols[0].innerText.trim(),
+                name: cols[1].innerText.trim(),
+                mobile: cols[2].innerText.trim(),
+                amount: cols[3].innerText.trim()
+            });
+        });
+
+        // Send data to backend using fetch
+        fetch('/loans/application/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest', // optional: for CI4 to detect AJAX
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Network response was not ok");
+                return response.json();
+            })
+            .then(data => {
+                showLoadingState(false);
+
+                if (data.success) {
+                    // Show success modal
+                    showFeedbackModal(true, 'Success!', 'Loan details submitted successfully.');
+
+                    // Redirect after a delay
+                    setTimeout(() => {
+                        window.location.href = '<?= site_url('/members') ?>';
+                    }, 2000);
+                } else {
+                    // Show error modal
+                    let errorMessage = data.message || 'An error occurred';
+
+                    // If we have validation errors, format them
+                    if (data.errors) {
+                        errorMessage += ':<br><ul>';
+                        for (const field in data.errors) {
+                            errorMessage += `<li>${data.errors[field]}</li>`;
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    showFeedbackModal(false, 'Error', errorMessage);
+                }
+
+                // console.log(data);
+            })
+            .catch(error => {
+                // Handle errors
+
+                // Hide loading state
+                showLoadingState(false);
+
+                // Show error modal
+                showFeedbackModal(
+                    false,
+                    'Submission Error',
+                    'An error occurred while submitting the form. Please try again.'
+                );
+                console.error('Submission error:', error);
+            });
+
+        /**
+         * Shows or hides the loading overlay
+         * @param {boolean} show - True to show the loading overlay, false to hide it
+         */
+        function showLoadingState(show) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = show ? 'flex' : 'none';
+            }
+        }
+
+        /**
+         * Shows a feedback modal with success or error styling
+         * @param {boolean} isSuccess - True for success style, false for error style
+         * @param {string} title - The title to display in the modal header
+         * @param {string} message - The message to display in the modal body (can include HTML)
+         */
+        function showFeedbackModal(isSuccess, title, message) {
+            const modal = document.getElementById('feedbackModal');
+            const modalTitle = document.getElementById('feedbackModalTitle');
+            const messageContainer = document.getElementById('feedbackMessage');
+            const iconContainer = modal.querySelector('.feedback-icon');
+            const modalContent = modal.querySelector('.modal-content');
+
+            // Set title and message
+            modalTitle.textContent = title;
+            messageContainer.innerHTML = message;
+
+            // Remove previous border classes
+            modalContent.classList.remove('success-border', 'error-border');
+
+            // Set icon based on success/error
+            if (isSuccess) {
+                iconContainer.innerHTML = '<div class="success-icon"><span class="succ display-4"><i class="bi bi-check-lg"><i/></span></div>';
+                modalContent.classList.add('success-border');
+            } else {
+                iconContainer.innerHTML = '<div class="error-icon"><span class="err display-4"><i class="bi bi-x"><i/></span></div>';
+                modalContent.classList.add('error-border');
+            }
+
+            // Show the modal
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
+
+        // Function to show/hide loading state
+        function showLoadingState(isLoading) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (isLoading) {
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+    });
+</script>
+
 
 
 

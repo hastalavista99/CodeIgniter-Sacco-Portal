@@ -1,0 +1,11 @@
+Member Statement
+Loan Approval
+journals to be updated when loan is approved
+Guarantors to be notified when loan is created
+User authentication level with checklist for capabilities
+Loan Statement
+Loan Repayments
+System Parameters
+Audit trail
+Check off - to come later
+Statement to be in PDF FORMAT

@@ -190,6 +190,7 @@ class Members extends BaseController
 
         if ($member) {
             return $this->response->setJSON([
+                'id' =>$member['id'],
                 'name' => $member['first_name'] . " " .  $member['last_name'],
                 'mobile' => $member['phone_number']
             ]);

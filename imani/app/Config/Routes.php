@@ -74,13 +74,6 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('loans/reject/(:num)', 'Loans::rejectLoan/$1');
     $routes->get('loans/approved', 'Loans::approved');
     $routes->get('loans/my_loans', 'Loans::myLoans');
-    $routes->post('loans/submit', 'Loans::submit');
-    $routes->post('loans/type/create', 'Loans::createLoanType');
-    $routes->get('loans/details', 'Loans::details');
-    $routes->get('loans/settings', 'Loans::loanSettings');
-    $routes->post('loans/getFormula', 'Loans::getFormula');
-    $routes->get('loans/print-pdf/(:num)', 'Loans::printLoanPDF/$1');
-    $routes->get('loan/pdf', 'Loans::generatePdf');
     $routes->post('loginMember/changePass', [LoginMember::class, 'changePass']);
     $routes->get('/sms', [LoginMember::class, 'sms']);
     $routes->post('/newMember', [Members::class, 'newMember']);
@@ -103,9 +96,12 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     
     $routes->group('loans', function ($routes) {
         $routes->get('/', 'Loans::index');
+        $routes->get('all', 'Loans::allLoans');
+        $routes->get('view/(:num)', 'Loans::view/$1');
         $routes->get('type/settings', 'Loans::settingsPage');
         $routes->post('type/create', 'Loans::createLoantype');
         $routes->get('get-interest/(:num)', 'Loans::getInterest/$1');
+        $routes->post('application/submit', 'Loans::submit');
     });
     
     $routes->group('members', function ($routes) {

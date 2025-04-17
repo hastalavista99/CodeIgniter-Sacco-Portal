@@ -142,7 +142,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('loans/new') ?>" class="nav-link collapsed">
+              <a href="<?= site_url('loans/all') ?>" class="nav-link collapsed">
                 <i class="bi bi-card-checklist"></i>
                 <span>
                   Loan Applications

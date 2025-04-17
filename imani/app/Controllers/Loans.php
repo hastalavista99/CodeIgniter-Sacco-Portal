@@ -4,13 +4,14 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Controllers\Auth;
-use App\Models\GuarantorsModel;
+use App\Models\LoanGuarantorModel;
 use App\Models\LoansModel;
 use App\Models\UserModel;
 use Dompdf\Dompdf;
 use App\Libraries\Pdf;
+use App\Models\Accounting\AccountsModel;
 use App\Models\InterestTypeModel;
-use App\Models\LoanFormulaModel;
+use App\Models\LoanApplicationModel;
 use App\Models\LoanTypeModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -35,6 +36,25 @@ class Loans extends BaseController
         return view('loans/new', $data);
     }
 
+    public function allLoans()
+    {
+        
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $loanModel = new LoanApplicationModel();
+        $loans = $loanModel->getAllApplicationsWithDetails();
+
+        $data = [
+            'title' => 'Loan Applications',
+            'loans' => $loans,
+            'userInfo' => $userInfo
+        ];
+
+        return view('loans/index', $data);
+    }
+
     public function settingsPage()
     {
         $userModel = new UserModel();
@@ -53,6 +73,7 @@ class Loans extends BaseController
 
     public function createLoanType()
     {
+        $accountsModel = new AccountsModel();
         $request = $this->request;
 
         $data = [
@@ -73,11 +94,18 @@ class Loans extends BaseController
         $model = new \App\Models\LoanTypeModel();
         $model->insert($data);
 
+        $accountsModel->insert([
+            'account_name' => $request->getPost('loan-name'),
+            'account_code' => $this->request->getPost('account-code'),
+            'category' => 'Asset',
+            'parent_id' => 3,
+        ]);
+
         return $this->response->setJSON(['status' => 'success']);
     }
 
 
-    public function getInterest($id=null)
+    public function getInterest($id = null)
     {
         $loanTypeModel = new LoanTypeModel();
         $loanType = $loanTypeModel->find($id);
@@ -96,37 +124,76 @@ class Loans extends BaseController
                 'interest' => $loanType['interest_rate'],
                 'crb_amount' => $loanType['crb_amount'],
                 'service_charge' => $loanType['service_charge'],
-                'insurance_premium' => $loanType['insurance_premium']                 
+                'insurance_premium' => $loanType['insurance_premium']
             ]);
         }
 
         return $this->response->setJSON(['error' => 'Interest not found'])->setStatusCode(404);
     }
 
+    public function submit()
+    {
+        $data = $this->request->getJSON(true); // Decode JSON body into array
 
-    // public function loanSettings()
-    // {
-    //     helper(['form', 'url']);
-    //     $userModel = new UserModel();
-    //     $loggedInUserId = session()->get('loggedInUser');
-    //     $userInfo = $userModel->find($loggedInUserId);
+        $loanModel = new LoanApplicationModel();
+        $guarantorModel = new LoanGuarantorModel();
 
-    //     $typeModel = new LoanTypeModel();
-    //     $loanTypes = $typeModel
-    //         ->select('loan_type.id as loan_type_id, loan_type.*, loan_formula.id as formula_id, loan_formula.formula as formula_name, loan_formula.*')
-    //         ->join('loan_formula', 'loan_type.formula_id = loan_formula.id')
-    //         ->findAll();
+        // Save loan application
+        $loanData = [
+            'member_id' => $data['member_id'],
+            'loan_type_id' => $data['loan_type'],
+            'interest_method' => $data['interest_method'],
+            'interest_rate' => $data['interest_rate'],
+            'insurance_premium' => $data['insurance_premium'],
+            'crb_amount' => $data['crb_amount'],
+            'service_charge' => $data['service_charge'],
+            'principal' => $data['principal'],
+            'repayment_period' => $data['repayment_period'],
+            'request_date' => $data['request_date'],
+            'total_loan' => $data['total_loan'],
+            'total_interest' => $data['total_interest'],
+            'fees' => $data['fees'],
+            'monthly_repayment' => $data['monthly_repayment'],
+            'disburse_amount' => $data['disburse_amount'],
+        ];
 
-    //     $formulaModel = new LoanFormulaModel();
-    //     $formulas = $formulaModel->findAll();
+        $loanModel->insert($loanData);
+        $loanAppId = $loanModel->getInsertID();
 
-    //     $data = [
-    //         'title' => 'Loan Settings',
-    //         'types' => $loanTypes,
-    //         'userInfo' => $userInfo,
-    //         'formulas' => $formulas
-    //     ];
+        // Save guarantors
+        if (!empty($data['guarantors'])) {
+            foreach ($data['guarantors'] as $guarantor) {
+                $guarantorModel->insert([
+                    'loan_application_id' => $loanAppId,
+                    'guarantor_member_no' => $guarantor['member_number'],
+                    'name' => $guarantor['name'],
+                    'mobile' => $guarantor['mobile'],
+                    'amount' => $guarantor['amount'],
+                ]);
+            }
+        }
 
-    //     return view('loans/settings', $data);
-    // }
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Loan application submitted successfully',
+            'loan_id' => $loanAppId
+        ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+    }
+
+    public function view($id=null)
+    {
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $loanModel = new LoanApplicationModel();
+        $loan = $loanModel->getApplicationWithDetails($id);
+
+        $data = [
+            'title' => 'Loan Details',
+            'userInfo' => $userInfo,
+            'loan' => $loan
+        ];
+        return view('loans/loan_details', $data);
+    }
 }

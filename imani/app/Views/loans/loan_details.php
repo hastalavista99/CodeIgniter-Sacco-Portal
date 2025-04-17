@@ -25,7 +25,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Name:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['name'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= $loan['member_first_name'] ?> <?= $loan['member_last_name'] ?></div>
                         </div>
 
                         <div class="row">
@@ -40,28 +40,12 @@
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Email:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['member_email'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= $loan['email'] ?></div>
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">ID Number:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['member_id'] ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">Employer:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['employer'] ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">Station:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['station'] ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">P.O. Box:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['po_box'] . "-" . $loan['po_code'] . ", " . $loan['po_city'] ?></div>
-                        </div>
-                        <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Application Date:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['apply_date'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= $loan['created_at'] ?></div>
                         </div>
                     </div>
                 </section>
@@ -70,104 +54,84 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan type:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['loan_type'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= $loan['loan_name'] ?></div>
                         </div>
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan Principal:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['amount'], 0, 2) ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . $loan['principal'] ?></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan Interest:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['interest'], 0, 2) ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . $loan['total_interest'] ?></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Total Loan:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total'], 0, 2) ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . $loan['total_loan'] ?></div>
                         </div>
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Repayment Period:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['repay_period'] . " months" ?></div>
+                            <div class="col-lg-9 col-md-8"><?= $loan['repayment_period'] . " months" ?></div>
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">Repayment Mode:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['payment_mode'] ?></div>
+                            <div class="col-lg-3 col-md-4 label fw-bold">Monthly Repayment:</div>
+                            <div class="col-lg-9 col-md-8"><?= $loan['monthly_repayment'] ?></div>
                         </div>
                     </div>
                 </section>
                 <section class="my-3 py2">
                     <h5>Disbursement Details:</h5>
                     <div class="container">
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">Bank Details:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['bank'] . " - " . $loan['branch'] ?></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">Account Details:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['account_number'] . " - " . $loan['account_name'] ?></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label fw-bold">Disbursement Type:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['payment_type'] ?></div>
-                        </div>
                     </div>
                 </section>
                 <section class="my-3 py2">
                     <h5>Guarantors:</h5>
                     <div class="container">
-                        <?php if (!empty($guarantors) && is_array($guarantors)) : ?>
+                        
                             <table class="table table-bordered">
                                 <thead>
-                                    <tr class="table-info">
+                                    <tr>
+                                        <th>Member No</th>
                                         <th>Name</th>
-                                        <th>Member Number</th>
-                                        <th>ID Number</th>
-                                        <th>Guarantee</th>
-                                        <th>Response?</th>
+                                        <th>Mobile</th>
+                                        <th>Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($guarantors as $guarantor) : ?>
+                                    <?php foreach ($loan['guarantors'] as $g): ?>
                                         <tr>
-                                            <td><?= $guarantor['member_name'] ?></td>
-                                            <td><?= $guarantor['member_number'] ?></td>
-                                            <td><?= $guarantor['id_number'] ?></td>
-                                            <td><?= number_format($guarantor['amount']) ?></td>
-                                            <td><?= $guarantor['responded'] ?></td>
+                                            <td><?= esc($g['guarantor_member_no']) ?></td>
+                                            <td><?= esc($g['name']) ?></td>
+                                            <td><?= esc($g['mobile']) ?></td>
+                                            <td><?= number_format($g['amount'], 2) ?></td>
                                         </tr>
-                                    <?php endforeach ?>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                     </div>
-                <?php else : ?>
-                    <h3>No Guarantors found</h3>
-                    <p>Unable to find any guarantors for this loan.</p>
-                <?php endif; ?>
 
                 </section>
 
                 <div class="my-3 d-flex align-content-center justify-content-around">
-                    <a href="<?= site_url('loans/new') ?>" class="btn btn-success mx-2"><i class="bi-chevron-left"></i>Back</a>
+                    <a href="<?= site_url('loans/all') ?>" class="btn btn-success mx-2"><i class="bi-chevron-left"></i>Back</a>
                     <?php
                     if ($userInfo['role'] === 'admin') { ?>
                         <a href="<?= site_url('loans/print-pdf/' . $loan['id']) ?>" target="_blank" class="btn btn-primary mx-2">
                             View and Download PDF
                         </a>
                         <?php
-                        if ($loan['loan_status'] !== 'approved' && $loan['loan_status'] !== 'rejected') {
+                        if ($loan) {
                         ?>
                             <a href="<?= site_url('loans/approve/' . $loan['id']) ?>" class="btn btn-success mx-2">
-                            <i class="bi bi-check2 ms-auto"></i>
+                                <i class="bi bi-check2 ms-auto"></i>
                                 Approve
                             </a>
                             <a href="<?= site_url('loans/reject/' . $loan['id']) ?>" class="btn btn-danger mx-2">
-                            <i class="bi bi-x-lg ms-auto"></i>
+                                <i class="bi bi-x-lg ms-auto"></i>
                                 Reject
-                            </a>                            
+                            </a>
                         <?php
                         }
                         ?>

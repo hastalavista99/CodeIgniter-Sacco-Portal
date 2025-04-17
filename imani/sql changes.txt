@@ -107,3 +107,38 @@ CREATE TABLE interest_types (
 ALTER TABLE loan_types
 ADD CONSTRAINT fk_interest_type
 FOREIGN KEY (interest_type_id) REFERENCES interest_types(id);
+
+17/04/2025
+
+-- Loan Applications Table
+CREATE TABLE loan_applications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    member_id INT NOT NULL,
+    loan_type_id INT NOT NULL,
+    interest_method VARCHAR(50),
+    interest_rate DECIMAL(5,2),
+    insurance_premium DECIMAL(5,2),
+    crb_amount DECIMAL(10,2),
+    service_charge DECIMAL(5,2),
+    principal DECIMAL(12,2),
+    repayment_period INT,
+    request_date DATE,
+    total_loan DECIMAL(12,2),
+    total_interest DECIMAL(12,2),
+    fees DECIMAL(12,2),
+    monthly_repayment DECIMAL(12,2),
+    disburse_amount DECIMAL(12,2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Guarantors Table
+CREATE TABLE loan_guarantors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    loan_application_id INT NOT NULL,
+    guarantor_member_no VARCHAR(20) NOT NULL,
+    name VARCHAR(100),
+    mobile VARCHAR(20),
+    amount DECIMAL(12,2),
+    FOREIGN KEY (loan_application_id) REFERENCES loan_applications(id) ON DELETE CASCADE
+);
+
