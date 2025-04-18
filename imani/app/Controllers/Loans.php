@@ -104,6 +104,34 @@ class Loans extends BaseController
         return $this->response->setJSON(['status' => 'success']);
     }
 
+    public function updateLoanType($id)
+    {
+        $accountsModel = new AccountsModel();
+        $request = $this->request;
+
+        $data = [
+            'loan_name' => $request->getPost('loan-name'),
+            'service_charge' => $request->getPost('service-charge'),
+            'interest_type_id' => $request->getPost('interest-type'),
+            'interest_rate' => $request->getPost('interest-rate'),
+            'insurance_premium' => $request->getPost('insurance-premium'),
+            'crb_amount' => $request->getPost('crb'),
+            'min_repayment_period' => $request->getPost('minimum-repayment-period'),
+            'max_repayment_period' => $request->getPost('maximum-repayment-period'),
+            'min_loan_limit' => $request->getPost('minimum-loan-limit'),
+            'max_loan_limit' => $request->getPost('maximum-loan-limit'),
+            'description' => $request->getPost('description'),
+        ];
+
+        // Save $data to your DB using model
+        $model = new \App\Models\LoanTypeModel();
+        $model->update($id,$data);
+
+
+        return $this->response->setJSON(['status' => 'success']);
+    }
+
+
 
     public function getInterest($id = null)
     {
@@ -155,6 +183,7 @@ class Loans extends BaseController
             'fees' => $data['fees'],
             'monthly_repayment' => $data['monthly_repayment'],
             'disburse_amount' => $data['disburse_amount'],
+            'loan_status' => 'pending'
         ];
 
         $loanModel->insert($loanData);
@@ -195,5 +224,44 @@ class Loans extends BaseController
             'loan' => $loan
         ];
         return view('loans/loan_details', $data);
+    }
+
+    public function loanTypes() 
+    {
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $loanTypeModel = new LoanTypeModel();
+        $loanTypes = $loanTypeModel->getLoanTypes();
+
+        $data = [
+            'title' => 'Loan Types',
+            'userInfo' => $userInfo,
+            'types' => $loanTypes
+        ];
+        return view('loans/loan_type_page', $data);
+    }
+
+    public function typeView($id=null)
+    {
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $loanTypeModel = new LoanTypeModel();
+        $loanType = $loanTypeModel->getLoanType($id);
+
+        $interestTypeModel = new InterestTypeModel();
+        $interestTypes = $interestTypeModel->findAll();
+
+        $data = [
+            'title' => 'Loan Type - '.$loanType['loan_name'],
+            'userInfo' => $userInfo,
+            'type' => $loanType,
+            'interestTypes' => $interestTypes
+        ];
+
+        return view('loans/loan_type_edit', $data);
     }
 }

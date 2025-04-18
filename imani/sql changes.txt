@@ -142,3 +142,7 @@ CREATE TABLE loan_guarantors (
     FOREIGN KEY (loan_application_id) REFERENCES loan_applications(id) ON DELETE CASCADE
 );
 
+
+
+18/04/2025
+ALTER TABLE `loan_applications` ADD `loan_status` ENUM('approved', 'rejected', 'pending') NOT NULL AFTER `disburse_amount`; 

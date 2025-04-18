@@ -98,8 +98,11 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('/', 'Loans::index');
         $routes->get('all', 'Loans::allLoans');
         $routes->get('view/(:num)', 'Loans::view/$1');
+        $routes->get('type', 'Loans::loanTypes');
+        $routes->get('type/view/(:num)', 'Loans::typeView/$1');
         $routes->get('type/settings', 'Loans::settingsPage');
         $routes->post('type/create', 'Loans::createLoantype');
+        $routes->post('type/update/(:num)', 'Loans::updateLoantype/$1');
         $routes->get('get-interest/(:num)', 'Loans::getInterest/$1');
         $routes->post('application/submit', 'Loans::submit');
     });

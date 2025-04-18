@@ -159,7 +159,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="<?= site_url('loans/type/settings') ?>" class="nav-link collapsed">
+              <a href="<?= site_url('loans/type') ?>" class="nav-link collapsed">
                 <i class="bi bi-gear"></i>
                 <span>
                   Loan Settings

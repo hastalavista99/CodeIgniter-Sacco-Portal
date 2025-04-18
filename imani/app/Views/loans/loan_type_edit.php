@@ -23,36 +23,39 @@
                 <form id="loanTypeForm" class="mt-3">
                     <h4>Default Settings</h4>
                     <div class="row mb-3">
+                        <input type="hidden" name="type-id" id="type-id" value="<?= esc($type['id'])?>">
                         <div class="col-md-3">
                             <label for="loan-name" class="form-label">Loan Name *</label>
-                            <input type="text" name="loan-name" id="loan-name" class="form-control">
+                            <input type="text" name="loan-name" id="loan-name" class="form-control" value="<?= esc($type['loan_name'])?>">
                         </div>
                         <div class="col-md-3">
                             <label for="service-charge" class="form-label">Service Charge(%) *</label>
-                            <input type="number" name="service-charge" id="service-charge" class="form-control">
+                            <input type="number" name="service-charge" id="service-charge" class="form-control" value="<?= esc($type['service_charge'])?>">
                         </div>
                         <div class="col-md-3">
                             <label for="interest-type" class="form-label">Loan Interest Type *</label>
                             <select name="interest-type" id="interest-type" class="form-select">
                                 <option value="">Select Interest Type</option>
-                                <?php foreach ($interestTypes as $type): ?>
-                                    <option value="<?= $type['id'] ?>"><?= esc($type['name']) ?></option>
+                                <?php foreach ($interestTypes as $intType): ?>
+                                    <option value="<?= $intType['id'] ?>" <?php if($type['id'] === $type['id']) {
+                                        ?>selected<?php
+                                    } ?>><?= esc($intType['name']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label for="interest-rate" class="form-label">Interest Rate(%)</label>
-                            <input type="number" name="interest-rate" id="interest-rate" class="form-control" step="0.01">
+                            <input type="number" name="interest-rate" id="interest-rate" class="form-control" step="0.01" value="<?= esc($type['interest_rate'])?>">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="insurance-premium" class="form-label">Insurance Premium(%)</label>
-                            <input type="number" name="insurance-premium" id="insurance-premium" class="form-control">
+                            <input type="number" name="insurance-premium" id="insurance-premium" class="form-control" value="<?= esc($type['insurance_premium'])?>">
                         </div>
                         <div class="col-md-3">
                             <label for="crb" class="form-label">CRB Amount</label>
-                            <input type="number" name="crb" id="crb" class="form-control">
+                            <input type="number" name="crb" id="crb" class="form-control" value="<?= esc($type['crb_amount'])?>">
                         </div>
 
 
@@ -60,30 +63,30 @@
                     <p>Main account code for loans is 110. Add additional account code in increments of 10</p>
                     <div class="col-md-3 mb-3">
                         <label for="account-code" class="form-label">Account Code(110...)</label>
-                        <input type="number" name="account-code" id="account-code" class="form-control">
+                        <input type="number" name="account-code" id="account-code" class="form-control" value="<?= esc($type['account_code'])?>" disabled>
                     </div>
                     <h4>Default Limits</h4>
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="minimum-repayment-period" class="form-label">Minimum Repayment Period</label>
-                            <input type="number" name="minimum-repayment-period" id="minimum-repayment-period" class="form-control">
+                            <input type="number" name="minimum-repayment-period" id="minimum-repayment-period" class="form-control" value="<?= esc($type['min_repayment_period'])?>">
                         </div>
                         <div class="col-md-3">
                             <label for="maximum-repayment-period" class="form-label">Maximum Repayment Period</label>
-                            <input type="number" name="maximum-repayment-period" id="maximum-repayment-period" class="form-control">
+                            <input type="number" name="maximum-repayment-period" id="maximum-repayment-period" class="form-control" value="<?= esc($type['max_repayment_period'])?>">
                         </div>
                         <div class="col-md-3">
                             <label for="minimum-loan-limit" class="form-label">Minimum Loan Limit</label>
-                            <input type="number" name="minimum-loan-limit" id="minimum-loan-limit" class="form-control">
+                            <input type="number" name="minimum-loan-limit" id="minimum-loan-limit" class="form-control" value="<?= esc($type['min_loan_limit'])?>">
                         </div>
                         <div class="col-md-3">
                             <label for="maximum-loan-limit" class="form-label">Maximum Loan Limit</label>
-                            <input type="number" name="maximum-loan-limit" id="maximum-loan-limit" class="form-control">
+                            <input type="number" name="maximum-loan-limit" id="maximum-loan-limit" class="form-control" value="<?= esc($type['max_loan_limit'])?>">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea name="description" id="description" class="form-control"></textarea>
+                        <textarea name="description" id="description" class="form-control" ><?= esc($type['description'])?></textarea>
                     </div>
 
                     <div class="d-flex justify-content-between mt-2">
@@ -109,10 +112,11 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 showLoadingState(true);
+                const typeID = document.getElementById('type-id').value;
 
                 const formData = new FormData(form);
 
-                fetch('/loans/type/create', {
+                fetch(`/loans/type/update/${typeID}`, {
                         method: 'POST',
                         body: formData,
                         headers: {

@@ -24,6 +24,7 @@ class LoanApplicationModel extends Model
         'fees',
         'monthly_repayment',
         'disburse_amount',
+        'loan_status', 
         'created_at'
     ];
 
