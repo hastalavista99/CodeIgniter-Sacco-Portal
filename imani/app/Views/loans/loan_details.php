@@ -53,6 +53,10 @@
                     <h5>Loan Details:</h5>
                     <div class="container">
                         <div class="row">
+                            <div class="col-lg-3 col-md-4 label fw-bold">Loan status:</div>
+                            <div class="col-lg-9 col-md-8 text-capitalize"><?= $loan['loan_status'] ?></div>
+                        </div>
+                        <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan type:</div>
                             <div class="col-lg-9 col-md-8"><?= $loan['loan_name'] ?></div>
                         </div>
@@ -89,27 +93,27 @@
                 <section class="my-3 py2">
                     <h5>Guarantors:</h5>
                     <div class="container">
-                        
-                            <table class="table table-bordered">
-                                <thead>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Member No</th>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($loan['guarantors'] as $g): ?>
                                     <tr>
-                                        <th>Member No</th>
-                                        <th>Name</th>
-                                        <th>Mobile</th>
-                                        <th>Amount</th>
+                                        <td><?= esc($g['guarantor_member_no']) ?></td>
+                                        <td><?= esc($g['name']) ?></td>
+                                        <td><?= esc($g['mobile']) ?></td>
+                                        <td><?= number_format($g['amount'], 2) ?></td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($loan['guarantors'] as $g): ?>
-                                        <tr>
-                                            <td><?= esc($g['guarantor_member_no']) ?></td>
-                                            <td><?= esc($g['name']) ?></td>
-                                            <td><?= esc($g['mobile']) ?></td>
-                                            <td><?= number_format($g['amount'], 2) ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
 
                 </section>
@@ -122,7 +126,7 @@
                             View and Download PDF
                         </a>
                         <?php
-                        if ($loan) {
+                        if ($loan['loan_status'] !== 'approved') {
                         ?>
                             <a href="<?= site_url('loans/approve/' . $loan['id']) ?>" class="btn btn-success mx-2">
                                 <i class="bi bi-check2 ms-auto"></i>

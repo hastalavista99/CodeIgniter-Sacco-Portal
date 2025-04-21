@@ -539,7 +539,7 @@ use CodeIgniter\HTTP\SiteURI;
 
                     // Redirect after a delay
                     setTimeout(() => {
-                        window.location.href = '<?= site_url('/members') ?>';
+                        window.location.href = '<?= site_url('/loans/apply') ?>';
                     }, 2000);
                 } else {
                     // Show error modal

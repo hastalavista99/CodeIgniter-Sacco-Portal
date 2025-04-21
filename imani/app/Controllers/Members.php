@@ -11,10 +11,15 @@ use App\Controllers\BaseController;
 use App\Models\BeneficiaryModel;
 use App\Models\Accounting\SavingsAccountModel;
 use App\Models\Accounting\SharesAccountModel;
+use App\Models\LoanApplicationModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use App\Models\OrganizationModel;
+use App\Models\Accounting\JournalDetailsModel;
 
 class Members extends BaseController
 {
@@ -154,7 +159,7 @@ class Members extends BaseController
         $shareAccountModel = new SharesAccountModel();
 
         // The main control account ID for share capital
-        $shareCapitalAccountId = 73; 
+        $shareCapitalAccountId = 73;
 
         $data = [
             'member_id' => $memberId,
@@ -190,7 +195,7 @@ class Members extends BaseController
 
         if ($member) {
             return $this->response->setJSON([
-                'id' =>$member['id'],
+                'id' => $member['id'],
                 'name' => $member['first_name'] . " " .  $member['last_name'],
                 'mobile' => $member['phone_number']
             ]);
@@ -204,18 +209,34 @@ class Members extends BaseController
     {
         helper('form');
 
-        $model = new MembersModel();
-        $member = $model->where('id', $id)->first();
+
+        $memberModel = new MembersModel();
+        $savingsModel = new SavingsAccountModel();
+        $sharesModel = new SharesAccountModel();
+        $loanModel = new LoanApplicationModel();
 
         $userModel = model(UserModel::class);
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
+
+        $member = $memberModel->find($id);
+        if (!$member) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Member not found");
+        }
+
+        $savings = $savingsModel->getMemberSavingsTotal($id);
+        $shares = $sharesModel->getMemberSharesTotal($id);
+        $loans = $loanModel->getMemberLoanSummary($id);
         $data = [
             'member' => $member,
-            'userInfo' => $userInfo,
-            'title' => 'View - ' . $member['member_number']
+            'savings' => $savings,
+            'shares' => $shares,
+            'loans' => $loans,
+            'title' => 'Member View - ' . $member['first_name'] . " " . $member['last_name'],
+            'userInfo' => $userInfo
         ];
+
         return view('members/view', $data);
     }
 
@@ -381,6 +402,62 @@ class Members extends BaseController
                 'success' => false,
                 'message' => 'Failed to update member: ' . $e->getMessage()
             ]);
+        }
+    }
+
+
+    public function generateStatement($memberId)
+    {
+        try {
+            $memberModel = new MembersModel();
+            $orgModel = new OrganizationModel();
+            $journalModel = new JournalDetailsModel();
+
+            // Fetch member
+            $member = $memberModel->find($memberId);
+            if (!$member) {
+                return $this->response->setStatusCode(404)->setBody('Member not found.');
+            }
+
+            // Fetch organization profile
+            $organization = $orgModel->first();
+            if (!$organization) {
+                return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
+            }
+
+            // Fetch transactions
+            if (!method_exists($journalModel, 'getMemberTransactionDetails')) {
+                return $this->response->setStatusCode(500)->setBody('Transaction retrieval method not implemented.');
+            }
+
+            $transactions = $journalModel->getMemberTransactionDetails($memberId);
+            if (empty($transactions)) {
+                // Optional: Render PDF anyway, or abort
+                log_message('warning', "No transactions found for member ID: {$memberId}");
+            }
+
+            $data = [
+                'member' => $member,
+                'organization' => $organization,
+                'transactions' => $transactions,
+            ];
+
+            // Generate PDF
+            $html = view('members/pdf', $data);
+
+            $options = new Options();
+            $options->set('defaultFont', 'DejaVu Sans');
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            return $this->response
+                ->setHeader('Content-Type', 'application/pdf')
+                ->setBody($dompdf->output());
+        } catch (\Throwable $e) {
+            log_message('error', 'Error generating statement: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('An unexpected error occurred. Please try again later.');
         }
     }
 }

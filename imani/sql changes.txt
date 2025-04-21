@@ -146,3 +146,52 @@ CREATE TABLE loan_guarantors (
 
 18/04/2025
 ALTER TABLE `loan_applications` ADD `loan_status` ENUM('approved', 'rejected', 'pending') NOT NULL AFTER `disburse_amount`; 
+
+
+
+20/04/2025
+
+CREATE TABLE loan_repayments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    loan_id INT NOT NULL,
+    installment_number INT NOT NULL,
+    due_date DATE NOT NULL,
+    amount_due DECIMAL(10,2) NOT NULL,
+    amount_paid DECIMAL(10,2) DEFAULT 0.00,
+    payment_date DATE DEFAULT NULL,
+    status ENUM('pending', 'paid', 'overdue') DEFAULT 'pending',
+    payment_method VARCHAR(50) DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (loan_id) REFERENCES loan_applications(id)
+);
+
+
+21/04/2025
+
+CREATE TABLE `organization_profile` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `org_name` VARCHAR(255) NOT NULL,
+  `phone` VARCHAR(50),
+  `email` VARCHAR(100),
+  `postal_address` VARCHAR(255),
+  `physical_address` VARCHAR(255),
+  `logo` VARCHAR(255),
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE `system_parameters` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `param_key` VARCHAR(100) UNIQUE NOT NULL,
+  `param_value` TEXT,
+  `description` TEXT
+);
+
+
+INSERT INTO system_parameters (param_key, param_value, description)
+VALUES
+('loan_interest_rate', '0.12', 'Default interest rate for loans'),
+('enable_sms_notifications', 'true', 'Toggle SMS alerts'),
+('end_of_year_closing', 'manual', 'Manual or automatic closing behavior');
+

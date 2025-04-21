@@ -276,6 +276,12 @@
                 <span>System Settings</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="<?= site_url('/admin/settings') ?>" class="nav-link collapsed">
+                <i class="bi bi-person-gear"></i>
+                <span>Admin Settings</span>
+              </a>
+            </li>
           </ul>
         </div>
       </li>

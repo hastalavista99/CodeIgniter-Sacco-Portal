@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Controllers\Accounting\JournalService;
 use App\Controllers\BaseController;
 use App\Controllers\Auth;
 use App\Models\LoanGuarantorModel;
@@ -10,10 +11,14 @@ use App\Models\UserModel;
 use Dompdf\Dompdf;
 use App\Libraries\Pdf;
 use App\Models\Accounting\AccountsModel;
+use App\Models\Accounting\JournalDetailsModel;
+use App\Models\Accounting\JournalEntryModel;
 use App\Models\InterestTypeModel;
 use App\Models\LoanApplicationModel;
 use App\Models\LoanTypeModel;
+use App\Models\LoanRepaymentModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use DateTime;
 
 class Loans extends BaseController
 {
@@ -38,7 +43,7 @@ class Loans extends BaseController
 
     public function allLoans()
     {
-        
+
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
@@ -125,7 +130,7 @@ class Loans extends BaseController
 
         // Save $data to your DB using model
         $model = new \App\Models\LoanTypeModel();
-        $model->update($id,$data);
+        $model->update($id, $data);
 
 
         return $this->response->setJSON(['status' => 'success']);
@@ -209,7 +214,7 @@ class Loans extends BaseController
         ])->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
-    public function view($id=null)
+    public function view($id = null)
     {
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
@@ -226,7 +231,7 @@ class Loans extends BaseController
         return view('loans/loan_details', $data);
     }
 
-    public function loanTypes() 
+    public function loanTypes()
     {
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
@@ -243,7 +248,7 @@ class Loans extends BaseController
         return view('loans/loan_type_page', $data);
     }
 
-    public function typeView($id=null)
+    public function typeView($id = null)
     {
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
@@ -256,12 +261,142 @@ class Loans extends BaseController
         $interestTypes = $interestTypeModel->findAll();
 
         $data = [
-            'title' => 'Loan Type - '.$loanType['loan_name'],
+            'title' => 'Loan Type - ' . $loanType['loan_name'],
             'userInfo' => $userInfo,
             'type' => $loanType,
             'interestTypes' => $interestTypes
         ];
 
         return view('loans/loan_type_edit', $data);
+    }
+
+
+    public function approveLoan($id)
+    {
+        $user = session()->get('loggedInUser');
+        $loanModel = new LoanApplicationModel();
+        $loan = $loanModel->find($id);
+
+        if (!$loan) {
+            return redirect()->back()->with('error', 'Loan not found');
+        }
+
+        // Update status
+        $loanModel->update($id, ['loan_status' => 'approved']);
+
+        // Generate installment schedule
+        $loanService = new LoanService();
+        $loanService->generateInstallments($id);
+
+        $loanData = $loanModel->find($id);
+        $journalService = new JournalService();
+        $journalService->createLoanDisbursementEntry($loanData, $user);
+
+        return redirect()->back()->with('success', 'Loan approved and installments generated.');
+    }
+
+    public function checkLoan($memberNumber)
+    {
+        $loanModel = new \App\Models\LoanApplicationModel();
+
+        // Get latest *approved* loan for that member
+        $loan = $loanModel
+            ->where('member_id', $memberNumber)
+            ->where('loan_status', 'approved')
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        if ($loan) {
+            return $this->response->setJSON([
+                'loan_id'     => $loan['id'],
+                'loan_amount' => $loan['principal'],
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'message' => 'No active loan found',
+            ]);
+        }
+    }
+
+
+}
+
+class LoanService
+{
+    public function generateInstallments($loanId)
+    {
+        $loanModel = new LoanApplicationModel();
+        $repaymentModel = new LoanRepaymentModel();
+
+        $loan = $loanModel->find($loanId);
+
+        if (!$loan || $loan['loan_status'] !== 'approved') {
+            return false;
+        }
+
+        $installments = [];
+        $startDate = new DateTime($loan['request_date']);
+        $monthlyAmount = $loan['monthly_repayment'];
+        $period = (int) $loan['repayment_period'];
+
+        for ($i = 1; $i <= $period; $i++) {
+            $dueDate = clone $startDate;
+            $dueDate->modify("+{$i} months");
+
+            $installments[] = [
+                'loan_id'           => $loanId,
+                'installment_number' => $i,
+                'due_date'          => $dueDate->format('Y-m-d'),
+                'amount_due'        => $monthlyAmount,
+                'amount_paid'       => 0.00,
+                'status'            => 'pending',
+            ];
+        }
+
+        return $repaymentModel->insertBatch($installments);
+    }
+
+    public function handleRepayment($data)
+    {
+        $loanId = $data['loan_id'];
+        $amountPaid = floatval($data['amount']);
+        $paymentDate = $data['payment_date'] ?? date('Y-m-d');
+        $paymentMethod = $data['payment_method'] ?? 'unknown';
+        $description = $data['description'] ?? '';
+        $user = session()->get('loggedInUser');
+
+        $repaymentModel = new \App\Models\LoanRepaymentModel();
+        $installments = $repaymentModel
+            ->where('loan_id', $loanId)
+            ->where('status', 'unpaid')
+            ->orderBy('due_date', 'ASC')
+            ->findAll();
+
+        $remaining = $amountPaid;
+
+        foreach ($installments as $installment) {
+            if ($remaining <= 0) break;
+
+            $due = $installment['amount_due'] - $installment['amount_paid'];
+            $payNow = min($due, $remaining);
+
+            $repaymentModel->update($installment['id'], [
+                'amount_paid' => $installment['amount_paid'] + $payNow,
+                'payment_date' => $paymentDate,
+                'status' => ($installment['amount_paid'] + $payNow >= $installment['amount_due']) ? 'paid' : 'unpaid',
+            ]);
+
+            $remaining -= $payNow;
+        }
+
+        // Create journal entry
+        $journalService = new JournalService();
+        $journalService->createLoanRepaymentEntry([
+            'loan_id' => $loanId,
+            'amount_paid' => $amountPaid,
+            'payment_date' => $paymentDate,
+            'description' => $description,
+            'payment_method' => $paymentMethod,
+        ], $user);
     }
 }

@@ -47,7 +47,11 @@
                                         <td><?= esc($loan_item['principal']) ?></td>
                                         <td><?= esc($loan_item['loan_name']) ?></td>
                                         <td><?= esc($loan_item['created_at']) ?></td>
-                                        <td class="text-capitalize fw-bold"></td>
+                                        <?php if($loan_item['loan_status'] === 'approved') {?>
+                                            <td class="text-capitalize fw-bold"><span class="badge rounded-pill bg-success"><?= esc($loan_item['loan_status']) ?></span></td>
+                                        <?php } else {?>
+                                            <td class="text-capitalize fw-bold"><span class="badge rounded-pill bg-warning text-dark"><?= esc($loan_item['loan_status']) ?></span></td>
+                                        <?php } ?>
                                         <td><a class="btn btn-success btn-sm" href="<?= site_url('loans/view/' . $loan_item['id']) ?>">Details</a></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -61,75 +65,7 @@
             </div>
         </div>
     </div>
-    <script defer>
-        // console.log('JavaScript loaded');
-        document.getElementById('checkAll').addEventListener('click', function(e) {
-            let checkboxes = document.querySelectorAll('.checkPayment');
-            checkboxes.forEach(checkbox => checkbox.checked = e.target.checked);
-        });
 
-        document.getElementById('exportButton').addEventListener('click', function() {
-            let selectedPayments = [];
-            document.querySelectorAll('.checkPayment:checked').forEach(function(checkbox) {
-                selectedPayments.push(checkbox.getAttribute('data-id'));
-            });
-
-            if (selectedPayments.length > 0) {
-                fetch('<?= site_url('payments/export') ?>', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': '<?= csrf_hash() ?>' // Ensure CSRF token is included
-                        },
-                        body: JSON.stringify({
-                            payment_ids: selectedPayments,
-                            title: '<?= $title ?>'
-                        })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // If the response is okay, return the blob
-                            return response.blob();
-                        } else {
-                            // If there is an error, throw an error
-                            return response.json().then(data => {
-                                throw new Error(data.message || 'Failed to export payments.');
-                            });
-                        }
-                    })
-                    .then(blob => {
-                        // Handle the blob response (Excel file)
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = "payments_export_" + new Date().toISOString().slice(0, 19).replace(/:/g, "-") + ".xlsx";
-                        document.body.appendChild(a);
-                        a.click();
-                        a.remove();
-                        window.URL.revokeObjectURL(url);
-
-                        // Grey out exported rows
-                        selectedPayments.forEach(id => {
-                            let row = document.querySelector(`#paymentRow-${id}`);
-                            if (row) {
-                                row.classList.add('table-info');
-                            }
-                        });
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000); // Reloads the page after 1 second
-
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert(error.message);
-                    });
-            } else {
-                alert('Please select at least one payment to export.');
-            }
-        });
-    </script>
 
 
     <?= $this->endSection() ?>

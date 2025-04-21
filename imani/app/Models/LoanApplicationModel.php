@@ -110,4 +110,63 @@ class LoanApplicationModel extends Model
         }
  */
     }
+
+    public function getLoansByMember($memberId)
+    {
+        return $this->where('member_id', $memberId)->findAll();
+    }
+
+    public function getLoanDetails($loanId)
+    {
+        return $this->find($loanId);
+    }
+
+    public function getMemberLoanSummary($memberId)
+{
+    $db = \Config\Database::connect();
+
+    // Get all loan IDs for the member
+    $loanIds = $db->table('loan_applications')
+        ->select('id')
+        ->where('member_id', $memberId)
+        ->get()
+        ->getResultArray();
+
+    if (empty($loanIds)) {
+        return [
+            'total_disbursed' => 0,
+            'total_due' => 0,
+            'total_paid' => 0,
+            'balance' => 0,
+        ];
+    }
+
+    $loanIds = array_column($loanIds, 'id');
+
+    // Get total disbursed
+    $totalDisbursed = $db->table('loan_applications')
+        ->selectSum('disburse_amount', 'total_disbursed')
+        ->where('member_id', $memberId)
+        ->get()
+        ->getRow()
+        ->total_disbursed;
+
+    // Sum up repayment data
+    $repaymentQuery = $db->table('loan_repayments')
+        ->select('SUM(amount_due) as total_due, SUM(amount_paid) as total_paid')
+        ->whereIn('loan_id', $loanIds)
+        ->get()
+        ->getRow();
+
+    $totalDue = $repaymentQuery->total_due ?? 0;
+    $totalPaid = $repaymentQuery->total_paid ?? 0;
+    $balance = $totalDue - $totalPaid;
+
+    return [
+        'total_disbursed' => $totalDisbursed,
+        'total_due'       => $totalDue,
+        'total_paid'      => $totalPaid,
+        'balance'         => $balance,
+    ];
+}
 }

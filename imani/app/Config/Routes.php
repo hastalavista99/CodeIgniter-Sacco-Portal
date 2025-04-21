@@ -45,7 +45,7 @@ $routes->post('malipo/advise', 'Integrations::advise');
 
 $routes->post('bank/receive', 'BankController::receive');
 $routes->post('bank/validate', 'BankController::validateMember');
- //Bank API Integration
+//Bank API Integration
 
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
@@ -91,9 +91,11 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
     $routes->get('/settings', 'Settings::index');
-    $routes->get('loan_type_settings', 'Loans::settingsPage');
+    $routes->get('admin/settings', 'AdminSettingsController::getSettings');
+    $routes->post('admin/settings', 'AdminSettingsController::postSettings');
 
-    
+
+
     $routes->group('loans', function ($routes) {
         $routes->get('/', 'Loans::index');
         $routes->get('all', 'Loans::allLoans');
@@ -105,8 +107,10 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->post('type/update/(:num)', 'Loans::updateLoantype/$1');
         $routes->get('get-interest/(:num)', 'Loans::getInterest/$1');
         $routes->post('application/submit', 'Loans::submit');
+        $routes->get('approve/(:num)', 'Loans::approveLoan/$1');
+        $routes->get('check-loan/(:num)', 'Loans::checkLoan/$1');
     });
-    
+
     $routes->group('members', function ($routes) {
         $routes->get('/', 'Members::index');
         $routes->get('new', 'Members::new');
@@ -114,7 +118,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('view/(:num)', 'Members::view/$1');
         $routes->get('edit/(:num)', 'Members::edit/$1');
         $routes->post('update/(:num)', 'Members::update/$1');
-
+        $routes->get('generate/(:num)', 'Members::generateStatement/$1');
     });
 
     $routes->group('accounting', function ($routes) {
@@ -139,7 +143,6 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('reports/trial-balance', 'Accounting\ReportsController::trialBalance');
         $routes->get('reports/balance-sheet', 'Accounting\ReportsController::balanceSheet');
         $routes->get('reports/income-statement', 'Accounting\ReportsController::incomeStatement');
-
     });
 });
 

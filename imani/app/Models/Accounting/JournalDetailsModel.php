@@ -41,4 +41,18 @@ class JournalDetailsModel extends Model
             'date' => "$year-12-31"
         ]);
     }
+
+    public function getMemberTransactionDetails($memberId)
+    {
+        return $this->db->table('journal_entry_details')
+            ->select('journal_entry_details.*, accounts.account_name, journal_entries.description, journal_entries.created_at')
+            ->join('accounts', 'accounts.id = journal_entry_details.account_id')
+            ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
+            ->join('savings_accounts', 'savings_accounts.account_id = journal_entry_details.account_id', 'left')
+            ->join('share_accounts', 'share_accounts.account_id = journal_entry_details.account_id', 'left')
+            ->where('savings_accounts.member_id', $memberId)
+            ->orWhere('share_accounts.member_id', $memberId)
+            ->orderBy('journal_entries.created_at', 'DESC')
+            ->get()->getResultArray();
+    }
 }

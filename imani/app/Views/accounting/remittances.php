@@ -43,7 +43,7 @@
                         <button type="button" id="fetchMemberBtn" class="btn btn-primary mt-2">Fetch Member</button>
                     </form>
                 </div>
-
+                <input type="hidden" name="member-id" id="member-id">
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="member-name" class="form-label">Member Name</label>
@@ -61,7 +61,7 @@
                     <?= csrf_field() ?>
 
                     <div class="row mb-3">
-                    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+                        <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
                         <div class="col-md-3">
                             <label for="service-transaction" class="form-label">Service Transaction</label>
@@ -73,16 +73,10 @@
                                 <option value="share_deposits">Share Deposits</option>
                             </select>
                         </div>
-                        <div class="col-md-3" id="loanTypeDiv" style="display: none;">
-                            <label for="loan-type" class="form-label">Loan Type</label>
-                            <select class="form-select" id="loan-type" name="loan-type">
-                                <option value="">-- Select Transaction Type --</option>
-                                <option value="savings">Savings</option>
-                                <option value="loans">Loans</option>
-                                <option value="entrance_fee">Entrance Fee</option>
-                                <option value="share_deposits">Share Deposits</option>
-                            </select>
-                        </div>
+                        <input type="hidden" name="loan-id" id="loan-id">
+
+                        <p id="details"></p>
+
                         <div class="col-md-3">
                             <label for="transaction-type" class="form-label">Transaction Type</label>
                             <select class="form-select" id="transaction-type" name="transaction-type">
@@ -117,7 +111,7 @@
                         <textarea class="form-control" id="description" name="description"></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary" >Add</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
                     </div>
 
                 </form>
@@ -170,7 +164,7 @@
                 alert("Please fill all required fields.");
                 return;
             }
-
+            let loanId = document.getElementById("loan-id").value;
             // Create transaction object
             let transaction = {
                 memberNumber,
@@ -179,7 +173,8 @@
                 amount,
                 paymentMethod,
                 date,
-                description
+                description,
+                loanId
             };
             transactions.push(transaction); // Add to array
 
@@ -221,7 +216,7 @@
                 return;
             }
             let csrfToken = document.querySelector('input[name="<?= csrf_token() ?>"]').value;
-            fetch("<?= site_url('accounting/remittances/create')?>", {
+            fetch("<?= site_url('accounting/remittances/create') ?>", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -242,6 +237,7 @@
                     }
                 })
                 .catch(error => console.error("Error:", error));
+
         });
     });
 </script>
@@ -272,6 +268,7 @@
                     })
                     .then(data => {
                         if (data.name) {
+                            document.getElementById('member-id').value = data.id;
                             document.getElementById('member-name').value = data.name;
                             document.getElementById('member-mobile').value = data.mobile;
                         } else {
@@ -287,13 +284,32 @@
 
         // Show/hide loan type selection based on transaction type
         let transactionType = document.getElementById('service-transaction');
-        let loanTypeDiv = document.getElementById('loanTypeDiv');
 
-        if (transactionType && loanTypeDiv) {
+        if (transactionType) {
             transactionType.addEventListener('change', function() {
+                let memberID = document.getElementById('member-id').value;
+                if (memberID === '') {
+                    alert("Please enter a Member Number.");
+                    return;
+                }
 
                 if (this.value === 'loans') {
-                    loanTypeDiv.style.display = 'block';
+                    fetch(`/loans/check-loan/${encodeURIComponent(memberID)}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.loan_id) {
+                                document.getElementById('loan-id').value = data.loan_id;
+                                document.getElementById('details').innerText = `Loan ID: ${data.loan_id}, Loan Amount: ${data.loan_amount}`
+                            } else {
+                                alert('Member has no loans!');
+                            }
+                        })
+                        .catch(error => console.error('Fetch error:', error))
                 } else {
                     loanTypeDiv.style.display = 'none';
                 }
