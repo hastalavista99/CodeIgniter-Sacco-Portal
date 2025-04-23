@@ -55,26 +55,22 @@
                         <div class="card">
 
                             <div class="card-body">
-                                <h5 class="card-title"> Generate Member Statement</h5>
-
-<a href="<?= site_url('members/generate/'.$member['id']) ?>" class="btn btn-success">Generate</a>
-
+                                <h5 class="card-title">Recent Transactions</h5>
+                                
                             </div>
 
                         </div>
                     </div>
 
                     <div class="col-12">
-                        <div class="card recent-sales overflow-auto">
-
-                            <div class="filter">
-
-                            </div>
+                        <div class="card">
 
                             <div class="card-body">
-                                <h5 class="card-title"><span></span></h5>
-
-
+                                <h5 class="card-title">Send SMS</h5>
+                                <div>
+                                    <textarea name="" class="form-control mb-2" id="sms-member" placeholder="Type message..."></textarea>
+                                    <button id="send-sms-btn" class="btn btn-success">Send SMS</button>
+                                </div>
                             </div>
 
                         </div>
@@ -88,7 +84,7 @@
 
                 <!-- Recent Activity -->
                 <div class="card">
-                    
+
 
                     <div class="card-body">
                         <h5 class="card-title">Member Details</h5>
@@ -104,14 +100,16 @@
                 </div>
 
                 <div class="card">
-                    <div class="filter">
-
-                    </div>
 
                     <div class="card-body pb-0">
-                        <h5 class="card-title"><span></span></h5>
-
-
+                        <h5 class="card-title"> Generate Member Statements</h5>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="<?= site_url('members/generate/' . $member['id']) ?>" class="btn btn-success">Generate Balances</a>
+                            <a href="<?= site_url('members/generate/savings' . $member['id']) ?>" class="btn btn-success">Savings Statement</a>
+                            <a href="<?= site_url('members/generate/shares' . $member['id']) ?>" class="btn btn-success">Share Capital</a>
+                            <a href="<?= site_url('members/generate/loans' . $member['id']) ?>" class="btn btn-success">Loan Statement</a>
+                            <a href="<?= site_url('members/generate/transactions' . $member['id']) ?>" class="btn btn-success">All Transactions</a>
+                        </div>
 
                     </div>
                 </div>

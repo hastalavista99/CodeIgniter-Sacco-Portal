@@ -215,6 +215,8 @@
                 alert("No transactions to submit.");
                 return;
             }
+            showLoadingState(true);
+
             let csrfToken = document.querySelector('input[name="<?= csrf_token() ?>"]').value;
             fetch("<?= site_url('accounting/remittances/create') ?>", {
                     method: "POST",
@@ -228,17 +230,83 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    showLoadingState(false);
                     if (data.success) {
-                        alert("Transactions submitted successfully!");
+                        showFeedbackModal(true, 'Success!', 'Transaction details added successfully.');
                         transactions = []; // Clear stored transactions
                         updateTransactionsTable();
                     } else {
                         alert("Error submitting transactions.");
                     }
                 })
-                .catch(error => console.error("Error:", error));
+                .catch(error => {
+                    // Hide loading state
+                    showLoadingState(false);
+
+                    // Show error modal
+                    showFeedbackModal(
+                        false,
+                        'Submission Error',
+                        'An error occurred while submitting the form. Please try again.'
+                    );
+                    console.error("Error:", error)
+                });
 
         });
+        /**
+         * Shows or hides the loading overlay
+         * @param {boolean} show - True to show the loading overlay, false to hide it
+         */
+        function showLoadingState(show) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = show ? 'flex' : 'none';
+            }
+        }
+
+        /**
+         * Shows a feedback modal with success or error styling
+         * @param {boolean} isSuccess - True for success style, false for error style
+         * @param {string} title - The title to display in the modal header
+         * @param {string} message - The message to display in the modal body (can include HTML)
+         */
+        function showFeedbackModal(isSuccess, title, message) {
+            const modal = document.getElementById('feedbackModal');
+            const modalTitle = document.getElementById('feedbackModalTitle');
+            const messageContainer = document.getElementById('feedbackMessage');
+            const iconContainer = modal.querySelector('.feedback-icon');
+            const modalContent = modal.querySelector('.modal-content');
+
+            // Set title and message
+            modalTitle.textContent = title;
+            messageContainer.innerHTML = message;
+
+            // Remove previous border classes
+            modalContent.classList.remove('success-border', 'error-border');
+
+            // Set icon based on success/error
+            if (isSuccess) {
+                iconContainer.innerHTML = '<div class="success-icon"><span class="succ display-4"><i class="bi bi-check-lg"><i/></span></div>';
+                modalContent.classList.add('success-border');
+            } else {
+                iconContainer.innerHTML = '<div class="error-icon"><span class="err display-4"><i class="bi bi-x"><i/></span></div>';
+                modalContent.classList.add('error-border');
+            }
+
+            // Show the modal
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
+
+        // Function to show/hide loading state
+        function showLoadingState(isLoading) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (isLoading) {
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
     });
 </script>
 

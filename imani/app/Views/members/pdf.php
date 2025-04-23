@@ -32,6 +32,7 @@
     <div class="header">
         <h2><?= esc($organization['org_name']) ?></h2>
         <p><?= esc($organization['physical_address']) ?> | <?= esc($organization['phone']) ?> | <?= esc($organization['email']) ?></p>
+        <img src="<?= base_url('writable/uploads/' . $organization['logo']) ?>" alt="Logo" height="80">
     </div>
 
     <h3>Member Statement</h3>

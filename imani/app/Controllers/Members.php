@@ -460,4 +460,24 @@ class Members extends BaseController
             return $this->response->setStatusCode(500)->setBody('An unexpected error occurred. Please try again later.');
         }
     }
+
+    public function generateSavingsStatement($id=null)
+    {
+
+    }
+
+    public function generateSharesStatement($id=null)
+    {
+        
+    }
+
+    public function generateLoansStatement($id=null)
+    {
+        
+    }
+
+    public function generateTransactionsStatement($id=null)
+    {
+        
+    }
 }

@@ -76,12 +76,15 @@
 
                     <hr>
                     <h4 class="mb-3">System Parameters</h4>
-                    <?php foreach ($parameters as $param): ?>
-                        <div class="mb-3">
+                    <div class="row">
+                        <?php foreach ($parameters as $param): ?>
+                        <div class="mb-3 col-md-3">
                             <label><?= esc($param['description']) ?> (<?= esc($param['param_key']) ?>)</label>
                             <input type="text" class="form-control" name="parameters[<?= esc($param['param_key']) ?>]" value="<?= esc($param['param_value']) ?>">
                         </div>
                     <?php endforeach; ?>
+                    </div>
+                    
 
                     <div class="d-flex justify-content-end mt-4">
                         <button type="submit" class="btn btn-primary">Save Settings</button>

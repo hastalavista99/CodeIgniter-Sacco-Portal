@@ -118,7 +118,12 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('view/(:num)', 'Members::view/$1');
         $routes->get('edit/(:num)', 'Members::edit/$1');
         $routes->post('update/(:num)', 'Members::update/$1');
+        $routes->get('generate/savings(:num)', 'Members::generateSavingsStatement/$1');
+        $routes->get('generate/loans(:num)', 'Members::generateLoansStatement/$1');
+        $routes->get('generate/shares(:num)', 'Members::generateSharesStatement/$1');
+        $routes->get('generate/transactions(:num)', 'Members::generateTransactionsStatement/$1');
         $routes->get('generate/(:num)', 'Members::generateStatement/$1');
+
     });
 
     $routes->group('accounting', function ($routes) {
