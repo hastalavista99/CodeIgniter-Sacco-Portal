@@ -195,3 +195,6 @@ VALUES
 ('enable_sms_notifications', 'true', 'Toggle SMS alerts'),
 ('end_of_year_closing', 'manual', 'Manual or automatic closing behavior');
 
+24/4/2025
+ALTER TABLE journal_entry_details
+DROP FOREIGN KEY journal_entry_details_ibfk_2;
