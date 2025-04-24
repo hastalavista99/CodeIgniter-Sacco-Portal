@@ -18,7 +18,7 @@
                                 <h5 class="card-title">Total Savings</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3">
-                                        <h6>KES <?= number_format($savings ?? 0, 2) ?></h6>
+                                        <h6><small>KES</small> <?= number_format($savings ?? 0, 2) ?></h6>
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                                 <h5 class="card-title">Total Shares</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3">
-                                        <h6><?= $shares['shares_owned'] ?? 0 ?> Shares</h6>
+                                        <h6><small>KES</small> <?= number_format($shares?? 0, 2) ?></h6>
                                     </div>
                                 </div>
                             </div>
@@ -44,7 +44,7 @@
                                 <h5 class="card-title">Outstanding Loan</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3">
-                                        <h6>KES <?= number_format($loans['balance'] ?? 0, 2) ?></h6>
+                                        <h6><small>KES</small> <?= number_format($loans['balance'] ?? 0, 2) ?></h6>
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
 
                             <div class="card-body">
                                 <h5 class="card-title">Recent Transactions</h5>
-                                
+
                             </div>
 
                         </div>
@@ -67,10 +67,15 @@
 
                             <div class="card-body">
                                 <h5 class="card-title">Send SMS</h5>
-                                <div>
-                                    <textarea name="" class="form-control mb-2" id="sms-member" placeholder="Type message..."></textarea>
-                                    <button id="send-sms-btn" class="btn btn-success">Send SMS</button>
-                                </div>
+                                <form id="smsForm">
+                                    <input type="hidden" name="member-phone" id="member-phone" value="<?= $member['phone_number'] ?>">
+                                    <textarea name="message" class="form-control mb-2" id="message" placeholder="Type message..."></textarea>
+                                    <button type="submit" id="send-sms-btn" class="btn btn-success">Send SMS</button>
+                                    <button class="btn btn-success" type="button" disabled="" id="loading-btn" style="display: none;">
+                                        <span class="spinner-border spinner-border-sm" style="width: 16px !important; height: 16px;" role="status" aria-hidden="true"></span>
+                                        Sending...
+                                    </button>
+                                </form>
                             </div>
 
                         </div>
@@ -104,11 +109,11 @@
                     <div class="card-body pb-0">
                         <h5 class="card-title"> Generate Member Statements</h5>
                         <div class="d-flex flex-column gap-2">
-                            <a href="<?= site_url('members/generate/' . $member['id']) ?>" class="btn btn-success">Generate Balances</a>
-                            <a href="<?= site_url('members/generate/savings' . $member['id']) ?>" class="btn btn-success">Savings Statement</a>
-                            <a href="<?= site_url('members/generate/shares' . $member['id']) ?>" class="btn btn-success">Share Capital</a>
-                            <a href="<?= site_url('members/generate/loans' . $member['id']) ?>" class="btn btn-success">Loan Statement</a>
-                            <a href="<?= site_url('members/generate/transactions' . $member['id']) ?>" class="btn btn-success">All Transactions</a>
+                            <a href="<?= site_url('members/generate/' . $member['id']) ?>" class="btn btn-success" target="_blank">Generate Balances</a>
+                            <a href="<?= site_url('members/generate/savings/' . $member['id']) ?>" class="btn btn-success" target="_blank">Savings Statement</a>
+                            <a href="<?= site_url('members/generate/shares/' . $member['id']) ?>" class="btn btn-success" target="_blank">Share Capital</a>
+                            <a href="<?= site_url('members/generate/loans/' . $member['id']) ?>" class="btn btn-success" target="_blank">Loan Statement</a>
+                            <a href="<?= site_url('members/generate/transactions/' . $member['id']) ?>" class="btn btn-success" target="_blank">All Transactions</a>
                         </div>
 
                     </div>
@@ -116,17 +121,11 @@
 
                 <div class="card">
                     <div class="filter">
-
                     </div>
-
                     <div class="card-body pb-0">
                         <h5 class="card-title"><span></span></h5>
-
-
                     </div>
                 </div>
-
-
 
             </div><!-- End Right side columns -->
 
@@ -134,6 +133,51 @@
     </section>
 </div>
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const smsForm = document.getElementById('smsForm');
+
+        smsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const memberPhone = document.getElementById('member-phone').value;
+            const message = document.getElementById('message').value;
+            const sendBtn = document.getElementById('send-sms-btn');
+            const loadingBtn = document.getElementById('loading-btn');
+            sendBtn.style.display = 'none';
+            loadingBtn.style.display = 'block';
+
+            fetch('/members/sms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        phone: memberPhone,
+                        message: message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    sendBtn.style.display = 'block';
+                    loadingBtn.style.display = 'none';
+                    if (data.success) {
+                        alert('SMS sent successfully');
+                    } else {
+                        alert('SMS sending failed');
+                    }
+                })
+                .catch(error => {
+                    alert('SMS sending failed');
+                    console.error(error);
+                });
+        });
+    });
+</script>
+
 
 
 <?= $this->endSection() ?>

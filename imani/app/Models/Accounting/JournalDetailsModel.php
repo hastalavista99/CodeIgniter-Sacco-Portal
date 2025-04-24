@@ -55,4 +55,10 @@ class JournalDetailsModel extends Model
             ->orderBy('journal_entries.created_at', 'DESC')
             ->get()->getResultArray();
     }
+
+    public function getAllTransactions($memberNumber) {
+        return $this->db->table('transactions')
+            ->where('member_number', $memberNumber)
+            ->get()->getResultArray();
+    }
 }

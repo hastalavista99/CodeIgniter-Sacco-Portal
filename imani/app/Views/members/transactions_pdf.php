@@ -35,10 +35,10 @@
 <body>
 
     <div class="header">
-        <img src="<?= base_url('writable/uploads/' . $organization['logo']) ?>" alt="Logo" height="80
+        <img src="<?= base_url('writable/uploads/' . $organization['logo']) ?>" alt="Logo" height="80">
         <h2><?= esc($organization['org_name']) ?></h2>
         <p><?= esc($organization['physical_address']) ?> | <?= esc($organization['phone']) ?> | <?= esc($organization['email']) ?></p>
-        ">
+        
     </div>
 
     <h3>Member Statement</h3>
@@ -48,21 +48,21 @@
         <thead>
             <tr class="table-header">
                 <th>Date</th>
-                <th>Account</th>
+                <th>Service Transaction</th>
                 <th>Description</th>
-                <th>Debit</th>
-                <th>Credit</th>
+                <th>Amount</th>
+                <th>Payment Method</th>
             </tr>
         </thead>
         <tbody>
         <?php if (!empty($transactions)): ?>
         <?php foreach ($transactions as $tx): ?>
             <tr>
-                <td><?= date('Y-m-d', strtotime($tx['created_at'])) ?></td>
-                <td><?= esc($tx['account_name']) ?></td>
+                <td><?= esc($tx['transaction_date']) ?></td>
+                <td><?= esc($tx['service_transaction']) ?></td>
                 <td><?= esc($tx['description'] ?? '-') ?></td>
-                <td><?= number_format($tx['debit'], 2) ?></td>
-                <td><?= number_format($tx['credit'], 2) ?></td>
+                <td><?= number_format($tx['amount'], 2) ?></td>
+                <td><?= esc($tx['payment_method']) ?></td>
             </tr>
         <?php endforeach; ?>
     <?php else: ?>

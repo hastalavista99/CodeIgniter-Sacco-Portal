@@ -39,7 +39,7 @@ class SharesAccountModel extends Model
             ->get()
             ->getRow();
     
-        return ($query->total_credit - $query->total_debit);
+        return ($query->total_debit);
     }
     
 }

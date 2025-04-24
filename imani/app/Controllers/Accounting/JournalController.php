@@ -9,6 +9,7 @@ use App\Models\Accounting\AccountsModel;
 use App\Models\Accounting\JournalEntryModel;
 use App\Models\Accounting\JournalDetailsModel;
 use App\Models\Accounting\SavingsAccountModel;
+use App\Models\Accounting\SharesAccountModel;
 use App\Models\Accounting\TransactionsModel;
 use App\Models\LoanApplicationModel;
 use App\Models\LoanTypeModel;
@@ -286,7 +287,7 @@ class JournalController extends BaseController
             'savings' => $this->getMemberSavingsAccount($memberId), // Current Bank Account (Asset)
             'loans' => 2, // Interest on Loans (Income)
             'entrance_fee' => 75, // Entrance Fee (Equity)
-            'share_deposits' => 73, // Customer Deposits (Equity)
+            'share_deposits' => $this->getMemberSharesAccount($memberId), // Customer Deposits (Equity)
         ];
         return $accounts[$serviceTransaction] ?? 2; // Default to Debtors
     }
@@ -306,10 +307,15 @@ class JournalController extends BaseController
         $savingsAccountModel = new SavingsAccountModel();
         $savingsAccountId = $savingsAccountModel->where('member_id', $memberId)->first();
 
-        log_message('debug', 'Savings account ID: ' . print_r($savingsAccountId, true));
-
-
+        // log_message('debug', 'Savings account ID: ' . print_r($savingsAccountId, true));
         return $savingsAccountId['id'];
+    }
+    public function getMemberSharesAccount($memberId) {
+        $sharesAccountModel = new SharesAccountModel();
+        $sharesAccountId = $sharesAccountModel->where('member_id', $memberId)->first();
+
+        // log_message('debug', 'Shares account ID: ' . print_r($sharesAccountId, true));
+        return $sharesAccountId['id'];
     }
 }
 

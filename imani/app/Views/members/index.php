@@ -56,7 +56,7 @@
                   <tr>
                     <td><?= esc($member['id']) ?></td>
                     <td><?= esc($member['member_number']) ?></td>
-                    <td><?= esc($member['first_name']) ?> <?= esc($member['first_name']) ?></td>
+                    <td><?= esc($member['first_name']) ?> <?= esc($member['last_name']) ?></td>
                     <td><?= esc($member['phone_number']) ?></td>
                     <td><?= esc($member['email']) ?></td>
                     <td><?= esc($member['join_date']) ?></td>

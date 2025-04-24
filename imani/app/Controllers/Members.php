@@ -461,23 +461,90 @@ class Members extends BaseController
         }
     }
 
-    public function generateSavingsStatement($id=null)
-    {
+    public function generateSavingsStatement($id = null) {}
 
-    }
+    public function generateSharesStatement($id = null) {}
 
-    public function generateSharesStatement($id=null)
-    {
+    public function generateLoansStatement($id = null) {
         
     }
 
-    public function generateLoansStatement($id=null)
-    {
-        
+    public function generateTransactionsStatement($id = null) {
+
+        try {
+            $memberModel = new MembersModel();
+            $orgModel = new OrganizationModel();
+            $journalModel = new JournalDetailsModel();
+
+            $member = $memberModel->find($id);
+
+            if (!$member) {
+                return $this->response->setStatusCode(404)->setBody('Member not found.');
+            }
+
+            // Fetch organization profile
+            $organization = $orgModel->first();
+            if (!$organization) {
+                return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
+            }
+            $transactions = $journalModel->getAllTransactions($member['member_number']);
+
+            $data = [
+                'member' => $member,
+                'organization' => $organization,
+                'transactions' => $transactions,
+            ];
+
+            // Generate PDF
+            $html = view('members/transactions_pdf', $data);
+
+            $options = new Options();
+            $options->set('defaultFont', 'DejaVu Sans');
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            return $this->response
+                ->setHeader('Content-Type', 'application/pdf')
+                ->setBody($dompdf->output());
+
+        } catch (\Throwable $e) {
+            log_message('error', 'Error generating statement: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('An unexpected error occurred. Please try again later.');
+        }
+
+
     }
 
-    public function generateTransactionsStatement($id=null)
+
+    public function smsMember()
     {
-        
+        $request = $this->request;
+
+        $phone = $request->getJSON()->phone ?? null;
+        $message = $request->getJSON()->message ?? null;
+
+        if (!$phone || !$message) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Phone or message is missing.'
+            ]);
+        }
+
+        $smsController = new SendSMS();
+        $smsSent = $smsController->sendSMS($phone, $message);
+
+        if ($smsSent) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'SMS sent successfully.'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Failed to send SMS.'
+            ]);
+        }
     }
 }
