@@ -8,6 +8,7 @@ use App\Controllers\LoanService;
 use App\Models\Accounting\AccountsModel;
 use App\Models\Accounting\JournalEntryModel;
 use App\Models\Accounting\JournalDetailsModel;
+use App\Models\Accounting\SavingsAccountModel;
 use App\Models\Accounting\TransactionsModel;
 use App\Models\LoanApplicationModel;
 use App\Models\LoanTypeModel;
@@ -212,6 +213,7 @@ class JournalController extends BaseController
         $journalModel = new JournalEntryModel();
         $journalDetailsModel = new JournalDetailsModel();
         $transactionModel = new TransactionsModel();
+        $memberModel = new MembersModel();
 
         $transactions = $this->request->getJSON(true)['transactions'];
 
@@ -238,6 +240,8 @@ class JournalController extends BaseController
                 'description' => $tx['description']
             ];
             $transactionID = $transactionModel->insert($transactionData);
+
+            $memberId = $memberModel->where('member_number', $tx['memberNumber'])->first();
             // Step 1: Create a Journal Entry
             $journalData = [
                 'date' => $tx['date'],
@@ -249,7 +253,7 @@ class JournalController extends BaseController
             $journalEntryID = $journalModel->insert($journalData);
 
             // Step 2: Identify Debit & Credit Accounts
-            $debitAccount = $this->getDebitAccount($tx['service']);
+            $debitAccount = $this->getDebitAccount($tx['service'], $memberId['id']);
             $creditAccount = $this->getCreditAccount($tx['paymentMethod']);
 
             // Step 3: Save Journal Entry Details (Debit & Credit)
@@ -276,10 +280,10 @@ class JournalController extends BaseController
     }
 
     // Function to determine the Debit Account
-    private function getDebitAccount($serviceTransaction)
+    private function getDebitAccount($serviceTransaction, $memberId)
     {
         $accounts = [
-            'savings' => 74, // Current Bank Account (Asset)
+            'savings' => $this->getMemberSavingsAccount($memberId), // Current Bank Account (Asset)
             'loans' => 2, // Interest on Loans (Income)
             'entrance_fee' => 75, // Entrance Fee (Equity)
             'share_deposits' => 73, // Customer Deposits (Equity)
@@ -296,6 +300,16 @@ class JournalController extends BaseController
             'mobile' => 4, // Savings Bank Account (Asset)
         ];
         return $accounts[$paymentMethod] ?? 5; // Default to Cash in Hand
+    }
+
+    public function getMemberSavingsAccount($memberId) {
+        $savingsAccountModel = new SavingsAccountModel();
+        $savingsAccountId = $savingsAccountModel->where('member_id', $memberId)->first();
+
+        log_message('debug', 'Savings account ID: ' . print_r($savingsAccountId, true));
+
+
+        return $savingsAccountId['id'];
     }
 }
 

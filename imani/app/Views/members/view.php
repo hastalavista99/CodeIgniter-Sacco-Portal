@@ -18,7 +18,7 @@
                                 <h5 class="card-title">Total Savings</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3">
-                                        <h6>KES <?= number_format($savings['total'] ?? 0, 2) ?></h6>
+                                        <h6>KES <?= number_format($savings ?? 0, 2) ?></h6>
                                     </div>
                                 </div>
                             </div>

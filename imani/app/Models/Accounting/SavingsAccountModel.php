@@ -21,27 +21,40 @@ class SavingsAccountModel extends Model
      * Get total savings for a member.
      */
     public function getMemberSavingsTotal($memberId)
-    {
-        $db = \Config\Database::connect();
+{
+    $db = \Config\Database::connect();
 
-        // Get the member's savings account_id
-        $savingsAccount = $db->table('savings_accounts')
-            ->select('account_id')
-            ->where('member_id', $memberId)
-            ->get()
-            ->getRow();
+    // Step 1: Get member number
+    $member = $db->table('members')
+        ->select('member_number')
+        ->where('id', $memberId)
+        ->get()
+        ->getRow();
 
-        if (!$savingsAccount) {
-            return 0; // No savings account for this member
-        }
-
-        // Sum all credits and debits from journal entries
-        $query = $db->table('journal_entry_details')
-            ->select('SUM(credit) as total_credit, SUM(debit) as total_debit')
-            ->where('account_id', $savingsAccount->account_id)
-            ->get()
-            ->getRow();
-
-        return ($query->total_credit - $query->total_debit);
+    if (!$member) {
+        return 0;
     }
+
+    // Step 2: Find the member's savings account_id
+    $account = $db->table('savings_accounts')
+        ->select('id')
+        ->where('member_id', $memberId)
+        ->get()
+        ->getRow();
+
+    if (!$account) {
+        return 0;
+    }
+
+    // Step 3: Sum DEBITS only to the member’s savings account
+    $totals = $db->table('journal_entry_details')
+        ->select('SUM(debit) as total_debit')
+        ->where('account_id', $account->id)
+        ->get()
+        ->getRow();
+
+    return (float) $totals->total_debit;
+}
+    
+
 }
