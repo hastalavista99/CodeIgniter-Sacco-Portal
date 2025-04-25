@@ -23,7 +23,7 @@ class JournalController extends BaseController
         helper(['form', 'url']);
 
         $model = new JournalEntryModel();
-        $journals = $model->findAll();
+        $journals = $model->getJournalsWithUser();
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);

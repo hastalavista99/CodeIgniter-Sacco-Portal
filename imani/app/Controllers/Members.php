@@ -20,6 +20,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Models\OrganizationModel;
 use App\Models\Accounting\JournalDetailsModel;
+use App\Models\Accounting\TransactionsModel;
 
 class Members extends BaseController
 {
@@ -461,9 +462,103 @@ class Members extends BaseController
         }
     }
 
-    public function generateSavingsStatement($id = null) {}
+    public function generateSavingsStatement($id = null) {
+        try {
+            $memberModel = new MembersModel();
+            $orgModel = new OrganizationModel();
+            $journalModel = new JournalDetailsModel();
+            $savingsModel= new SavingsAccountModel();
+            $transactionsModel = new TransactionsModel();
 
-    public function generateSharesStatement($id = null) {}
+            // Fetch member
+            $member = $memberModel->find($id);
+            if (!$member) {
+                return $this->response->setStatusCode(404)->setBody('Member not found.');
+            }
+
+            // Fetch organization profile
+            $organization = $orgModel->first();
+            if (!$organization) {
+                return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
+            }
+
+            // Fetch savings
+            $transactions = $transactionsModel->getSavingsTransactions($member['member_number']);
+
+
+            $data = [
+                'member' => $member,
+                'organization' => $organization,
+                'transactions' => $transactions,
+            ];
+
+            // Generate PDF
+            $html = view('members/savings_pdf', $data);
+
+            $options = new Options();
+            $options->set('defaultFont', 'DejaVu Sans');
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            return $this->response
+                ->setHeader('Content-Type', 'application/pdf')
+                ->setBody($dompdf->output());
+        } catch (\Throwable $e) {
+            log_message('error', 'Error generating statement: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('An unexpected error occurred. Please try again later.');
+        }
+    }
+
+    public function generateSharesStatement($id = null) {
+          try {
+            $memberModel = new MembersModel();
+            $orgModel = new OrganizationModel();
+            $journalModel = new JournalDetailsModel();
+            $savingsModel= new SavingsAccountModel();
+            $transactionsModel = new TransactionsModel();
+
+            // Fetch member
+            $member = $memberModel->find($id);
+            if (!$member) {
+                return $this->response->setStatusCode(404)->setBody('Member not found.');
+            }
+
+            // Fetch organization profile
+            $organization = $orgModel->first();
+            if (!$organization) {
+                return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
+            }
+
+            // Fetch savings
+            $transactions = $transactionsModel->getSharesTransactions($member['member_number']);
+
+
+            $data = [
+                'member' => $member,
+                'organization' => $organization,
+                'transactions' => $transactions,
+            ];
+
+            // Generate PDF
+            $html = view('members/shares_pdf', $data);
+
+            $options = new Options();
+            $options->set('defaultFont', 'DejaVu Sans');
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            return $this->response
+                ->setHeader('Content-Type', 'application/pdf')
+                ->setBody($dompdf->output());
+        } catch (\Throwable $e) {
+            log_message('error', 'Error generating statement: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('An unexpected error occurred. Please try again later.');
+        }
+    }
 
     public function generateLoansStatement($id = null) {
         

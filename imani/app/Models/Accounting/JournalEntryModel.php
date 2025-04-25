@@ -14,4 +14,12 @@ class JournalEntryModel extends Model
     {
         return $this->select('*');
     }
+
+    public function getJournalsWithUser()
+    {
+        return $this->db->table('journal_entries')
+        ->select('journal_entries.*, user.name')
+        ->join('user', 'user.id = journal_entries.created_by')
+        ->get()->getResultArray();
+    }
 }

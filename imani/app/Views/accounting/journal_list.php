@@ -63,14 +63,11 @@
                                         <td><?= $entry['date'] ?></td>
                                         <td><?= $entry['reference'] ?></td>
                                         <td><?= $entry['description'] ?></td>
-                                        <td><?= $entry['created_by'] ?></td>
+                                        <td><?= $entry['name'] ?></td>
                                         <td><?= $entry['posted'] ? 'Posted' : 'Unposted' ?></td>
                                         <td>
                                             <?php if (!$entry['posted']): ?>
                                                 <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal">Post</button>
-                                                
-                                            <?php else: ?>
-                                                <span class="px-2">Finalized</span>
                                             <?php endif; ?>
                                             <a href="/accounting/journals/view/<?= $entry['id'] ?>" class="btn btn-info btn-sm">View</a>
                                             <!-- <a href="/accounting/journal/delete/<?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a> -->

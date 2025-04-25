@@ -146,7 +146,9 @@
             const message = document.getElementById('message').value;
             const sendBtn = document.getElementById('send-sms-btn');
             const loadingBtn = document.getElementById('loading-btn');
-            sendBtn.style.display = 'none';
+
+            if(message !== "") {
+                sendBtn.style.display = 'none';
             loadingBtn.style.display = 'block';
 
             fetch('/members/sms', {
@@ -174,6 +176,10 @@
                     alert('SMS sending failed');
                     console.error(error);
                 });
+            } else {
+                alert("Cannot send empty message")
+            }
+            
         });
     });
 </script>
