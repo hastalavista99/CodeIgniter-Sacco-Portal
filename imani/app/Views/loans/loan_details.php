@@ -63,15 +63,15 @@
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan Principal:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . $loan['principal'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['principal'],2, '.', ',') ?></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan Interest:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . $loan['total_interest'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total_interest'],2, '.', ',') ?></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Total Loan:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . $loan['total_loan'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total_loan'],2, '.', ',') ?></div>
                         </div>
 
                         <div class="row">
@@ -81,7 +81,7 @@
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Monthly Repayment:</div>
-                            <div class="col-lg-9 col-md-8"><?= $loan['monthly_repayment'] ?></div>
+                            <div class="col-lg-9 col-md-8"><?= number_format($loan['monthly_repayment'],2, '.', ',') ?></div>
                         </div>
                     </div>
                 </section>

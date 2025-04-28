@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\Accounting\JournalService;
 use App\Controllers\BaseController;
+use App\Controllers\LoanService;
 use App\Controllers\Auth;
 use App\Models\LoanGuarantorModel;
 use App\Models\LoansModel;
@@ -321,82 +322,82 @@ class Loans extends BaseController
 
 }
 
-class LoanService
-{
-    public function generateInstallments($loanId)
-    {
-        $loanModel = new LoanApplicationModel();
-        $repaymentModel = new LoanRepaymentModel();
+// class LoanService extends BaseController
+// {
+//     public function generateInstallments($loanId)
+//     {
+//         $loanModel = new LoanApplicationModel();
+//         $repaymentModel = new LoanRepaymentModel();
 
-        $loan = $loanModel->find($loanId);
+//         $loan = $loanModel->find($loanId);
 
-        if (!$loan || $loan['loan_status'] !== 'approved') {
-            return false;
-        }
+//         if (!$loan || $loan['loan_status'] !== 'approved') {
+//             return false;
+//         }
 
-        $installments = [];
-        $startDate = new DateTime($loan['request_date']);
-        $monthlyAmount = $loan['monthly_repayment'];
-        $period = (int) $loan['repayment_period'];
+//         $installments = [];
+//         $startDate = new DateTime($loan['request_date']);
+//         $monthlyAmount = $loan['monthly_repayment'];
+//         $period = (int) $loan['repayment_period'];
 
-        for ($i = 1; $i <= $period; $i++) {
-            $dueDate = clone $startDate;
-            $dueDate->modify("+{$i} months");
+//         for ($i = 1; $i <= $period; $i++) {
+//             $dueDate = clone $startDate;
+//             $dueDate->modify("+{$i} months");
 
-            $installments[] = [
-                'loan_id'           => $loanId,
-                'installment_number' => $i,
-                'due_date'          => $dueDate->format('Y-m-d'),
-                'amount_due'        => $monthlyAmount,
-                'amount_paid'       => 0.00,
-                'status'            => 'pending',
-            ];
-        }
+//             $installments[] = [
+//                 'loan_id'           => $loanId,
+//                 'installment_number' => $i,
+//                 'due_date'          => $dueDate->format('Y-m-d'),
+//                 'amount_due'        => $monthlyAmount,
+//                 'amount_paid'       => 0.00,
+//                 'status'            => 'pending',
+//             ];
+//         }
 
-        return $repaymentModel->insertBatch($installments);
-    }
+//         return $repaymentModel->insertBatch($installments);
+//     }
 
-    public function handleRepayment($data)
-    {
-        $loanId = $data['loan_id'];
-        $amountPaid = floatval($data['amount']);
-        $paymentDate = $data['payment_date'] ?? date('Y-m-d');
-        $paymentMethod = $data['payment_method'] ?? 'unknown';
-        $description = $data['description'] ?? '';
-        $user = session()->get('loggedInUser');
+//     public function handleRepayment($data)
+//     {
+//         $loanId = $data['loan_id'];
+//         $amountPaid = floatval($data['amount']);
+//         $paymentDate = $data['payment_date'] ?? date('Y-m-d');
+//         $paymentMethod = $data['payment_method'] ?? 'unknown';
+//         $description = $data['description'] ?? '';
+//         $user = session()->get('loggedInUser');
 
-        $repaymentModel = new \App\Models\LoanRepaymentModel();
-        $installments = $repaymentModel
-            ->where('loan_id', $loanId)
-            ->where('status', 'unpaid')
-            ->orderBy('due_date', 'ASC')
-            ->findAll();
+//         $repaymentModel = new \App\Models\LoanRepaymentModel();
+//         $installments = $repaymentModel
+//             ->where('loan_id', $loanId)
+//             ->where('status', 'unpaid')
+//             ->orderBy('due_date', 'ASC')
+//             ->findAll();
 
-        $remaining = $amountPaid;
+//         $remaining = $amountPaid;
 
-        foreach ($installments as $installment) {
-            if ($remaining <= 0) break;
+//         foreach ($installments as $installment) {
+//             if ($remaining <= 0) break;
 
-            $due = $installment['amount_due'] - $installment['amount_paid'];
-            $payNow = min($due, $remaining);
+//             $due = $installment['amount_due'] - $installment['amount_paid'];
+//             $payNow = min($due, $remaining);
 
-            $repaymentModel->update($installment['id'], [
-                'amount_paid' => $installment['amount_paid'] + $payNow,
-                'payment_date' => $paymentDate,
-                'status' => ($installment['amount_paid'] + $payNow >= $installment['amount_due']) ? 'paid' : 'unpaid',
-            ]);
+//             $repaymentModel->update($installment['id'], [
+//                 'amount_paid' => $installment['amount_paid'] + $payNow,
+//                 'payment_date' => $paymentDate,
+//                 'status' => ($installment['amount_paid'] + $payNow >= $installment['amount_due']) ? 'paid' : 'unpaid',
+//             ]);
 
-            $remaining -= $payNow;
-        }
+//             $remaining -= $payNow;
+//         }
 
-        // Create journal entry
-        $journalService = new JournalService();
-        $journalService->createLoanRepaymentEntry([
-            'loan_id' => $loanId,
-            'amount_paid' => $amountPaid,
-            'payment_date' => $paymentDate,
-            'description' => $description,
-            'payment_method' => $paymentMethod,
-        ], $user);
-    }
-}
+//         // Create journal entry
+//         $journalService = new JournalService();
+//         $journalService->createLoanRepaymentEntry([
+//             'loan_id' => $loanId,
+//             'amount_paid' => $amountPaid,
+//             'payment_date' => $paymentDate,
+//             'description' => $description,
+//             'payment_method' => $paymentMethod,
+//         ], $user);
+//     }
+// }

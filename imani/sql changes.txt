@@ -229,3 +229,8 @@ ALTER TABLE `users` ADD COLUMN `permissions` TEXT DEFAULT NULL AFTER `role`;
 
 
 ALTER TABLE `user` CHANGE `role` `role` ENUM('admin','member','user','agent','accountant', 'cashier') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL; 
+
+
+new changes
+
+ALTER TABLE `journal_entry_details` CHANGE `transaction_id` `transaction_id` INT(11) NULL;
