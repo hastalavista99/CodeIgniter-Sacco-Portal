@@ -32,7 +32,7 @@
         <div class="card shadow border-none my-2 px-2">
 
             <div class="card-body px-0 pb-2">
-                <form method="post" enctype="multipart/form-data" action="<?= site_url('admin/settings')?>">
+                <form method="post" enctype="multipart/form-data" action="<?= site_url('admin/settings') ?>">
                     <?= csrf_field() ?>
                     <h4 class="my-3">Organization Profile</h4>
 
@@ -78,13 +78,29 @@
                     <h4 class="mb-3">System Parameters</h4>
                     <div class="row">
                         <?php foreach ($parameters as $param): ?>
-                        <div class="mb-3 col-md-3">
-                            <label><?= esc($param['description']) ?> (<?= esc($param['param_key']) ?>)</label>
-                            <input type="text" class="form-control" name="parameters[<?= esc($param['param_key']) ?>]" value="<?= esc($param['param_value']) ?>">
-                        </div>
-                    <?php endforeach; ?>
+                            <div class="mb-3 col-md-3">
+                                <label><?= esc($param['description']) ?> (<?= esc($param['param_key']) ?>)</label>
+                                <?php if ($param['param_value'] === 'true' || $param['param_value'] === 'false'): ?>
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            name="parameters[<?= esc($param['param_key']) ?>]"
+                                            value="true"
+                                            <?= $param['param_value'] === 'true' ? 'checked' : '' ?>>
+                                    </div>
+                                <?php else: ?>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="parameters[<?= esc($param['param_key']) ?>]"
+                                        value="<?= esc($param['param_value']) ?>">
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+
                     </div>
-                    
+
 
                     <div class="d-flex justify-content-end mt-4">
                         <button type="submit" class="btn btn-primary">Save Settings</button>

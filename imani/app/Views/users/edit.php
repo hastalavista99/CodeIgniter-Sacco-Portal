@@ -24,11 +24,9 @@
   }
   ?>
 
-
   <?= $this->include('partials/sidebar') ?>
   <div class="col-lg-12">
     <div class="card shadow border-none my-4 px-2">
-
       <div class="card-body px-0 pb-2">
         <form action="/updateUser?id=<?= $id ?>" method="post" class="form-floating">
           <?= csrf_field() ?>
@@ -44,37 +42,65 @@
             </div>
             <div class="mb-3 col-3">
               <label for="memberNumber" class="col-form-label">Member No:</label>
-              <input type="text" name="memberNumber"  id="memberNumber" value="<?= set_value('member_no', $user['member_no']) ?>" class="form-control">
+              <input type="text" name="memberNumber" id="memberNumber" value="<?= set_value('member_no', $user['member_no']) ?>" class="form-control">
             </div>
             <div class="mb-3 col-6">
-              <label for="name" class="col-form-label">Email:</label>
+              <label for="email" class="col-form-label">Email:</label>
               <input type="email" name="email" id="email" value="<?= set_value('email', $user['email']) ?>" class="form-control">
             </div>
             <div class="mb-3 col-4">
-              <label for="" class="col-form-label">Role</label>
+              <label for="role" class="col-form-label">Role</label>
               <select name="role" id="role" class="form-control">
-                <option value="<?= $userInfo['role']?>" selected><?= $userInfo['role']?></option>
+                <option value="<?= $userInfo['role'] ?>" selected><?= $userInfo['role'] ?></option>
                 <option value="agent">Agent</option>
                 <option value="member">Member</option>
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
-
+                <option value="accountant">Accountant</option>
+                <option value="cashier">Cashier</option>
               </select>
             </div>
           </div>
-          <div class="d-flex align-items-between justify-content-between me-2">
+
+          <!-- PERMISSIONS SECTION -->
+          <h5 class="mt-4">Permissions</h5>
+          <div class="row mx-2">
+            <?php
+            $availablePermissions = [
+              'post_journal_entries' => 'Post Journal Entries',
+              'approve_loans' => 'Approve Loans',
+              'edit_member_details' => 'Edit Member Details',
+              'access_system_parameters' => 'Access System Parameters',
+              'view_payments' => 'View Payment Details',
+              'manage_users' => 'Manage Users',
+              'view_reports' => 'View Financial Reports',
+              'create_members' => 'Create Members',
+              'edit_settings' => 'Edit System Settings',
+              'reverse_transactions' => 'Reverse Transactions'
+            ];
+
+            $currentPermissions = json_decode($userInfo['permissions'] ?? '[]', true);
+            ?>
+
+            <?php foreach ($availablePermissions as $key => $label): ?>
+              <div class="form-check col-md-4 mb-2">
+                <input class="form-check-input" type="checkbox" name="permissions[]" value="<?= $key ?>" id="<?= $key ?>"
+                  <?= (is_array($currentPermissions) && in_array($key, $currentPermissions)) ? 'checked' : '' ?>>
+                <label class="form-check-label" for="<?= $key ?>">
+                  <?= esc($label) ?>
+                </label>
+              </div>
+            <?php endforeach; ?>
+          </div>
+
+          <div class="d-flex align-items-between justify-content-between me-2 mt-4">
             <a href="<?= base_url('/users') ?>" class="btn btn-info me-3"><i class="bi-chevron-left"></i> Back</a>
             <button type="submit" class="btn btn-success">Update</button>
           </div>
 
-
-
-
         </form>
-
       </div>
     </div>
-
   </div>
 </div>
 

@@ -67,7 +67,11 @@
                                         <td><?= $entry['posted'] ? 'Posted' : 'Unposted' ?></td>
                                         <td>
                                             <?php if (!$entry['posted']): ?>
-                                                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal">Post</button>
+                                                <?php if (!user_can('post_journal_entries')): ?>
+                                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal" disabled>Post</button>
+                                                <?php else: ?>
+                                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal">Post</button>
+                                                <?php endif ?>
                                             <?php endif; ?>
                                             <a href="/accounting/journals/view/<?= $entry['id'] ?>" class="btn btn-info btn-sm">View</a>
                                             <!-- <a href="/accounting/journal/delete/<?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a> -->

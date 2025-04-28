@@ -78,7 +78,7 @@
                 </span>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="<?= site_url('payments/deposits') ?>" class="nav-link collapsed">
                 <i class="bi bi-piggy-bank"></i>
                 <span>
@@ -109,7 +109,7 @@
                   Group Payments
                 </span>
               </a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </li>
@@ -270,12 +270,12 @@
                 <span>Users</span>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="<?= site_url('/settings') ?>" class="nav-link collapsed">
                 <i class="bi bi-gear"></i>
                 <span>System Settings</span>
               </a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a href="<?= site_url('/admin/settings') ?>" class="nav-link collapsed">
                 <i class="bi bi-person-gear"></i>

@@ -1,0 +1,128 @@
+Step 1: Create a simple SystemParameterHelper.php helper
+
+Inside app/Helpers/SystemParameterHelper.php, create this:
+
+<?php
+
+use App\Models\SystemParameterModel;
+
+if (!function_exists('get_system_parameter')) {
+    function get_system_parameter($key, $default = null)
+    {
+        static $parameters = null;
+
+        if ($parameters === null) {
+            $model = new SystemParameterModel();
+            $parameters = [];
+            foreach ($model->findAll() as $param) {
+                $parameters[$param['param_key']] = $param['param_value'];
+            }
+        }
+
+        return $parameters[$key] ?? $default;
+    }
+}
+
+✅ What this does:
+
+    On the first call, it loads all parameters into memory (only once per request, very fast).
+
+    Afterwards, it just reads from the $parameters array, no repeated database hits.
+
+Step 2: Auto-load the helper
+
+In app/Config/Autoload.php, find the $helpers array and add:
+
+public $helpers = ['systemparameterhelper'];
+
+(or you can manually load it with helper('systemparameterhelper'); inside controllers if you prefer.)
+
+Step 3: Use parameters anywhere!
+
+Now, you can simply call:
+
+if (get_system_parameter('enable_sms_notifications') === 'true') {
+    // Send SMS
+}
+
+if (get_system_parameter('allow_member_self_registration') === 'true') {
+    // Show self-registration form
+}
+
+if (get_system_parameter('maintenance_mode') === 'true') {
+    echo get_system_parameter('maintenance_message');
+    exit;
+}
+
+In views: (just call the same helper)
+
+<?php if (get_system_parameter('show_member_balances_on_dashboard') === 'true'): ?>
+    <div>Your Balance: KES <?= esc($balance) ?></div>
+<?php endif; ?>
+
+
+BELOW SHOWS USAGE FOR USER AUTHENTICATION LEVELS
+
+🛠 Step 1: Create UserPermissionHelper.php
+
+Inside app/Helpers/UserPermissionHelper.php, create this:
+
+<?php
+
+if (!function_exists('user_can')) {
+    function user_can($permission)
+    {
+        $session = session();
+
+        // Assuming you store user info in session under 'user'
+        $user = $session->get('user');
+
+        if (!$user || !isset($user['permissions'])) {
+            return false;
+        }
+
+        $permissions = json_decode($user['permissions'], true);
+
+        if (empty($permissions)) {
+            return false;
+        }
+
+        return in_array($permission, $permissions);
+    }
+}
+
+🛠 Step 2: Auto-load the Helper
+
+In app/Config/Autoload.php, add it to $helpers array:
+
+public $helpers = ['userpermissionhelper'];
+
+✅ Or manually load it in any controller you want using:
+
+helper('userpermissionhelper');
+
+🧠 Step 3: How to use it
+
+✅ In Controllers:
+
+if (!user_can('post_journal_entries')) {
+    return redirect()->to('/unauthorized')->with('error', 'You do not have permission.');
+}
+
+✅ In Views:
+
+<?php if (user_can('edit_member_details')): ?>
+    <a href="/members/edit/<?= esc($member['id']) ?>" class="btn btn-warning">Edit Member</a>
+<?php endif; ?>
+
+✅ In Menus:
+
+<?php if (user_can('access_system_parameters')): ?>
+    <li><a href="/settings">System Settings</a></li>
+<?php endif; ?>
+
+✅ In Buttons:
+
+<?php if (user_can('approve_loans')): ?>
+    <button type="submit" class="btn btn-success">Approve Loan</button>
+<?php endif; ?>

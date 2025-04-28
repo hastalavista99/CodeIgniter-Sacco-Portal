@@ -198,3 +198,34 @@ VALUES
 24/4/2025
 ALTER TABLE journal_entry_details
 DROP FOREIGN KEY journal_entry_details_ibfk_2;
+
+
+28/04/2025
+
+INSERT INTO system_parameters (param_key, description, param_value) VALUES
+('allow_member_self_registration', 'Allow members to register themselves online', 'false'),
+('require_approval_for_new_members', 'New member applications require admin approval', 'true'),
+('enable_sms_notifications', 'Send SMS notifications for transactions', 'true'),
+('enable_email_notifications', 'Send email notifications for transactions', 'true'),
+('show_member_balances_on_dashboard', 'Show member balances on their dashboard', 'true'),
+('enable_mobile_money_integration', 'Integrate with mobile money services', 'true'),
+('allow_member_document_upload', 'Allow members to upload ID, payslips, etc.', 'true'),
+('enable_end_of_year_dividends', 'Enable dividend calculation at year-end', 'true'),
+('require_beneficiary_for_registration', 'Require member to add a beneficiary when registering', 'true'),
+('allow_members_to_view_statements_online', 'Members can view/download their statements', 'true'),
+('send_sms_for_savings_deposit', 'Send SMS when a savings deposit is made', 'true'),
+('send_sms_for_loan_repayment', 'Send SMS when a loan repayment is made', 'true'),
+('enable_admin_email_alerts', 'Send alerts to admin email for key events', 'true'),
+('maintenance_mode', 'Put the system into maintenance mode', 'false'),
+('maintenance_message', 'Custom message to show during maintenance', 'We are upgrading, please check back soon.'),
+('allow_member_password_reset', 'Allow members to reset their passwords', 'true'),
+('allow_member_profile_update', 'Allow members to edit their own profile info', 'true'),
+('enforce_unique_member_email', 'Require unique email address per member', 'true'),
+('enable_member_login', 'Enable or disable member portal login', 'true'),
+('show_announcements_on_member_dashboard', 'Show admin announcements on member dashboard', 'true');
+
+
+ALTER TABLE `users` ADD COLUMN `permissions` TEXT DEFAULT NULL AFTER `role`;
+
+
+ALTER TABLE `user` CHANGE `role` `role` ENUM('admin','member','user','agent','accountant', 'cashier') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL; 

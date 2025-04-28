@@ -75,7 +75,7 @@ class Auth extends BaseController
             'email' => $email,
             'password' => Hash::encrypt($password)
         ];
-        
+
         // storing data
         $userModel = new \App\Models\UserModel();
         $query = $userModel->save($data);
@@ -332,7 +332,7 @@ class Auth extends BaseController
             $name = $query['name'];
             $id = $query['id'];
             $phone = $query['mobile'];
-            
+
             $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             $otp = substr(str_shuffle($alpha_numeric), 0, 6);
             $expires = date("U") + 300;
@@ -353,7 +353,8 @@ class Auth extends BaseController
         }
     }
 
-    public function resendOTP(){
+    public function resendOTP()
+    {
         helper(['form', 'url']);
 
         $userId = session()->get('userId');
@@ -367,10 +368,10 @@ class Auth extends BaseController
 
         // remove earlier otp
         $checkUser = $otpModel->where('username', $username)->first();
-        if ($checkUser){
+        if ($checkUser) {
             $remove = $otpModel->where('username', $username)->delete();
         }
-        
+
         $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $otp = substr(str_shuffle($alpha_numeric), 0, 6);
         $expires = date("U") + 300;
@@ -381,20 +382,19 @@ class Auth extends BaseController
         ];
 
         $otpQuery = $otpModel->save($data);
-            if ($otpQuery) {
-                $sms = "Use " . $otp . " as your OTP for Password Reset. It will be active for the next 5 minutes";
-                $smsSend = new SendSMS();
-                $smsSend->sendSMS($mobile, $sms);
-            }
-            session()->setFlashdata('success', 'OTP resent to mobile number');
-            return redirect()->to('confirm/otp')->withInput();
-
+        if ($otpQuery) {
+            $sms = "Use " . $otp . " as your OTP for Password Reset. It will be active for the next 5 minutes";
+            $smsSend = new SendSMS();
+            $smsSend->sendSMS($mobile, $sms);
+        }
+        session()->setFlashdata('success', 'OTP resent to mobile number');
+        return redirect()->to('confirm/otp')->withInput();
     }
 
     public function confirmOTP()
     {
         helper(['form', 'url']);
-        
+
 
         return view('auth/enter_otp');
     }
@@ -493,46 +493,12 @@ class Auth extends BaseController
         } else {
             return redirect()->to('auth/login')->withInput()->with('fail', 'Failed to update password. Contact admin for details.');
         }
-
     }
-    // public function uploadImage(){
-    //     helper('form');
-    //     try {
-    //         $loggedInUserId = session()->get('loggedInUser');
-    //     $config['upload_path'] = getcwd().'/images';
-    //     $file = $this->request->getFile('userImage')->getName();
 
-    //     //if directory not present, then create
-    //     if (! is_dir($config['upload_path'])) {
-    //         mkdir($config['upload_path'], 0777, true);
-    //     }
-
-    //     // Get image.
-    //     $image = $this->request->getFile('userImage');
-
-    //     if(! $image->hasMoved() && $loggedInUserId)
-    //     {
-    //         $image->move($config['upload_path'], $file);
-
-    //         $data = [
-    //             'avatar' => $file,
-    //         ];
-
-    //         $userModel = new UserModel();
-    //         $userModel->update($loggedInUserId, $data);
-
-    //         return redirect()->to('/dashboard')->with('notification', 'Image Uploaded Successfuly');
-    //     }
-    //     else
-    //     {
-    //         return redirect()->to('/dashboard')->with('notification', 'Image Uploaded Failed');
-    //     }
-    //     } catch (Exception $e) {
-    //         echo $e->getMessage();
-    //     }
-
-    // }
-
+    public function unauthorized()
+    {
+        return view('errors/unauthorized');
+    }
 
     // logout user 
     public function logout()

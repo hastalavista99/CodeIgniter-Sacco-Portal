@@ -115,6 +115,7 @@ class LoginMember extends BaseController
         $mobile = $this->request->getPost('mobile');
         $password = $this->request->getPost('password');
         $role = $this->request->getPost('role');
+        $permissions = $this->request->getPost('permissions');
 
         $data = [
             'name' => $name,
@@ -122,6 +123,7 @@ class LoginMember extends BaseController
             'mobile' => $mobile,
             'password' => Hash::encrypt($password),
             'role' => $role,
+            'permissions' => $permissions ? json_encode($permissions) : null
         ];
 
 

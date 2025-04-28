@@ -88,7 +88,7 @@
 </div>
 
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">New User</h1>
@@ -97,36 +97,77 @@
             <div class="modal-body">
                 <form method="post" action="/newUser" class="form-floating mb-3">
                     <?= csrf_field() ?>
-                    <div class="mb-3">
-                        <label for="username" class="col-form-label">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="username" class="col-form-label">Username:</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="col-form-label">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="col-form-label">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email">
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="mobile" class="col-form-label">Mobile No.:</label>
+                            <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password" class="col-form-label">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="mobile" class="col-form-label">Mobile No.:</label>
-                        <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="col-form-label">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" value="" id="checkPassword">
+                        <label class="form-check-label" for="checkPassword">
+                            Show Password
+                        </label>
                     </div>
                     <div class="mb-3 col-4">
                         <select name="role" id="role" class="form-control">
                             <option selected>-- Select role --</option>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
+                            <option value="accountant">Accountant</option>
+                            <option value="cashier">Cashier</option>
 
                         </select>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="checkPassword">
-                        <label class="form-check-label" for="checkPassword">
-                            Show Password
-                        </label>
+                    <div class="mb-3">
+                        <label class="form-label">Assign Permissions:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="permissions[]" value="post_journal_entries" id="post_journal_entries">
+                            <label class="form-check-label" for="post_journal_entries">Post Journal Entries</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="permissions[]" value="approve_loans" id="approve_loans">
+                            <label class="form-check-label" for="approve_loans">Approve Loans</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="permissions[]" value="edit_member_details" id="edit_member_details">
+                            <label class="form-check-label" for="edit_member_details">Edit Member Details</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="permissions[]" value="access_system_parameters" id="access_system_parameters">
+                            <label class="form-check-label" for="access_system_parameters">Access System Parameters</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="permissions[]" value="access_payments_details" id="access_payments_details">
+                            <label class="form-check-label" for="access_payments_details">Access Payments Details</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="permissions[]" value="send_sms_to_member" id="send_sms_to_member">
+                            <label class="form-check-label" for="send_sms_to_member">Send SMS</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="permissions[]" value="view_reports" id="view_reports">
+                            <label class="form-check-label" for="view_reports">View System Reports</label>
+                        </div>
+                        <!-- You can add more permissions here -->
                     </div>
+
+
                     <div class="d-flex flex-row-reverse">
                         <input type="submit" value="Create" class="btn btn-info">
                     </div>
