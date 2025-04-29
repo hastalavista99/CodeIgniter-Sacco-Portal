@@ -106,7 +106,7 @@
 
                 <div class="card">
 
-                    <div class="card-body pb-0">
+                    <div class="card-body pb-2">
                         <h5 class="card-title"> Generate Member Statements</h5>
                         <div class="d-flex flex-column gap-2">
                             <a href="<?= site_url('members/generate/' . $member['id']) ?>" class="btn btn-success" target="_blank">Generate Balances</a>

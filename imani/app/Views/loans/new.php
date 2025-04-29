@@ -382,6 +382,11 @@ use CodeIgniter\HTTP\SiteURI;
         const totalLoanInput = document.getElementById('total_loan');
         const totalInterestInput = document.getElementById('total_interest');
         const repaymentInput = document.getElementById('monthly_repayment');
+        const feesInput = document.getElementById('fees');
+        const disburseAmountInput = document.getElementById('disburse_amount'); 
+        const serviceChargeInput = document.getElementById('service_charge');
+        const crbAmountInput = document.getElementById('crb_amount');
+        const insurancePremiumInput = document.getElementById('insurance_premium');
 
 
 
@@ -391,6 +396,9 @@ use CodeIgniter\HTTP\SiteURI;
             const interestMethod = interestMethodInput.value;
             const loanPrincipal = parseFloat(principalInput.value);
             const repaymentPeriod = parseInt(repaymentPeriodInput.value);
+            const insurancePremium = parseInt(loanPrincipal * parseFloat(insurancePremiumInput.value)/100)
+            const fees = parseFloat((loanPrincipal * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
+            const disburse = parseFloat(loanPrincipal - fees);
 
             // Validate inputs
             if (isNaN(loanPrincipal) || isNaN(repaymentPeriod) || repaymentPeriod <= 0) {
@@ -422,6 +430,8 @@ use CodeIgniter\HTTP\SiteURI;
             totalLoanInput.value = totalLoan.toFixed(2);
             totalInterestInput.value = interest.toFixed(2);
             repaymentInput.value = repayment.toFixed(2);
+            feesInput.value = fees.toFixed(2);
+            disburseAmountInput.value = disburse.toFixed(2);
         }
 
         // Recalculate when any relevant input changes
