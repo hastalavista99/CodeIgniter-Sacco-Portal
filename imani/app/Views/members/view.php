@@ -151,7 +151,7 @@
                 sendBtn.style.display = 'none';
             loadingBtn.style.display = 'block';
 
-            fetch('/members/sms', {
+            fetch('<?= site_url('/members/sms')?>', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

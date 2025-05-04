@@ -290,7 +290,7 @@ use CodeIgniter\HTTP\SiteURI;
                     return;
                 }
 
-                fetch(`/accounting/remittances/get-member/${encodeURIComponent(memberNo)}`)
+                fetch(`<?= site_url('/accounting/remittances/get-member/')?>${encodeURIComponent(memberNo)}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -319,7 +319,7 @@ use CodeIgniter\HTTP\SiteURI;
         loanType.addEventListener('change', function() {
             let loanId = loanType.value;
 
-            fetch(`/loans/get-interest/${encodeURIComponent(loanId)}`)
+            fetch(`<?= site_url('/loans/get-interest/')?>${encodeURIComponent(loanId)}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -355,7 +355,7 @@ use CodeIgniter\HTTP\SiteURI;
                 return;
             }
 
-            fetch(`/accounting/remittances/get-member/${encodeURIComponent(guarantorNumber)}`)
+            fetch(`<?= site_url('/accounting/remittances/get-member/')?>${encodeURIComponent(guarantorNumber)}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -527,7 +527,7 @@ use CodeIgniter\HTTP\SiteURI;
         });
 
         // Send data to backend using fetch
-        fetch('/loans/application/submit', {
+        fetch('<?= site_url('/loans/application/submit')?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

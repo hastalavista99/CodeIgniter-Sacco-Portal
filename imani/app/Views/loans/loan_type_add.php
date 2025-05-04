@@ -112,7 +112,7 @@
 
                 const formData = new FormData(form);
 
-                fetch('/loans/type/create', {
+                fetch('<?= site_url('/loans/type/create')?>', {
                         method: 'POST',
                         body: formData,
                         headers: {

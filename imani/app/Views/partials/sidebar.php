@@ -133,14 +133,14 @@
                 </span>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="<?= site_url('loans/my_loans?user' . $userInfo['id']) ?>" class="nav-link collapsed">
                 <i class="bi bi-person-workspace"></i>
                 <span>
                   My Loans
                 </span>
               </a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a href="<?= site_url('loans/all') ?>" class="nav-link collapsed">
                 <i class="bi bi-card-checklist"></i>
@@ -149,14 +149,14 @@
                 </span>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="<?= site_url('loans/approved') ?>" class="nav-link collapsed">
                 <i class="bi bi-check2-circle"></i>
                 <span>
                   Approved Loans
                 </span>
               </a>
-            </li>
+            </li> -->
 
             <li class="nav-item">
               <a href="<?= site_url('loans/type') ?>" class="nav-link collapsed">

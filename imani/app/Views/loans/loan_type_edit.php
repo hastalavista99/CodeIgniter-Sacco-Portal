@@ -116,7 +116,7 @@
 
                 const formData = new FormData(form);
 
-                fetch(`/loans/type/update/${typeID}`, {
+                fetch(`<?= site_url('/loans/type/update/')?>${typeID}`, {
                         method: 'POST',
                         body: formData,
                         headers: {

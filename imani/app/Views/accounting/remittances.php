@@ -327,7 +327,7 @@
                     return;
                 }
 
-                fetch(`/accounting/remittances/get-member/${encodeURIComponent(memberNo)}`)
+                fetch(`<?= site_url('/accounting/remittances/get-member/')?>${encodeURIComponent(memberNo)}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -362,7 +362,7 @@
                 }
 
                 if (this.value === 'loans') {
-                    fetch(`/loans/check-loan/${encodeURIComponent(memberID)}`)
+                    fetch(`<?= site_url('/loans/check-loan/')?>${encodeURIComponent(memberID)}`)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');

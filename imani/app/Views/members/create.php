@@ -369,7 +369,7 @@
 
             // If this is an edit operation, change the URL and add the member ID
             if (memberIdInput && isEditInput) {
-                url = `/members/update/${memberIdInput.value}`;
+                url = `<?= site_url('/members/update/')?>${memberIdInput.value}`;
                 formData.append('member_id', memberIdInput.value);
                 formData.append('is_edit', isEditInput.value);
             }
