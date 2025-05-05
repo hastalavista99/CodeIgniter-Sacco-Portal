@@ -3,6 +3,7 @@
 namespace Config;
 
 use App\Filters\AuthCheckFilter;
+use App\Filters\UserPermissionFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -36,6 +37,7 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'AuthCheck'     => AuthCheckFilter::class,
+        'permission'    => UserPermissionFilter::class,
     ];
 
     /**

@@ -91,9 +91,9 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->post('/updateMember', [Members::class, 'updateMember']);
     $routes->get('/sendsms', [SendSMS::class, 'sendsms']);
     $routes->get('/settings', 'Settings::index');
-    $routes->get('admin/settings', 'AdminSettingsController::getSettings');
+    $routes->get('admin/settings', 'AdminSettingsController::getSettings',  ['filter' => 'permission:access_system_parameters']);
     $routes->post('admin/settings', 'AdminSettingsController::postSettings');
-
+    $routes->get('unauthorized', 'Pages::unauthorized');
 
 
     $routes->group('loans', function ($routes) {

@@ -46,45 +46,57 @@ class Auth extends BaseController
     public function registerUser()
     {
         helper('form');
-        // validate user input
-        if (! $this->request->is('post')) {
+
+        if (!$this->request->is('post')) {
             return view('auth/register');
         }
+
+        // Fetching and validating inputs
         $validated = [
-            'name' => 'required',
+            'username' => 'required',
             'email' => 'required|valid_email',
             'password' => 'required|min_length[5]|max_length[20]',
-            'passwordConf' => 'required|min_length[5]|max_length[20]|matches[password]'
         ];
+
         $data = $this->request->getPost(array_keys($validated));
 
-        if (! $this->validateData($data, $validated)) {
+        if (!$this->validateData($data, $validated)) {
             return view('auth/register');
         }
+
         $validData = $this->validator->getValidated();
 
-        // save the user
-        $name = $this->request->getPost('name');
+        $username = $this->request->getPost('username');
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
-        $passwordConf = $this->request->getPost('passwordConf');
+        $mobile = $this->request->getPost('mobile');
+        $role = $this->request->getPost('role');
 
+        // ✅ Get permissions array and encode as JSON
+        $permissions = $this->request->getPost('permissions') ?? []; // default to empty array
+        $permissionsJson = json_encode($permissions);
+
+        // Encrypt password
         new \App\Libraries\Hash();
-        $data = [
-            'name' => $name,
-            'email' => $email,
-            'password' => Hash::encrypt($password)
+        $userData = [
+            'username'    => $username,
+            'email'       => $email,
+            'mobile'      => $mobile,
+            'password'    => Hash::encrypt($password),
+            'role'        => $role,
+            'permissions' => $permissionsJson, // ✅ Save as JSON string
         ];
 
-        // storing data
         $userModel = new \App\Models\UserModel();
-        $query = $userModel->save($data);
-        if (! $query) {
+        $saved = $userModel->save($userData);
+
+        if (!$saved) {
             return redirect()->back()->with('fail', 'Saving User failed');
-        } else {
-            return redirect()->back()->with('Success', 'Saved User');
         }
+
+        return redirect()->back()->with('success', 'User registered successfully');
     }
+
 
     // User login
     public function loginUser()
@@ -159,6 +171,7 @@ class Auth extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
         $user = $userModel->find($id);
+        
         $data = [
             'user'  => $user,
             'title' => 'Edit User',
@@ -170,52 +183,55 @@ class Auth extends BaseController
 
 
     public function updateUser()
-    {
-        helper(['form, url']);
+{
+    helper(['form', 'url']);
 
-        $id = $this->request->getGet('id');
-        $name = $this->request->getPost('name');
-        $email = $this->request->getPost('email');
-        $mobile = $this->request->getPost('mobile');
-        $member_no = $this->request->getPost('memberNumber');
-        $role = $this->request->getPost('role');
-        $data = [
-            'name' => $name,
-            'member_no' => $member_no,
-            'mobile' => $mobile,
-            'email' => $email,
-            'role' => $role
-        ];
+    $id = $this->request->getGet('id');
+    $name = $this->request->getPost('name');
+    $email = $this->request->getPost('email');
+    $mobile = $this->request->getPost('mobile');
+    $member_no = $this->request->getPost('memberNumber');
+    $role = $this->request->getPost('role');
 
-        $model = model(UserModel::class);
+    // ✅ Get permissions array and encode to JSON
+    $permissions = $this->request->getPost('permissions') ?? [];
+    $permissionsJson = json_encode($permissions);
 
-        if ($model->update($id, $data)) {
-            // Update successful
-            if ($role == 'agent') {
-                $model = new AgentModel();
-                $agentModel = new \App\Models\AgentModel();
-                $lastAgent = $agentModel->selectMax('agent_no')->first();
-                $lastAgentNumber = $lastAgent ? intval($lastAgent['agent_no']) : 0;
+    $data = [
+        'name'        => $name,
+        'member_no'   => $member_no,
+        'mobile'      => $mobile,
+        'email'       => $email,
+        'role'        => $role,
+        'permissions' => $permissionsJson, // ✅ Save permissions
+    ];
 
-                // Increment the agent number by 1 and format it to be 3 digits (e.g., '001')
-                $newAgentNumber = str_pad($lastAgentNumber + 1, 3, '0', STR_PAD_LEFT);
+    $model = model(UserModel::class);
 
-                // Prepare data for saving
-                $agentData = [
-                    'agent_no' => $newAgentNumber,
-                    'name' => $name,
-                    'mobile' => $mobile,
-                    'email' => $email,
-                ];
-                $query = $model->save($agentData);
-            }
+    if ($model->update($id, $data)) {
+        // Update successful
+        if ($role == 'agent') {
+            $agentModel = new \App\Models\AgentModel();
+            $lastAgent = $agentModel->selectMax('agent_no')->first();
+            $lastAgentNumber = $lastAgent ? intval($lastAgent['agent_no']) : 0;
 
-            return redirect()->to('/users')->with('success', 'User updated successfully.');
-        } else {
-            // Update failed
-            return redirect()->back()->withInput()->with('fail', 'Failed to update user. Try again later');
+            $newAgentNumber = str_pad($lastAgentNumber + 1, 3, '0', STR_PAD_LEFT);
+
+            $agentData = [
+                'agent_no' => $newAgentNumber,
+                'name'     => $name,
+                'mobile'   => $mobile,
+                'email'    => $email,
+            ];
+            $agentModel->save($agentData);
         }
+
+        return redirect()->to('/users')->with('success', 'User updated successfully.');
+    } else {
+        return redirect()->back()->withInput()->with('fail', 'Failed to update user. Try again later');
     }
+}
+
 
     public function setUser()
     {

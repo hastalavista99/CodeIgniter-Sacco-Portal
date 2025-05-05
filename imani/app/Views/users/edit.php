@@ -79,7 +79,8 @@
               'reverse_transactions' => 'Reverse Transactions'
             ];
 
-            $currentPermissions = json_decode($userInfo['permissions'] ?? '[]', true);
+            $currentPermissions = json_decode($user['permissions'] ?? '[]', true);
+
             ?>
 
             <?php foreach ($availablePermissions as $key => $label): ?>

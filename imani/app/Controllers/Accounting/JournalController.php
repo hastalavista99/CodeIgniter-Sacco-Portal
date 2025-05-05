@@ -21,18 +21,22 @@ class JournalController extends BaseController
 {
     public function page()
     {
-        helper(['form', 'url']);
+        helper('userpermissionhelper');
+        require APPPATH . 'Helpers/userpermissionhelper.php';
 
         $model = new JournalEntryModel();
         $journals = $model->getJournalsWithUser();
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
+        // $isTrue= dd(function_exists('user_can')); // should return true
+
 
         $data = [
             'title' => 'Journal Entries',
             'entries' => $journals,
-            'userInfo' => $userInfo
+            'userInfo' => $userInfo,
+            
         ];
         return view('accounting/journal_list', $data);
     }

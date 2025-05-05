@@ -413,6 +413,9 @@ class Members extends BaseController
             $memberModel = new MembersModel();
             $orgModel = new OrganizationModel();
             $journalModel = new JournalDetailsModel();
+            $savingsModel = new SavingsAccountModel();
+            $sharesModel = new SharesAccountModel();
+            $loanModel = new LoanApplicationModel();
 
             // Fetch member
             $member = $memberModel->find($memberId);
@@ -420,7 +423,7 @@ class Members extends BaseController
                 return $this->response->setStatusCode(404)->setBody('Member not found.');
             }
 
-            // Fetch organization profile
+             // Fetch organization profile
             $organization = $orgModel->first();
             if (!$organization) {
                 return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
@@ -432,6 +435,9 @@ class Members extends BaseController
             }
 
             $transactions = $journalModel->getMemberTransactionDetails($memberId);
+            $savings = $savingsModel->getMemberSavingsTotal($memberId);
+            $shares = $sharesModel->getMemberSharesTotal($memberId);
+            $loans = $loanModel->getMemberLoanSummary($memberId);
             if (empty($transactions)) {
                 // Optional: Render PDF anyway, or abort
                 log_message('warning', "No transactions found for member ID: {$memberId}");
@@ -441,6 +447,9 @@ class Members extends BaseController
                 'member' => $member,
                 'organization' => $organization,
                 'transactions' => $transactions,
+                'savings' => $savings,
+                'shares' => $shares,
+                'loan_balance' => $loans
             ];
 
             // Generate PDF
@@ -462,12 +471,13 @@ class Members extends BaseController
         }
     }
 
-    public function generateSavingsStatement($id = null) {
+    public function generateSavingsStatement($id = null)
+    {
         try {
             $memberModel = new MembersModel();
             $orgModel = new OrganizationModel();
             $journalModel = new JournalDetailsModel();
-            $savingsModel= new SavingsAccountModel();
+            $savingsModel = new SavingsAccountModel();
             $transactionsModel = new TransactionsModel();
 
             // Fetch member
@@ -511,12 +521,13 @@ class Members extends BaseController
         }
     }
 
-    public function generateSharesStatement($id = null) {
-          try {
+    public function generateSharesStatement($id = null)
+    {
+        try {
             $memberModel = new MembersModel();
             $orgModel = new OrganizationModel();
             $journalModel = new JournalDetailsModel();
-            $savingsModel= new SavingsAccountModel();
+            $savingsModel = new SavingsAccountModel();
             $transactionsModel = new TransactionsModel();
 
             // Fetch member
@@ -560,11 +571,10 @@ class Members extends BaseController
         }
     }
 
-    public function generateLoansStatement($id = null) {
-        
-    }
+    public function generateLoansStatement($id = null) {}
 
-    public function generateTransactionsStatement($id = null) {
+    public function generateTransactionsStatement($id = null)
+    {
 
         try {
             $memberModel = new MembersModel();
@@ -603,13 +613,10 @@ class Members extends BaseController
             return $this->response
                 ->setHeader('Content-Type', 'application/pdf')
                 ->setBody($dompdf->output());
-
         } catch (\Throwable $e) {
             log_message('error', 'Error generating statement: ' . $e->getMessage());
             return $this->response->setStatusCode(500)->setBody('An unexpected error occurred. Please try again later.');
         }
-
-
     }
 
 

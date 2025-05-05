@@ -23,11 +23,15 @@
         .transactions td {
             border: 1px solid #ccc;
             padding: 5px;
+            text-align: center;
         }
 
         .table-header {
             background-color:#bc0707;
             color: #fff;
+        }
+        h4 {
+            text-align: center;
         }
     </style>
 </head>
@@ -35,10 +39,10 @@
 <body>
 
     <div class="header">
-        <img src="<?= base_url('writable/uploads/' . $organization['logo']) ?>" alt="Logo" height="80
+        <img src="<?= base_url('writable/uploads/' . $organization['logo']) ?>" alt="Logo" height="80">
         <h2><?= esc($organization['org_name']) ?></h2>
         <p><?= esc($organization['physical_address']) ?> | <?= esc($organization['phone']) ?> | <?= esc($organization['email']) ?></p>
-        ">
+
     </div>
 
     <h3>Member Statement</h3>
@@ -47,24 +51,25 @@
     <table class="transactions">
         <thead>
             <tr class="table-header">
-                <th>Date</th>
-                <th>Account</th>
-                <th>Description</th>
-                <th>Debit</th>
-                <th>Credit</th>
+                <th>Balance Type</th>
+                <th>Current Balance</th>
+                
             </tr>
         </thead>
         <tbody>
         <?php if (!empty($transactions)): ?>
-        <?php foreach ($transactions as $tx): ?>
-            <tr>
-                <td><?= date('Y-m-d', strtotime($tx['created_at'])) ?></td>
-                <td><?= esc($tx['account_name']) ?></td>
-                <td><?= esc($tx['description'] ?? '-') ?></td>
-                <td><?= number_format($tx['debit'], 2) ?></td>
-                <td><?= number_format($tx['credit'], 2) ?></td>
-            </tr>
-        <?php endforeach; ?>
+        <tr>
+            <td><b>Shares</b></td>
+            <td><h4><?= number_format($shares,2)?></h4></td>
+        </tr>
+        <tr>
+            <td><b>Savings</b></td>
+            <td><h4><?= number_format($savings, 2)?></h4></td>
+        </tr>
+        <tr>
+            <td><b>Loans</b></td>
+            <td><h4><?= number_format($loan_balance['balance'], 2)?></h4></td>
+        </tr>
     <?php else: ?>
         <tr>
             <td colspan="5" style="text-align: center;">No transactions found.</td>
