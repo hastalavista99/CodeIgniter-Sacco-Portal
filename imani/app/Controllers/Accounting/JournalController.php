@@ -220,6 +220,7 @@ class JournalController extends BaseController
         $journalDetailsModel = new JournalDetailsModel();
         $transactionModel = new TransactionsModel();
         $memberModel = new MembersModel();
+        $savingsAccountModel = new SavingsAccountModel();
 
         $transactions = $this->request->getJSON(true)['transactions'];
 
@@ -248,6 +249,23 @@ class JournalController extends BaseController
             $transactionID = $transactionModel->insert($transactionData);
 
             $memberId = $memberModel->where('member_number', $tx['memberNumber'])->first();
+
+             // Handle savings logic
+        if ($tx['service'] === 'savings') {
+            $savingsAccount = $savingsAccountModel->where('member_id', $memberId['id'])->first();
+
+            if ($savingsAccount) {
+
+                // Update savings account balance
+                $newBalance = ($tx['service'] === 'savings') 
+                    ? $savingsAccount['balance'] + $tx['amount'] 
+                    : $savingsAccount['balance'] - $tx['amount'];
+
+                $savingsAccountModel->update($savingsAccount['id'], [
+                    'balance' => $newBalance
+                ]);
+            }
+        }
             // Step 1: Create a Journal Entry
             $journalData = [
                 'date' => $tx['date'],

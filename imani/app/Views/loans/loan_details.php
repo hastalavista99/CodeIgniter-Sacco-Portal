@@ -63,15 +63,15 @@
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan Principal:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['principal'],2, '.', ',') ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['principal'], 2, '.', ',') ?></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Loan Interest:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total_interest'],2, '.', ',') ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total_interest'], 2, '.', ',') ?></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Total Loan:</div>
-                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total_loan'],2, '.', ',') ?></div>
+                            <div class="col-lg-9 col-md-8"><?= "Ksh " . number_format($loan['total_loan'], 2, '.', ',') ?></div>
                         </div>
 
                         <div class="row">
@@ -81,7 +81,7 @@
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label fw-bold">Monthly Repayment:</div>
-                            <div class="col-lg-9 col-md-8"><?= number_format($loan['monthly_repayment'],2, '.', ',') ?></div>
+                            <div class="col-lg-9 col-md-8"><?= number_format($loan['monthly_repayment'], 2, '.', ',') ?></div>
                         </div>
                     </div>
                 </section>
@@ -128,14 +128,18 @@
                         <?php
                         if ($loan['loan_status'] !== 'approved') {
                         ?>
-                            <a href="<?= site_url('loans/approve/' . $loan['id']) ?>" class="btn btn-success mx-2">
-                                <i class="bi bi-check2 ms-auto"></i>
-                                Approve
-                            </a>
-                            <a href="<?= site_url('loans/reject/' . $loan['id']) ?>" class="btn btn-danger mx-2">
-                                <i class="bi bi-x-lg ms-auto"></i>
-                                Reject
-                            </a>
+                            <?php if (user_can('approve_loans')): ?>
+                                <a href="<?= site_url('loans/approve/' . $loan['id']) ?>" class="btn btn-success mx-2">
+                                    <i class="bi bi-check2 ms-auto"></i>
+                                    Approve
+                                </a>
+                                <a href="<?= site_url('loans/reject/' . $loan['id']) ?>" class="btn btn-danger mx-2">
+                                    <i class="bi bi-x-lg ms-auto"></i>
+                                    Reject
+                                </a>
+                            <?php endif; ?>
+
+
                         <?php
                         }
                         ?>

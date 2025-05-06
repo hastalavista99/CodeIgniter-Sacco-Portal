@@ -85,6 +85,12 @@ class Members extends BaseController
             'photo_path' => $photoPath,
         ];
 
+        $mobile = $this->request->getPost('phoneNumber');
+        $fname = $this->request->getPost('firstName');
+        $memberNumber = $this->request->getPost('memberNumber');
+        $email = $this->request->getPost('email');
+
+
         $benFirstName = $this->request->getPost('beneficiaryFirstName');
         if (isset($benFirstName)) {
             // Prepare beneficiary data
@@ -122,6 +128,36 @@ class Members extends BaseController
 
             // Create share capital account
             $this->createMemberShareAccount($memberId);
+
+            $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $pass = substr(str_shuffle($alpha_numeric), 0, 8);
+
+            $createUser = new \App\Models\UserModel();
+            new \App\Libraries\Hash();
+
+            $data = [
+                'user' => $fname,
+                'name' => $fname,
+                'member_no' => $memberNumber,
+                'email' => $email? $email : '',
+                'mobile' => $mobile,
+                'password' => Hash::encrypt($pass),
+                'role' => 'member',
+            ];
+            $createUser->save($data);
+
+            $smsModel = new SendSMS();
+            $msg = "Hi, $fname \n Welcome to Imaniline Sacco Login to https://sacco.imanilinesacco.co.ke to view your transactions.\nMember Number: $memberNumber \nPassword: $pass\n Regards \n Imaniline Sacco Manager";
+
+            $sendSMSStatus = $smsModel->sendSMS($mobile, $msg);
+
+            if($sendSMSStatus) {
+                return $this->response->setStatusCode(201)->setJSON([
+                'success' => true,
+                'message' => 'Member created and notified successfully',
+                'member_id' => $memberId
+            ]);
+            }
             return $this->response->setStatusCode(201)->setJSON([
                 'success' => true,
                 'message' => 'Member created successfully',
@@ -423,7 +459,7 @@ class Members extends BaseController
                 return $this->response->setStatusCode(404)->setBody('Member not found.');
             }
 
-             // Fetch organization profile
+            // Fetch organization profile
             $organization = $orgModel->first();
             if (!$organization) {
                 return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');

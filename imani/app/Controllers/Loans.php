@@ -20,9 +20,12 @@ use App\Models\LoanTypeModel;
 use App\Models\LoanRepaymentModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use DateTime;
+require APPPATH . 'Helpers/userpermissionhelper.php';
 
 class Loans extends BaseController
 {
+
+    
     // apply form page
     public function index()
     {
@@ -217,6 +220,9 @@ class Loans extends BaseController
 
     public function view($id = null)
     {
+        helper('userpermissionhelper');
+        
+
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);

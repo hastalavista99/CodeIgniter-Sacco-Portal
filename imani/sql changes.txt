@@ -234,3 +234,6 @@ ALTER TABLE `user` CHANGE `role` `role` ENUM('admin','member','user','agent','ac
 new changes
 
 ALTER TABLE `journal_entry_details` CHANGE `transaction_id` `transaction_id` INT(11) NULL;
+
+06/05/2025
+ALTER TABLE `savings_accounts` ADD `balance` DECIMAL NOT NULL DEFAULT '0.00' AFTER `account_type`;
