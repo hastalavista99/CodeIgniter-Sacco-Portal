@@ -38,10 +38,9 @@ class SavingsAccountModel extends Model
 
 
         // Step 3: Sum DEBITS only to the member’s savings account
-        $totals = $db->table('transactions')
-            ->select('SUM(amount) as total_savings')
-            ->where('member_number', $member->member_number)
-            ->where('service_transaction', 'savings')
+        $totals = $db->table('savings_accounts')
+            ->select('balance as total_savings')
+            ->where('member_id', $memberId)
             ->get()
             ->getRow();
 

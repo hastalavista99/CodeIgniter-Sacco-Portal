@@ -60,8 +60,13 @@
                     <td><?= esc($member['phone_number']) ?></td>
                     <td><?= esc($member['email']) ?></td>
                     <td><?= esc($member['join_date']) ?></td>
-                    <td><a href="<?= site_url('members/view/'. $member['id'])?>" class="btn btn-sm btn-success" ><i class="bi-eye"></i></a>
-                    <a href="<?= site_url('members/edit/'. $member['id'])?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a></td>
+                    <td>
+                      <?php if (user_can('edit_member_details')): ?>
+                        <a href="<?= site_url('members/edit/'. $member['id'])?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
+                      <?php endif;?>
+                      <a href="<?= site_url('members/view/'. $member['id'])?>" class="btn btn-sm btn-success" ><i class="bi-eye"></i></a>
+                      
+                    </td>
                   </tr>
 
 

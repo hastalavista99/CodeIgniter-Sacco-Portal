@@ -49,7 +49,7 @@
         </div>
       </li>
 
-
+      <?php if (user_can('view_payments')): ?>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#payments" role="button" aria-expanded="false"
           aria-controls="collapseExample">
@@ -113,6 +113,8 @@
           </ul>
         </div>
       </li>
+      <?php endif; ?>
+
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#loans" role="button" aria-expanded="false"
           aria-controls="collapseExample">
@@ -264,24 +266,29 @@
                 </span>
               </a>
             </li>
+            <?php if (user_can('manage_users')): ?>
+
             <li class="nav-item">
               <a href="<?= site_url('/users') ?>" class="nav-link collapsed">
                 <i class="bi bi-person-check"></i>
                 <span>Users</span>
               </a>
             </li>
+            <?php endif; ?>
             <!-- <li class="nav-item">
               <a href="<?= site_url('/settings') ?>" class="nav-link collapsed">
                 <i class="bi bi-gear"></i>
                 <span>System Settings</span>
               </a>
             </li> -->
+            <?php if (user_can('access_system_parameters')): ?>
             <li class="nav-item">
               <a href="<?= site_url('/admin/settings') ?>" class="nav-link collapsed">
                 <i class="bi bi-person-gear"></i>
                 <span>Admin Settings</span>
               </a>
             </li>
+            <?php endif; ?>
           </ul>
         </div>
       </li>

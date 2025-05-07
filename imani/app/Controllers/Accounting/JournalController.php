@@ -221,6 +221,7 @@ class JournalController extends BaseController
         $transactionModel = new TransactionsModel();
         $memberModel = new MembersModel();
         $savingsAccountModel = new SavingsAccountModel();
+        $sharesAccountModel = new SharesAccountModel();
 
         $transactions = $this->request->getJSON(true)['transactions'];
 
@@ -265,7 +266,23 @@ class JournalController extends BaseController
                     'balance' => $newBalance
                 ]);
             }
+        } else if ($tx['service'] === 'share_deposits') {
+            $sharesAccount = $sharesAccountModel->where('member_id', $memberId['id'])->first();
+
+            if ($sharesAccount) {
+
+                // Update savings account balance
+                $newBalance = ($tx['service'] === 'share_deposits') 
+                    ? $sharesAccount['shares_owned'] + $tx['amount'] 
+                    : $sharesAccount['shares_owned'] - $tx['amount'];
+
+                $sharesAccountModel->update($sharesAccount['id'], [
+                    'shares_owned' => $newBalance
+                ]);
+            }
         }
+
+
             // Step 1: Create a Journal Entry
             $journalData = [
                 'date' => $tx['date'],

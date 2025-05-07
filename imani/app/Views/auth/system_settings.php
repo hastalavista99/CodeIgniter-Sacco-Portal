@@ -78,7 +78,7 @@
                     <h4 class="mb-3">System Parameters</h4>
                     <div class="row">
                         <?php foreach ($parameters as $param): ?>
-                            <div class="mb-3 col-md-3">
+                            <div class="mb-3 col-md-4">
                                 <label><?= esc($param['description']) ?> (<?= esc($param['param_key']) ?>)</label>
                                 <?php if ($param['param_value'] === 'true' || $param['param_value'] === 'false'): ?>
                                     <div class="form-check">
@@ -103,7 +103,9 @@
 
 
                     <div class="d-flex justify-content-end mt-4">
-                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                        <?php if (user_can('edit_settings')): ?>
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        <?php endif; ?>
                     </div>
                 </form>
 

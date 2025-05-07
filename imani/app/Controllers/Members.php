@@ -22,6 +22,7 @@ use App\Models\OrganizationModel;
 use App\Models\Accounting\JournalDetailsModel;
 use App\Models\Accounting\TransactionsModel;
 
+
 class Members extends BaseController
 {
     public function index()

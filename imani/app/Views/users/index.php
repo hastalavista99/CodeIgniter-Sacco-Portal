@@ -136,34 +136,55 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Assign Permissions:</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="permissions[]" value="post_journal_entries" id="post_journal_entries">
-                            <label class="form-check-label" for="post_journal_entries">Post Journal Entries</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="post_journal_entries" id="post_journal_entries">
+                                    <label class="form-check-label" for="post_journal_entries">Post Journal Entries</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="approve_loans" id="approve_loans">
+                                    <label class="form-check-label" for="approve_loans">Approve Loans</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="edit_member_details" id="edit_member_details">
+                                    <label class="form-check-label" for="edit_member_details">Edit Member Details</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="access_system_parameters" id="access_system_parameters">
+                                    <label class="form-check-label" for="access_system_parameters">Access System Parameters</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="access_payments_details" id="access_payments_details">
+                                    <label class="form-check-label" for="access_payments_details">Access Payments Details</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="send_sms_to_member" id="send_sms_to_member">
+                                    <label class="form-check-label" for="send_sms_to_member">Send SMS</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="view_reports" id="view_reports">
+                                    <label class="form-check-label" for="view_reports">View System Reports</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="create_members" id="create_members">
+                                    <label class="form-check-label" for="create_members">Create Members</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="edit_settings" id="edit_settings">
+                                    <label class="form-check-label" for="edit_settings">Edit System Settings</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="reverse_transactions" id="reverse_transactions">
+                                    <label class="form-check-label" for="reverse_transactions">Reverse Transactions</label>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="permissions[]" value="approve_loans" id="approve_loans">
-                            <label class="form-check-label" for="approve_loans">Approve Loans</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="permissions[]" value="edit_member_details" id="edit_member_details">
-                            <label class="form-check-label" for="edit_member_details">Edit Member Details</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="permissions[]" value="access_system_parameters" id="access_system_parameters">
-                            <label class="form-check-label" for="access_system_parameters">Access System Parameters</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="permissions[]" value="access_payments_details" id="access_payments_details">
-                            <label class="form-check-label" for="access_payments_details">Access Payments Details</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="permissions[]" value="send_sms_to_member" id="send_sms_to_member">
-                            <label class="form-check-label" for="send_sms_to_member">Send SMS</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="permissions[]" value="view_reports" id="view_reports">
-                            <label class="form-check-label" for="view_reports">View System Reports</label>
-                        </div>
+
                         <!-- You can add more permissions here -->
                     </div>
 

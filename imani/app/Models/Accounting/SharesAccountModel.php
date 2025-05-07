@@ -33,10 +33,9 @@ class SharesAccountModel extends Model
         }
     
         // Sum credits and debits
-        $totals = $db->table('transactions')
-            ->select('SUM(amount) as total_shares')
-            ->where('member_number', $memberId)
-            ->where('service_transaction', 'share_deposits')
+        $totals = $db->table('share_accounts')
+            ->select('shares_owned as total_shares')
+            ->where('member_id', $memberId)
             ->get()
             ->getRow();
     
