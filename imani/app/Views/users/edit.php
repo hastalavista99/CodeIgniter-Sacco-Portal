@@ -95,7 +95,7 @@
           </div>
 
           <div class="d-flex align-items-between justify-content-between me-2 mt-4">
-            <a href="<?= base_url('/users') ?>" class="btn btn-info me-3"><i class="bi-chevron-left"></i> Back</a>
+            <a href="<?= site_url('/users') ?>" class="btn btn-info me-3"><i class="bi-chevron-left"></i> Back</a>
             <button type="submit" class="btn btn-success">Update</button>
           </div>
 
