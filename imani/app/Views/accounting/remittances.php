@@ -160,10 +160,12 @@
             let date = document.getElementById("date").value;
             let description = document.getElementById("description").value;
 
+
             if (service === "" || amount === "" || paymentMethod === "") {
                 alert("Please fill all required fields.");
                 return;
             }
+
             let loanId = document.getElementById("loan-id").value;
             // Create transaction object
             let transaction = {
@@ -327,7 +329,7 @@
                     return;
                 }
 
-                fetch(`<?= site_url('/accounting/remittances/get-member/')?>${encodeURIComponent(memberNo)}`)
+                fetch(`<?= site_url('/accounting/remittances/get-member/') ?>${encodeURIComponent(memberNo)}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -352,6 +354,7 @@
 
         // Show/hide loan type selection based on transaction type
         let transactionType = document.getElementById('service-transaction');
+        let descriptionInput = document.getElementById("description");
 
         if (transactionType) {
             transactionType.addEventListener('change', function() {
@@ -362,7 +365,17 @@
                 }
 
                 if (this.value === 'loans') {
-                    fetch(`<?= site_url('/loans/check-loan/')?>${encodeURIComponent(memberID)}`)
+                    descriptionInput.value = "Loans";
+                } else if (this.value === 'savings') {
+                    descriptionInput.value = "Savings";
+                } else if (this.value === 'entrance_fee') {
+                    descriptionInput.value = "Entrance Fee";
+                } else if (this.value === 'share_deposits') {
+                    descriptionInput.value = "Share Deposits";
+                }
+
+                if (this.value === 'loans') {
+                    fetch(`<?= site_url('/loans/check-loan/') ?>${encodeURIComponent(memberID)}`)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');
