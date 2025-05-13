@@ -62,7 +62,7 @@
                                         <!-- <div class="main"> -->
                                         <td><?= esc($user['mobile']) ?></td>
                                         <td><?= esc($user['role']) ?></td>
-                                        <td><a href="/editUser?id=<?= $user['id'] ?>" class="btn btn-sm btn-info"><i class="bi-pencil-square"></i></a>
+                                        <td><a href="<?= site_url('/editUser?id='.$user['id'])  ?>" class="btn btn-sm btn-info"><i class="bi-pencil-square"></i></a>
                                             <a href="#" class="btn btn-sm btn-danger"><i class="bi-trash3"></i></a>
 
                                         </td>

@@ -252,6 +252,7 @@ class Members extends BaseController
         $savingsModel = new SavingsAccountModel();
         $sharesModel = new SharesAccountModel();
         $loanModel = new LoanApplicationModel();
+        $transactionsModel = new TransactionsModel();
 
         $userModel = model(UserModel::class);
         $loggedInUserId = session()->get('loggedInUser');
@@ -266,13 +267,15 @@ class Members extends BaseController
         $savings = $savingsModel->getMemberSavingsTotal($id);
         $shares = $sharesModel->getMemberSharesTotal($id);
         $loans = $loanModel->getMemberLoanSummary($id);
+        $transactions = $transactionsModel->getRecentTransactions($member['member_number']);
         $data = [
             'member' => $member,
             'savings' => $savings,
             'shares' => $shares,
             'loans' => $loans,
             'title' => 'Member View - ' . $member['first_name'] . " " . $member['last_name'],
-            'userInfo' => $userInfo
+            'userInfo' => $userInfo,
+            'recentTransactions' => $transactions,
         ];
 
         return view('members/view', $data);

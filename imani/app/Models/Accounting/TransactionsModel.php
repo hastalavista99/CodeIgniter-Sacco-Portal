@@ -15,7 +15,8 @@ class TransactionsModel extends Model
         'amount',
         'payment_method',
         'transaction_date',
-        'description'
+        'description',
+        'reference',
     ];
 
 
@@ -27,5 +28,13 @@ class TransactionsModel extends Model
     public function getSharesTransactions($memberNumber)
     {
         return $this->where('member_number', $memberNumber)->where('service_transaction', 'share_deposits')->findAll();
+    }
+
+    public function getRecentTransactions($memberNumber, $limit = 5)
+    {
+        return $this->where('member_number', $memberNumber)
+            ->orderBy('transaction_date', 'DESC')
+            ->limit($limit)
+            ->find();
     }
 }

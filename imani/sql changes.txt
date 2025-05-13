@@ -237,3 +237,10 @@ ALTER TABLE `journal_entry_details` CHANGE `transaction_id` `transaction_id` INT
 
 06/05/2025
 ALTER TABLE `savings_accounts` ADD `balance` DECIMAL NOT NULL DEFAULT '0.00' AFTER `account_type`;
+
+13/05/2025
+ALTER TABLE transactions
+ADD COLUMN reference VARCHAR(64) NOT NULL AFTER description;
+
+ALTER TABLE transactions
+ADD UNIQUE (reference);

@@ -3,7 +3,7 @@
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="/dashboard">
+      <a class="nav-link collapsed" href="<?= site_url('/dashboard')?>">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
@@ -12,7 +12,7 @@
     <?php if ($userInfo['role'] == 'admin') { ?>
 
       <li class="nav-item">
-        <a href="/members" class="nav-link collapsed">
+        <a href="<?= site_url('/members')?>" class="nav-link collapsed">
           <i class="bi bi-people"></i>
           <span>Members</span>
 
@@ -303,7 +303,7 @@
       </li>
     <?php } ?>
     <li class="nav-item">
-      <a href="/myPayments" class="nav-link collapsed">
+      <a href="<?= site_url('/myPayments')?>" class="nav-link collapsed">
         <i class="bi-cash-stack"></i>
         <span>My Payments</span>
       </a>

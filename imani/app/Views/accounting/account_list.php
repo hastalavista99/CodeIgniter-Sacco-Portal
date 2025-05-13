@@ -34,7 +34,7 @@
 
                 <div class="col-md-2 pt-3">
                     <div>
-                        <a href="/accounting/accounts/create" class="btn btn-primary mb-3"><i class="bi-journal-plus me-1"></i>Add Account</a>
+                        <a href="<?= site_url('/accounting/accounts/create')?>" class="btn btn-primary mb-3"><i class="bi-journal-plus me-1"></i>Add Account</a>
                     </div>
                 </div>
 
@@ -61,8 +61,8 @@
                                         <td><?= $account['account_code'] ?></td>
                                         <td><?= $account['category'] ?></td>
                                         <td>
-                                            <a href="/accounting/accounts/edit/<?= $account['id'] ?>" class="btn btn-info btn-sm">Edit</a>
-                                            <a href="/accounting/accounts/delete/<?= $account['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                                            <a href="<?= site_url('/accounting/accounts/edit/')?><?= $account['id'] ?>" class="btn btn-info btn-sm">Edit</a>
+                                            <a href="<?= site_url('/accounting/accounts/delete/')?><?= $account['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

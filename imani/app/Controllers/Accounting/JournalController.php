@@ -36,7 +36,7 @@ class JournalController extends BaseController
             'title' => 'Journal Entries',
             'entries' => $journals,
             'userInfo' => $userInfo,
-            
+
         ];
         return view('accounting/journal_list', $data);
     }
@@ -225,7 +225,21 @@ class JournalController extends BaseController
 
         $transactions = $this->request->getJSON(true)['transactions'];
 
+        $db = \Config\Database::connect();
+        $db->transStart();
+
         foreach ($transactions as $tx) {
+            $txReference = md5($tx['memberNumber'] . $tx['date'] . $tx['amount'] . $tx['service']);
+
+            $existingTransaction = $transactionModel
+                ->where('reference', $txReference)
+                ->first();
+
+            if ($existingTransaction) {
+                continue; // Skip this one
+            }
+
+
             if ($tx['service'] === 'loans' && !empty($tx['loanId'])) {
                 $loanData = [
                     'loan_id' => $tx['loanId'],
@@ -245,49 +259,50 @@ class JournalController extends BaseController
                 'amount' => $tx['amount'],
                 'payment_method' => $tx['paymentMethod'],
                 'transaction_date' => $tx['date'],
-                'description' => $tx['description']
+                'description' => $tx['description'],
+                'reference' => $txReference,
             ];
             $transactionID = $transactionModel->insert($transactionData);
 
             $memberId = $memberModel->where('member_number', $tx['memberNumber'])->first();
 
-             // Handle savings logic
-        if ($tx['service'] === 'savings') {
-            $savingsAccount = $savingsAccountModel->where('member_id', $memberId['id'])->first();
+            // Handle savings logic
+            if ($tx['service'] === 'savings') {
+                $savingsAccount = $savingsAccountModel->where('member_id', $memberId['id'])->first();
 
-            if ($savingsAccount) {
+                if ($savingsAccount) {
 
-                // Update savings account balance
-                $newBalance = ($tx['service'] === 'savings') 
-                    ? $savingsAccount['balance'] + $tx['amount'] 
-                    : $savingsAccount['balance'] - $tx['amount'];
+                    // Update savings account balance
+                    $newBalance = ($tx['service'] === 'savings')
+                        ? $savingsAccount['balance'] + $tx['amount']
+                        : $savingsAccount['balance'] - $tx['amount'];
 
-                $savingsAccountModel->update($savingsAccount['id'], [
-                    'balance' => $newBalance
-                ]);
+                    $savingsAccountModel->update($savingsAccount['id'], [
+                        'balance' => $newBalance
+                    ]);
+                }
+            } else if ($tx['service'] === 'share_deposits') {
+                $sharesAccount = $sharesAccountModel->where('member_id', $memberId['id'])->first();
+
+                if ($sharesAccount) {
+
+                    // Update savings account balance
+                    $newBalance = ($tx['service'] === 'share_deposits')
+                        ? $sharesAccount['shares_owned'] + $tx['amount']
+                        : $sharesAccount['shares_owned'] - $tx['amount'];
+
+                    $sharesAccountModel->update($sharesAccount['id'], [
+                        'shares_owned' => $newBalance
+                    ]);
+                }
             }
-        } else if ($tx['service'] === 'share_deposits') {
-            $sharesAccount = $sharesAccountModel->where('member_id', $memberId['id'])->first();
-
-            if ($sharesAccount) {
-
-                // Update savings account balance
-                $newBalance = ($tx['service'] === 'share_deposits') 
-                    ? $sharesAccount['shares_owned'] + $tx['amount'] 
-                    : $sharesAccount['shares_owned'] - $tx['amount'];
-
-                $sharesAccountModel->update($sharesAccount['id'], [
-                    'shares_owned' => $newBalance
-                ]);
-            }
-        }
 
 
             // Step 1: Create a Journal Entry
             $journalData = [
                 'date' => $tx['date'],
                 'description' => $tx['description'],
-                'reference' => 'TXN-' . time(), // Unique reference number
+                'reference' => $txReference, // Unique reference number
                 'created_by' => session()->get('loggedInUser'),
                 'posted' => 0 // Not posted yet
             ];
@@ -295,7 +310,7 @@ class JournalController extends BaseController
 
             // Step 2: Identify Debit & Credit Accounts
             $debitAccount = $this->getDebitAccount($tx['service'], $memberId['id']);
-            $creditAccount = $this->getCreditAccount($tx['paymentMethod']);
+            $creditAccount = $this->getCreditAccount($tx['service']);
 
             // Step 3: Save Journal Entry Details (Debit & Credit)
             $journalDetailsModel->insert([
@@ -313,8 +328,11 @@ class JournalController extends BaseController
                 'credit' => $tx['amount'],
                 'transaction_id' => $transactionID
             ]);
+        }
+        $db->transComplete();
 
-            
+        if ($db->transStatus() === false) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Transaction failed.']);
         }
 
         return $this->response->setJSON(['success' => true]);
@@ -324,33 +342,37 @@ class JournalController extends BaseController
     private function getDebitAccount($serviceTransaction, $memberId)
     {
         $accounts = [
-            'savings' => $this->getMemberSavingsAccount($memberId), // Current Bank Account (Asset)
-            'loans' => 2, // Interest on Loans (Income)
-            'entrance_fee' => 75, // Entrance Fee (Equity)
-            'share_deposits' => $this->getMemberSharesAccount($memberId), // Customer Deposits (Equity)
+            'savings' => 3, // Current Bank Account (Asset)
+            'loans' => 3,
+            'entrance_fee' => 3,
+            'share_deposits' => 3,
         ];
-        return $accounts[$serviceTransaction] ?? 2; // Default to Debtors
+        return $accounts[$serviceTransaction] ?? 5; // Default to Cash in Hand
     }
 
     // Function to determine the Credit Account
-    private function getCreditAccount($paymentMethod)
+    private function getCreditAccount($serviceTransaction)
     {
         $accounts = [
-            'cash' => 5, // Cash in Hand (Asset)
-            'bank' => 3, // Current Bank Account (Asset)
-            'mobile' => 4, // Savings Bank Account (Asset)
+            'savings' => 74,        // Member Savings Control
+            'share_deposits' => 73, // Share Capital Control
+            'loans' => 2,          // Loan Repayment Control
+            'entrance_fee' => 75,   // Entrance Fee (Income/Equity)
         ];
-        return $accounts[$paymentMethod] ?? 5; // Default to Cash in Hand
+
+        return $accounts[$serviceTransaction] ?? 5; // Default to Cash in Hand
     }
 
-    public function getMemberSavingsAccount($memberId) {
+    public function getMemberSavingsAccount($memberId)
+    {
         $savingsAccountModel = new SavingsAccountModel();
         $savingsAccountId = $savingsAccountModel->where('member_id', $memberId)->first();
 
         // log_message('debug', 'Savings account ID: ' . print_r($savingsAccountId, true));
         return $savingsAccountId['id'];
     }
-    public function getMemberSharesAccount($memberId) {
+    public function getMemberSharesAccount($memberId)
+    {
         $sharesAccountModel = new SharesAccountModel();
         $sharesAccountId = $sharesAccountModel->where('member_id', $memberId)->first();
 
@@ -359,93 +381,3 @@ class JournalController extends BaseController
     }
 }
 
-// class JournalService 
-// {
-//     public function createLoanDisbursementEntry($loanData, $user)
-//     {
-//         $journalEntryModel = new JournalEntryModel();
-//         $journalDetailModel = new JournalDetailsModel();
-
-//         $entryData = [
-//             'date'        => date('Y-m-d'),
-//             'description' => 'Loan disbursement to Member ID ' . $loanData['member_id'],
-//             'reference'   => 'Loan #' . $loanData['id'],
-//             'created_by'  => $user,
-//         ];
-
-//         $entryId = $journalEntryModel->insert($entryData);
-
-//         // Example account IDs (replace with actual ones)
-//         $accountModel = new AccountsModel();
-//         $loanTypeModel = new LoanTypeModel();
-
-//         $loanTypeDetails = $loanTypeModel->find($loanData['loan_type_id']);
-//         $loanType = $loanTypeDetails['loan_name'];
-//         $account = $accountModel->where('account_name', $loanType)->first;
-
-//         $loanReceivableAccountId = $account['id']; // Member Loan Receivable
-//         $cashOrLoanControlAccountId = 3; // Source of funds // Current savings Account
-
-//         $amount = $loanData['disburse_amount'];
-
-//         $journalDetailModel->insertBatch([
-//             [
-//                 'journal_entry_id' => $entryId,
-//                 'account_id'       => $loanReceivableAccountId,
-//                 'debit'            => $amount,
-//                 'credit'           => 0,
-//             ],
-//             [
-//                 'journal_entry_id' => $entryId,
-//                 'account_id'       => $cashOrLoanControlAccountId,
-//                 'debit'            => 0,
-//                 'credit'           => $amount,
-//             ],
-//         ]);
-//     }
-
-//     public function createLoanRepaymentEntry($repaymentData, $user)
-//     {
-//         $journalEntryModel = new JournalEntryModel();
-//         $journalDetailModel = new JournalDetailsModel();
-
-//         $entryData = [
-//             'date'        => $repaymentData['payment_date'] ?? date('Y-m-d'),
-//             'description' => 'Loan repayment for Loan ID ' . $repaymentData['loan_id'],
-//             'reference'   => 'Repayment #' . $repaymentData['id'],
-//             'created_by'  => $user,
-//         ];
-
-//         $entryId = $journalEntryModel->insert($entryData);
-
-//         $cashAccountId = 3; // Cash or Bank account
-//         $accountModel = new AccountsModel();
-//         $loanTypeModel = new LoanTypeModel();
-//         $loanApplicationModel = new LoanApplicationModel();
-
-//         $loan = $loanApplicationModel->find($repaymentData['loan_id']);
-
-//         $loanTypeDetails = $loanTypeModel->find($loan['loan_type-id']);
-//         $loanType = $loanTypeDetails['loan_name'];
-//         $account = $accountModel->where('account_name', $loanType)->first;
-
-//         $loanReceivableAccountId = $account['id']; // Member Loan Receivable
-
-//         $amount = $repaymentData['amount_paid'];
-
-//         $journalDetailModel->insertBatch([
-//             [
-//                 'journal_entry_id' => $entryId,
-//                 'account_id'       => $cashAccountId,
-//                 'debit'            => $amount,
-//                 'credit'           => 0,
-//             ],
-//             [
-//                 'journal_entry_id' => $entryId,
-//                 'account_id'       => $loanReceivableAccountId,
-//                 'debit'            => 0,
-//                 'credit'           => $amount,
-//             ],
-//         ]);
-//     }
-// }

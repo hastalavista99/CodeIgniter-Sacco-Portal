@@ -34,20 +34,21 @@
                 <form action="<?= site_url('accounting/accounts/update/' . $account['id']) ?>" method="post">
                     <?= csrf_field() ?>
                     <div class="row mt-3">
-                        <div class="mb-3 col-6">
+                        <div class="mb-3 col-4">
                             <label for="account_name" class="form-label">Account Name:</label>
-                            <input type="text" id="account_name" class="form-control" name="account_name" value="<?= esc($account['name']) ?>" required>
+                            <input type="text" id="account_name" class="form-control" name="account_name" value="<?= esc($account['account_name']) ?>" required>
                         </div>
-                        <div class="mb-3 col-6">
+                        <div class="mb-3 col-4">
                             <label for="account_type" class="form-label">Account Type:</label>
                             <select id="account_type" class="form-select" name="account_type" required>
-                                <option value="asset" <?= $account['type'] == 'asset' ? 'selected' : '' ?>>Asset</option>
-                                <option value="liability" <?= $account['type'] == 'liability' ? 'selected' : '' ?>>Liability</option>
-                                <option value="equity" <?= $account['type'] == 'equity' ? 'selected' : '' ?>>Equity</option>
-                                <option value="income" <?= $account['type'] == 'income' ? 'selected' : '' ?>>Income</option>
-                                <option value="expense" <?= $account['type'] == 'expense' ? 'selected' : '' ?>>Expense</option>
+                                <option value="asset" <?= $account['category'] == 'asset' ? 'selected' : '' ?>>Asset</option>
+                                <option value="liability" <?= $account['category'] == 'liability' ? 'selected' : '' ?>>Liability</option>
+                                <option value="equity" <?= $account['category'] == 'equity' ? 'selected' : '' ?>>Equity</option>
+                                <option value="income" <?= $account['category'] == 'income' ? 'selected' : '' ?>>Income</option>
+                                <option value="expense" <?= $account['category'] == 'expense' ? 'selected' : '' ?>>Expense</option>
                             </select>
                         </div>
+                        
                     </div>
 
                     <div class="d-flex justify-content-evenly">

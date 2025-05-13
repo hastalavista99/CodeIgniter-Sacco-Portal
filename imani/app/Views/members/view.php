@@ -31,7 +31,7 @@
                                 <h5 class="card-title">Total Shares</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3">
-                                        <h6><small>KES</small> <?= number_format($shares?? 0, 2) ?></h6>
+                                        <h6><small>KES</small> <?= number_format($shares ?? 0, 2) ?></h6>
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,36 @@
 
                             <div class="card-body">
                                 <h5 class="card-title">Recent Transactions</h5>
-
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Service</th>
+                                                <th>Amount</th>
+                                                <th>Method</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!empty($recentTransactions)): ?>
+                                                <?php foreach ($recentTransactions as $tx): ?>
+                                                    <tr>
+                                                        <td><?= esc($tx['transaction_date']) ?></td>
+                                                        <td><?= esc(ucwords(str_replace('_', ' ', $tx['service_transaction']))) ?></td>
+                                                        <td><?= number_format($tx['amount'], 2) ?></td>
+                                                        <td><?= esc(ucfirst($tx['payment_method'])) ?></td>
+                                                        <td><?= esc($tx['description']) ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No recent transactions found.</td>
+                                                </tr>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                         </div>
@@ -147,39 +176,39 @@
             const sendBtn = document.getElementById('send-sms-btn');
             const loadingBtn = document.getElementById('loading-btn');
 
-            if(message !== "") {
+            if (message !== "") {
                 sendBtn.style.display = 'none';
-            loadingBtn.style.display = 'block';
+                loadingBtn.style.display = 'block';
 
-            fetch('<?= site_url('/members/sms')?>', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        phone: memberPhone,
-                        message: message
+                fetch('<?= site_url('/members/sms') ?>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            phone: memberPhone,
+                            message: message
+                        })
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    sendBtn.style.display = 'block';
-                    loadingBtn.style.display = 'none';
-                    if (data.success) {
-                        alert('SMS sent successfully');
-                    } else {
+                    .then(response => response.json())
+                    .then(data => {
+                        sendBtn.style.display = 'block';
+                        loadingBtn.style.display = 'none';
+                        if (data.success) {
+                            alert('SMS sent successfully');
+                        } else {
+                            alert('SMS sending failed');
+                        }
+                    })
+                    .catch(error => {
                         alert('SMS sending failed');
-                    }
-                })
-                .catch(error => {
-                    alert('SMS sending failed');
-                    console.error(error);
-                });
+                        console.error(error);
+                    });
             } else {
                 alert("Cannot send empty message")
             }
-            
+
         });
     });
 </script>
