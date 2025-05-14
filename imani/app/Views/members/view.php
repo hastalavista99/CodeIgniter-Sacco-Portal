@@ -129,6 +129,7 @@
                             <li class="list-group-item"><strong>Phone:</strong> <?= $member['phone_number'] ?></li>
                             <li class="list-group-item"><strong>Email:</strong> <?= $member['email'] ?></li>
                         </ul>
+                        <a href="<?= site_url('members/all-info/'.$member['id']) ?>" class="btn btn-success mt-3">More Info</a>
 
                     </div>
                 </div>

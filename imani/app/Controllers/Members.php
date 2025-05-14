@@ -148,7 +148,7 @@ class Members extends BaseController
             $createUser->save($data);
 
             $smsModel = new SendSMS();
-            $msg = "Hi, $fname \n Welcome to Imaniline Sacco Login to https://sacco.imanilinesacco.co.ke to view your transactions.\nMember Number: $memberNumber \nPassword: $pass\n Regards \n Imaniline Sacco Manager";
+            $msg = "Hi, $fname \n Welcome to Sacco Manager, Login to https://pay.macrologicsys.com/sacco to view your transactions.\nMember Number: $memberNumber \nPassword: $pass\n Regards \n Sacco Manager";
 
             $sendSMSStatus = $smsModel->sendSMS($mobile, $msg);
 
@@ -280,6 +280,37 @@ class Members extends BaseController
 
         return view('members/view', $data);
     }
+
+    public function allMemberInfo($id)
+    {
+        helper('form');
+
+        $memberModel = new MembersModel();
+        $beneficiariesModel = new BeneficiaryModel();
+
+        $userModel = model(UserModel::class);
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $member = $memberModel->find($id);
+        if (!$member) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Member not found");
+        }
+
+        $beneficiaries = $beneficiariesModel->getByMemberId($id);
+
+        $data = [
+            'member' => $member,
+            'beneficiaries' => $beneficiaries,
+            'title' => 'Member View - ' . $member['first_name'] . " " . $member['last_name'],
+            'userInfo' => $userInfo,
+        
+        ];
+
+        return view('members/all_info', $data);
+    }
+
+
 
     public function edit($id)
     {

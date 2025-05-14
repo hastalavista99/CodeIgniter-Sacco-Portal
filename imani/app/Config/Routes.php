@@ -124,6 +124,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('generate/transactions/(:num)', 'Members::generateTransactionsStatement/$1');
         $routes->get('generate/(:num)', 'Members::generateStatement/$1');
         $routes->post('sms', 'Members::smsMember');
+        $routes->get('all-info/(:num)', 'Members::allMemberInfo/$1');
 
 
     });
