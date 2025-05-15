@@ -2,6 +2,9 @@
 <html>
 
 <head>
+    <title>Member Statement - <?= esc($member['member_number'])?></title>
+
+    <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png') ?>" type="image/png">
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
@@ -27,9 +30,10 @@
         }
 
         .table-header {
-            background-color:#bc0707;
+            background-color: #bc0707;
             color: #fff;
         }
+
         h4 {
             text-align: center;
         }
@@ -53,28 +57,34 @@
             <tr class="table-header">
                 <th>Balance Type</th>
                 <th>Current Balance</th>
-                
+
             </tr>
         </thead>
         <tbody>
-        <?php if (!empty($transactions)): ?>
-        <tr>
-            <td><b>Shares</b></td>
-            <td><h4><?= number_format($shares,2)?></h4></td>
-        </tr>
-        <tr>
-            <td><b>Savings</b></td>
-            <td><h4><?= number_format($savings, 2)?></h4></td>
-        </tr>
-        <tr>
-            <td><b>Loans</b></td>
-            <td><h4><?= number_format($loan_balance['balance'], 2)?></h4></td>
-        </tr>
-    <?php else: ?>
-        <tr>
-            <td colspan="5" style="text-align: center;">No transactions found.</td>
-        </tr>
-    <?php endif; ?>
+            <?php if (!empty($transactions)): ?>
+                <tr>
+                    <td><b>Shares</b></td>
+                    <td>
+                        <h4><?= number_format($shares, 2) ?></h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Savings</b></td>
+                    <td>
+                        <h4><?= number_format($savings, 2) ?></h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Loans</b></td>
+                    <td>
+                        <h4><?= number_format($loan_balance['balance'], 2) ?></h4>
+                    </td>
+                </tr>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" style="text-align: center;">No transactions found.</td>
+                </tr>
+            <?php endif; ?>
         </tbody>
     </table>
 

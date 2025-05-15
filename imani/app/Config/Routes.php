@@ -151,6 +151,8 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('reports/trial-balance', 'Accounting\ReportsController::trialBalance');
         $routes->get('reports/balance-sheet', 'Accounting\ReportsController::balanceSheet');
         $routes->get('reports/income-statement', 'Accounting\ReportsController::incomeStatement');
+        $routes->get('reports/cashbook', 'Accounting\ReportsController::cashBook');
+        $routes->get('reports/cashbook/pdf', 'Accounting\ReportsController::cashbookPdf');
     });
 });
 

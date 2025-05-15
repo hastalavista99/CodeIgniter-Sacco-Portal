@@ -233,7 +233,13 @@
               <a href="<?= site_url('accounting/reports/income-statement') ?>" class="nav-link collapsed">
                 <i class="bi bi-receipt-cutoff"></i>
                 <span>Income Statement</span>
+              </a>
+            </li>
 
+            <li class="nav-item">
+              <a href="<?= site_url('accounting/reports/cashbook') ?>" class="nav-link collapsed">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>Cashbook</span>
               </a>
             </li>
           </ul>

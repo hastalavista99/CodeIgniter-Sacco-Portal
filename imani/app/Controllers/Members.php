@@ -12,6 +12,7 @@ use App\Models\BeneficiaryModel;
 use App\Models\Accounting\SavingsAccountModel;
 use App\Models\Accounting\SharesAccountModel;
 use App\Models\LoanApplicationModel;
+use App\Models\LoanRepaymentModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\API\ResponseTrait;
@@ -140,7 +141,7 @@ class Members extends BaseController
                 'user' => $fname,
                 'name' => $fname,
                 'member_no' => $memberNumber,
-                'email' => $email? $email : '',
+                'email' => $email ? $email : '',
                 'mobile' => $mobile,
                 'password' => Hash::encrypt($pass),
                 'role' => 'member',
@@ -152,12 +153,12 @@ class Members extends BaseController
 
             $sendSMSStatus = $smsModel->sendSMS($mobile, $msg);
 
-            if($sendSMSStatus) {
+            if ($sendSMSStatus) {
                 return $this->response->setStatusCode(201)->setJSON([
-                'success' => true,
-                'message' => 'Member created and notified successfully',
-                'member_id' => $memberId
-            ]);
+                    'success' => true,
+                    'message' => 'Member created and notified successfully',
+                    'member_id' => $memberId
+                ]);
             }
             return $this->response->setStatusCode(201)->setJSON([
                 'success' => true,
@@ -304,7 +305,7 @@ class Members extends BaseController
             'beneficiaries' => $beneficiaries,
             'title' => 'Member View - ' . $member['first_name'] . " " . $member['last_name'],
             'userInfo' => $userInfo,
-        
+
         ];
 
         return view('members/all_info', $data);
@@ -642,7 +643,73 @@ class Members extends BaseController
         }
     }
 
-    public function generateLoansStatement($id = null) {}
+    public function generateLoansStatement($id = null)
+    {
+        try {
+            $memberModel = new MembersModel();
+            $orgModel = new OrganizationModel();
+            $loanModel = new LoanApplicationModel();
+            $repaymentModel = new LoanRepaymentModel(); // adjust path if needed
+
+            // Get member
+            $member = $memberModel->find($id);
+            if (!$member) {
+                return $this->response->setStatusCode(404)->setBody('Member not found.');
+            }
+
+            // Get organization
+            $organization = $orgModel->first();
+            if (!$organization) {
+                return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
+            }
+
+            // Get member loans
+            $loans = $loanModel->getLoansByMember($id);
+            $loanStatements = [];
+
+            foreach ($loans as $loan) {
+                $loanDetails = $loanModel->getApplicationWithDetails($loan['id']);
+                $repayments = $repaymentModel->where('loan_id', $loan['id'])
+                    ->orderBy('payment_date', 'asc')
+                    ->findAll();
+
+                // Running balance calculation
+                $runningBalance = $loan['total_loan'];
+                foreach ($repayments as &$r) {
+                    $r['running_balance'] = $runningBalance -= $r['amount_paid'];
+                }
+
+                $loanStatements[] = [
+                    'loan'       => $loanDetails,
+                    'repayments' => $repayments,
+                ];
+            }
+
+            $data = [
+                'member' => $member,
+                'organization' => $organization,
+                'loanStatements' => $loanStatements
+            ];
+
+            // Generate PDF
+            $html = view('members/loans_pdf', $data);
+
+            $options = new \Dompdf\Options();
+            $options->set('defaultFont', 'DejaVu Sans');
+            $dompdf = new \Dompdf\Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            return $this->response
+                ->setHeader('Content-Type', 'application/pdf')
+                ->setBody($dompdf->output());
+        } catch (\Throwable $e) {
+            log_message('error', 'Loan statement generation failed: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('An unexpected error occurred.'. $e->getMessage());
+        }
+    }
+
 
     public function generateTransactionsStatement($id = null)
     {

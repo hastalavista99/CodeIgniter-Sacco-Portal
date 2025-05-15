@@ -56,9 +56,37 @@ class JournalDetailsModel extends Model
             ->get()->getResultArray();
     }
 
-    public function getAllTransactions($memberNumber) {
+    public function getAllTransactions($memberNumber)
+    {
         return $this->db->table('transactions')
             ->where('member_number', $memberNumber)
             ->get()->getResultArray();
+    }
+
+    public function getCashbookEntries($startDate, $endDate, $accountId = null)
+    {
+        $builder = $this->db->table($this->table)
+            ->select('
+                journal_entries.date,
+                journal_entries.description,
+                journal_entries.reference,
+                journal_entry_details.debit,
+                journal_entry_details.credit
+            ')
+            ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
+            ->where('journal_entries.date >=', $startDate)
+            ->where('journal_entries.date <=', $endDate);
+
+        if ($accountId) {
+            $builder->where('journal_entry_details.account_id', $accountId);
+        } else {
+            // Include all asset (cash/bank) accounts
+            $builder->join('accounts', 'accounts.id = journal_entry_details.account_id');
+            $builder->where('accounts.category', 'asset');
+        }
+
+        $builder->orderBy('journal_entries.date', 'asc');
+
+        return $builder->get()->getResultArray();
     }
 }

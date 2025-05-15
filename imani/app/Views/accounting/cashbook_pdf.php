@@ -2,8 +2,7 @@
 <html>
 
 <head>
-    <title>Savings - <?= esc($member['member_number'])?></title>
-
+    <title>Cashbook Report <?= esc($startDate. 'to'.  $endDate)?></title>
     <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png') ?>" type="image/png">
     <style>
         body {
@@ -43,42 +42,35 @@
         <p><?= esc($organization['physical_address']) ?> | <?= esc($organization['phone']) ?> | <?= esc($organization['email']) ?></p>
 
     </div>
+    <hr>
 
-    <h3>Member Statement</h3>
-    <p><strong>Member:</strong> <?= esc($member['first_name'] . ' ' . $member['last_name']) ?> (<?= esc($member['member_number']) ?>)</p>
+
+    <h2>Cashbook Report</h2>
+    <p>Period: <?= esc($startDate) ?> to <?= esc($endDate) ?></p>
 
     <table class="transactions">
         <thead>
             <tr class="table-header">
                 <th>Date</th>
-                <th>Service Transaction</th>
+                <th>Reference</th>
                 <th>Description</th>
-                <th>Payment Method</th>
-                <th>Amount</th>
-                <th>Running Balance</th>
+                <th>Debit (KES)</th>
+                <th>Credit (KES)</th>
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($transactions)): ?>
-                <?php $runningBalance = 0; ?>
-                <?php foreach ($transactions as $tx): ?>
-                    <?php $runningBalance += $tx['amount']; ?>
-                    <tr>
-                        <td><?= esc($tx['transaction_date']) ?></td>
-                        <td><?= esc($tx['service_transaction']) ?></td>
-                        <td><?= esc($tx['description'] ?? '-') ?></td>
-                        <td><?= esc($tx['payment_method']) ?></td>
-                        <td><?= number_format($tx['amount'], 2) ?></td>
-                        <td><?= number_format($runningBalance, 2) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
+            <?php foreach ($entries as $row): ?>
                 <tr>
-                    <td colspan="6" style="text-align: center;">No transactions found.</td>
+                    <td><?= esc($row['date']) ?></td>
+                    <td><?= esc($row['reference']) ?></td>
+                    <td><?= esc($row['description']) ?></td>
+                    <td class="text-right"><?= number_format($row['debit'], 2) ?></td>
+                    <td class="text-right"><?= number_format($row['credit'], 2) ?></td>
                 </tr>
-            <?php endif; ?>
+            <?php endforeach; ?>
         </tbody>
     </table>
+
 
 
 </body>

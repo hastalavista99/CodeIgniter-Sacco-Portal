@@ -5,7 +5,10 @@ namespace App\Controllers\Accounting;
 use App\Controllers\BaseController;
 use App\Models\Accounting\AccountsModel;
 use App\Models\Accounting\JournalDetailsModel;
+use App\Models\Accounting\JournalEntryModel;
 use App\Models\UserModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class ReportsController extends BaseController
 {
@@ -97,7 +100,7 @@ class ReportsController extends BaseController
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
-        
+
         $accountModel = new AccountsModel();
         $journalDetailModel = new JournalDetailsModel();
 
@@ -132,9 +135,81 @@ class ReportsController extends BaseController
         $data = [
             'incomeStatement' => $incomeStatement,
             'title' => 'Income Statement',
-            'userInfo' =>$userInfo
+            'userInfo' => $userInfo
         ];
 
         return view('accounting/income_statement', $data);
+    }
+
+    public function cashBook()
+    {
+        $startDate = $this->request->getGet('start_date') ?? date('Y-m-01');
+        $endDate = $this->request->getGet('end_date') ?? date('Y-m-d');
+        $accountId = $this->request->getGet('account_id') ?? null;
+
+        $detailsModel = new JournalDetailsModel();
+        $entries = $detailsModel->getCashbookEntries($startDate, $endDate, $accountId);
+
+
+
+        $accountsModel = new AccountsModel();
+        $cashAccounts = $accountsModel->getCashAccounts();
+
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $data = [
+            'title' => 'Cash Book',
+            'entries' => $entries,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'cashAccounts' => $cashAccounts,
+            'selectedAccount' => $accountId,
+            'userInfo' => $userInfo
+        ];
+
+        return view('accounting/cash_book', $data);
+    }
+
+    public function cashbookPdf()
+    {
+        $journalModel = new JournalEntryModel();
+        $detailModel = new JournalDetailsModel();
+        $accountModel = new AccountsModel();
+        $orgModel = new \App\Models\OrganizationModel();
+
+        $start = $this->request->getGet('start');
+        $end   = $this->request->getGet('end');
+
+        $organization = $orgModel->first();
+            if (!$organization) {
+                return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
+            }
+
+        // Fetch cashbook data
+        $cashbookData = $detailModel->getCashbookEntries($start, $end); // Assuming you have this method
+
+        $data = [
+            'organization' => $organization,
+            'entries' => $cashbookData,
+            'generatedAt' => date('Y-m-d H:i:s'),
+            'startDate' => $start,
+            'endDate' => $end,
+        ];
+
+        // Load the view
+        $html = view('accounting/cashbook_pdf', $data);
+        $options = new \Dompdf\Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+
+        $dompdf = new \Dompdf\Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape'); // or 'portrait'
+        $dompdf->render();
+
+        return $this->response
+            ->setHeader('Content-Type', 'application/pdf')
+            ->setBody($dompdf->output());
     }
 }

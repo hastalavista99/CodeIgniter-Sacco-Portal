@@ -2,6 +2,9 @@
 <html>
 
 <head>
+    <title>Share Deposits - <?= esc($member['member_number'])?></title>
+
+    <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png') ?>" type="image/png">
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
