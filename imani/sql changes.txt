@@ -128,6 +128,7 @@ CREATE TABLE loan_applications (
     fees DECIMAL(12,2),
     monthly_repayment DECIMAL(12,2),
     disburse_amount DECIMAL(12,2),
+    loan_status ENUM('approved', 'rejected', 'pending')
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -244,3 +245,49 @@ ADD COLUMN reference VARCHAR(64) NOT NULL AFTER description;
 
 ALTER TABLE transactions
 ADD UNIQUE (reference);
+
+
+15/05/2024
+
+INSERT INTO `accounts` (`id`, `account_name`, `account_code`, `category`, `parent_id`) VALUES
+(2, 'Debtors', '200100', 'asset', NULL),
+(3, 'Current Bank Account', '200200', 'asset', NULL),
+(4, 'Savings Bank Account', '200300', 'asset', NULL),
+(5, 'Cash in Hand', '200400', 'asset', NULL),
+(6, 'Creditors & Accruals', '300100', 'liability', NULL),
+(70, 'Dividend & Interest', '300200', 'liability', NULL),
+(71, 'Bank Overdraft', '300300', 'liability', NULL),
+(72, 'Taxation', '300400', 'liability', NULL),
+(73, 'Share Capital', '500100', 'equity', NULL),
+(74, 'Customer Deposits', '300500', 'liability', 3),
+(75, 'Entrance Fee', '600120', 'income', NULL),
+(76, 'Statutory Reserve', '500400', 'equity', NULL),
+(77, 'General Reserve', '500500', 'equity', NULL),
+(78, 'Revaluation Account', '500600', 'equity', NULL),
+(79, 'Retained Surplus', '500700', 'equity', NULL),
+(80, 'Sinking Fund', '500800', 'equity', NULL),
+(81, 'Current Year Accruals', '500900', 'equity', NULL),
+(82, 'Interest on Loans', '600100', 'income', NULL),
+(83, 'Rent Receivable', '600200', 'income', NULL),
+(84, 'Interest on Deposits', '600300', 'income', NULL),
+(85, 'Other Incomes', '600500', 'income', NULL),
+(86, 'Customer Contributions Received', '600600', 'income', NULL),
+(87, 'Administration Expenses', '700100', 'expense', NULL),
+(88, 'Financial Expenses', '700200', 'expense', NULL),
+(89, 'Establishment', '700300', 'expense', NULL),
+(90, 'Depreciation', '700400', 'expense', NULL),
+(91, 'Interest Charges', '700500', 'expense', NULL),
+(92, 'Normal Loan', '110100', 'asset', 3),
+(93, 'Loan Application fee', '600110', 'income', 3),
+(94, 'Insurance Fees Recovered', '600210', 'income', 3),
+(95, 'CRB Charges', '600130', 'income', 3),
+(112, 'Salaries & Wages', '700110', 'expense', 3),
+(113, 'Rent', '700120', 'expense', 3),
+(114, 'Utilities', '700130', 'expense', 3),
+(115, 'Software Subscription', '700140', 'expense', 3),
+(116, 'Loan Defaults Written Off', '700210', 'expense', 3),
+(117, 'Audit & Legal Fees', '700220', 'expense', 3),
+(118, 'Travel & Logistics', '700230', 'expense', 3),
+(119, 'SACCO Meeting', '700240', 'expense', 3);
+(120, 'Loan Insurance Income', '600140', 'income', 3);
+

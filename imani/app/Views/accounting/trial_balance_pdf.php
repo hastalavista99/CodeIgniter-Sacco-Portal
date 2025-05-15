@@ -2,8 +2,7 @@
 <html>
 
 <head>
-    <title>Member Statement - <?= esc($member['member_number'])?></title>
-
+    <title>Trial Balance</title>
     <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png') ?>" type="image/png">
     <style>
         body {
@@ -26,16 +25,11 @@
         .transactions td {
             border: 1px solid #ccc;
             padding: 5px;
-            text-align: center;
         }
 
         .table-header {
             background-color: #bc0707;
             color: #fff;
-        }
-
-        h4 {
-            text-align: center;
         }
     </style>
 </head>
@@ -55,45 +49,30 @@
     </div>
     <hr>
 
-    <h3>Member Statement</h3>
-    <p><strong>Member:</strong> <?= esc($member['first_name'] . ' ' . $member['last_name']) ?> (<?= esc($member['member_number']) ?>)</p>
 
     <table class="transactions">
         <thead>
             <tr class="table-header">
-                <th>Balance Type</th>
-                <th>Current Balance</th>
-
+                <th>Account</th>
+                <th>Debit (KES)</th>
+                <th>Credit (KES)</th>
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($transactions)): ?>
+            <?php foreach ($trialBalance as $item): ?>
                 <tr>
-                    <td><b>Shares</b></td>
-                    <td>
-                        <h4><?= number_format($shares, 2) ?></h4>
-                    </td>
+                    <td><?= esc($item['account_name']) ?></td>
+                    <td><?= number_format($item['debit'], 2) ?></td>
+                    <td><?= number_format($item['credit'], 2) ?></td>
                 </tr>
-                <tr>
-                    <td><b>Savings</b></td>
-                    <td>
-                        <h4><?= number_format($savings, 2) ?></h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td><b>Loans</b></td>
-                    <td>
-                        <h4><?= number_format($loan_balance['balance'], 2) ?></h4>
-                    </td>
-                </tr>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5" style="text-align: center;">No transactions found.</td>
-                </tr>
-            <?php endif; ?>
+            <?php endforeach; ?>
+            <tr>
+                <th>Total</th>
+                <th><?= number_format($totalDebit, 2) ?></th>
+                <th><?= number_format($totalCredit, 2) ?></th>
+            </tr>
         </tbody>
     </table>
-
 </body>
 
 </html>

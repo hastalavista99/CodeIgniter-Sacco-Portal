@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Cashbook Report <?= esc($startDate. 'to'.  $endDate)?></title>
+    <title>Income Statement</title>
     <link rel="shortcut icon" href="<?= base_url('assets/images/logo-sm.png') ?>" type="image/png">
     <style>
         body {
@@ -50,33 +50,31 @@
     <hr>
 
 
-    <h2>Cashbook Report</h2>
-    <p>Period: <?= esc($startDate) ?> to <?= esc($endDate) ?></p>
-
-    <table class="transactions">
-        <thead>
-            <tr class="table-header">
-                <th>Date</th>
-                <th>Reference</th>
-                <th>Description</th>
-                <th>Debit (KES)</th>
-                <th>Credit (KES)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($entries as $row): ?>
-                <tr>
-                    <td><?= esc($row['date']) ?></td>
-                    <td><?= esc($row['reference']) ?></td>
-                    <td><?= esc($row['description']) ?></td>
-                    <td class="text-right"><?= number_format($row['debit'], 2) ?></td>
-                    <td class="text-right"><?= number_format($row['credit'], 2) ?></td>
+    <?php foreach (['income', 'expense'] as $category): ?>
+        <h3><?= ucfirst($category) ?> Accounts</h3>
+        <table class="transactions">
+            <thead>
+                <tr class="table-header">
+                    <th>Account</th>
+                    <th>Amount (KES)</th>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php foreach ($incomeStatement[$category] as $item): ?>
+                    <tr>
+                        <td><?= esc($item['account_name']) ?></td>
+                        <td><?= number_format($item['balance'], 2) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                <tr>
+                    <th>Total <?= ucfirst($category) ?></th>
+                    <th><?= number_format($incomeStatement['totals'][$category], 2) ?></th>
+                </tr>
+            </tbody>
+        </table>
+    <?php endforeach; ?>
 
-
+    <h3 style="text-align: right;">Net Profit: KES <?= number_format($incomeStatement['net_profit'], 2) ?></h3>
 
 </body>
 

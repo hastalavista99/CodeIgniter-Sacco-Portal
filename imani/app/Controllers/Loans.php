@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\Accounting\JournalService;
 use App\Controllers\BaseController;
 use App\Controllers\LoanService;
+use App\Models\MembersModel;
 use App\Controllers\Auth;
 use App\Models\LoanGuarantorModel;
 use App\Models\LoansModel;
@@ -20,12 +21,13 @@ use App\Models\LoanTypeModel;
 use App\Models\LoanRepaymentModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use DateTime;
+
 require APPPATH . 'Helpers/userpermissionhelper.php';
 
 class Loans extends BaseController
 {
 
-    
+
     // apply form page
     public function index()
     {
@@ -221,7 +223,7 @@ class Loans extends BaseController
     public function view($id = null)
     {
         helper('userpermissionhelper');
-        
+
 
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
@@ -325,85 +327,62 @@ class Loans extends BaseController
         }
     }
 
+    public function amortizationSchedule($loanId)
+    {
+        $memberModel = new MembersModel();
+        $loanModel = new LoanApplicationModel();
+        $loan = $loanModel->find($loanId);
 
+        $member = $memberModel->find($loan['member_id']);
+
+        $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        if (!$loan || $loan['loan_status'] !== 'approved') {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Loan not found or not approved.");
+        }
+
+        $P = (float) $loan['principal'];
+        $annualRate = (float) $loan['interest_rate'] / 100;
+        $monthlyRate = $annualRate / 12;
+        $n = (int) $loan['repayment_period'];
+
+        $EMI = ($P * $monthlyRate * pow(1 + $monthlyRate, $n)) / (pow(1 + $monthlyRate, $n) - 1);
+        $EMI = round($EMI, 2);
+
+        $schedule = [];
+        $balance = $P;
+
+        for ($i = 1; $i <= $n; $i++) {
+            $interest = round($balance * $monthlyRate, 2);
+            $principal = round($EMI - $interest, 2);
+            $newBalance = round($balance - $principal, 2);
+
+            if ($i === $n && $newBalance !== 0.00) {
+                $principal += $newBalance;
+                $EMI = $principal + $interest;
+                $newBalance = 0.00;
+            }
+
+            $schedule[] = [
+                'installment' => $i,
+                'due_date' => (new DateTime($loan['request_date']))->modify("+$i months")->format('Y-m-d'),
+                'principal' => $principal,
+                'interest' => $interest,
+                'total' => $EMI,
+                'balance' => $newBalance
+            ];
+
+            $balance = $newBalance;
+        }
+
+        return view('loans/amortization_schedule', [
+            'loan' => $loan,
+            'schedule' => $schedule,
+            'userInfo' => $userInfo,
+            'title' => 'Amortization Schedule',
+            'member' => $member
+        ]);
+    }
 }
-
-// class LoanService extends BaseController
-// {
-//     public function generateInstallments($loanId)
-//     {
-//         $loanModel = new LoanApplicationModel();
-//         $repaymentModel = new LoanRepaymentModel();
-
-//         $loan = $loanModel->find($loanId);
-
-//         if (!$loan || $loan['loan_status'] !== 'approved') {
-//             return false;
-//         }
-
-//         $installments = [];
-//         $startDate = new DateTime($loan['request_date']);
-//         $monthlyAmount = $loan['monthly_repayment'];
-//         $period = (int) $loan['repayment_period'];
-
-//         for ($i = 1; $i <= $period; $i++) {
-//             $dueDate = clone $startDate;
-//             $dueDate->modify("+{$i} months");
-
-//             $installments[] = [
-//                 'loan_id'           => $loanId,
-//                 'installment_number' => $i,
-//                 'due_date'          => $dueDate->format('Y-m-d'),
-//                 'amount_due'        => $monthlyAmount,
-//                 'amount_paid'       => 0.00,
-//                 'status'            => 'pending',
-//             ];
-//         }
-
-//         return $repaymentModel->insertBatch($installments);
-//     }
-
-//     public function handleRepayment($data)
-//     {
-//         $loanId = $data['loan_id'];
-//         $amountPaid = floatval($data['amount']);
-//         $paymentDate = $data['payment_date'] ?? date('Y-m-d');
-//         $paymentMethod = $data['payment_method'] ?? 'unknown';
-//         $description = $data['description'] ?? '';
-//         $user = session()->get('loggedInUser');
-
-//         $repaymentModel = new \App\Models\LoanRepaymentModel();
-//         $installments = $repaymentModel
-//             ->where('loan_id', $loanId)
-//             ->where('status', 'unpaid')
-//             ->orderBy('due_date', 'ASC')
-//             ->findAll();
-
-//         $remaining = $amountPaid;
-
-//         foreach ($installments as $installment) {
-//             if ($remaining <= 0) break;
-
-//             $due = $installment['amount_due'] - $installment['amount_paid'];
-//             $payNow = min($due, $remaining);
-
-//             $repaymentModel->update($installment['id'], [
-//                 'amount_paid' => $installment['amount_paid'] + $payNow,
-//                 'payment_date' => $paymentDate,
-//                 'status' => ($installment['amount_paid'] + $payNow >= $installment['amount_due']) ? 'paid' : 'unpaid',
-//             ]);
-
-//             $remaining -= $payNow;
-//         }
-
-//         // Create journal entry
-//         $journalService = new JournalService();
-//         $journalService->createLoanRepaymentEntry([
-//             'loan_id' => $loanId,
-//             'amount_paid' => $amountPaid,
-//             'payment_date' => $paymentDate,
-//             'description' => $description,
-//             'payment_method' => $paymentMethod,
-//         ], $user);
-//     }
-// }

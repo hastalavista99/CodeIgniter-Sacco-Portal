@@ -109,6 +109,8 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->post('application/submit', 'Loans::submit');
         $routes->get('approve/(:num)', 'Loans::approveLoan/$1');
         $routes->get('check-loan/(:num)', 'Loans::checkLoan/$1');
+        $routes->get('amortization/loan/(:num)', 'Loans::amortizationSchedule/$1');
+        $routes->get('amortization/pdf/loan/(:num)', 'Accounting\ReportsController::exportSchedulePdf/$1');
     });
 
     $routes->group('members', function ($routes) {
@@ -125,8 +127,6 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('generate/(:num)', 'Members::generateStatement/$1');
         $routes->post('sms', 'Members::smsMember');
         $routes->get('all-info/(:num)', 'Members::allMemberInfo/$1');
-
-
     });
 
     $routes->group('accounting', function ($routes) {
@@ -149,8 +149,11 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->post('accounts/update/(:num)', 'Accounting\AccountsController::update/$1');
         $routes->get('accounts/page', 'Accounting\AccountsController::index');
         $routes->get('reports/trial-balance', 'Accounting\ReportsController::trialBalance');
+        $routes->get('reports/trial-balance/pdf', 'Accounting\ReportsController::trialBalancePdf');
         $routes->get('reports/balance-sheet', 'Accounting\ReportsController::balanceSheet');
+        $routes->get('reports/balance-sheet/pdf', 'Accounting\ReportsController::balanceSheetPdf');
         $routes->get('reports/income-statement', 'Accounting\ReportsController::incomeStatement');
+        $routes->get('reports/income-statement/pdf', 'Accounting\ReportsController::incomeStatementPdf');
         $routes->get('reports/cashbook', 'Accounting\ReportsController::cashBook');
         $routes->get('reports/cashbook/pdf', 'Accounting\ReportsController::cashbookPdf');
     });

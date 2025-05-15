@@ -41,7 +41,12 @@
 <body>
 
     <div class="header">
-        <img src="<?= base_url('writable/uploads/' . $organization['logo']) ?>" alt="Logo" height="80">
+        <?php
+        $logoPath = FCPATH . 'assets/images/logo-sm.png';
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+        $logoSrc = 'data:image/png;base64,' . $logoBase64;
+        ?>
+        <img src="<?= $logoSrc ?>" alt="Logo" width="80">
         <h2><?= esc($organization['org_name']) ?></h2>
         <p><?= esc($organization['physical_address']) ?> | <?= esc($organization['phone']) ?> | <?= esc($organization['email']) ?></p>
 

@@ -120,6 +120,8 @@
 
                 <div class="my-3 d-flex align-content-center justify-content-around">
                     <a href="<?= site_url('loans/all') ?>" class="btn btn-success mx-2"><i class="bi-chevron-left"></i>Back</a>
+                    <a href="<?= site_url('loans/amortization/loan/'.$loan['id']) ?>" class="btn btn-success mx-2"><i class="bi bi-receipt me-2"></i>View Amortization</a>
+
                     <?php
                     if ($userInfo['role'] === 'admin') { ?>
                         <a href="<?= site_url('loans/print-pdf/' . $loan['id']) ?>" target="_blank" class="btn btn-primary mx-2">

@@ -35,26 +35,50 @@ class LoanService extends BaseController
         }
 
         $installments = [];
-        $startDate = new DateTime($loan['request_date']);
-        $monthlyAmount = $loan['monthly_repayment'];
-        $period = (int) $loan['repayment_period'];
 
-        for ($i = 1; $i <= $period; $i++) {
+        $P = (float) $loan['principal'];
+        $annualRate = (float) $loan['interest_rate'] / 100;
+        $monthlyRate = $annualRate / 12;
+        $n = (int) $loan['repayment_period'];
+        $startDate = new DateTime($loan['request_date']);
+
+        // Monthly repayment using reducing balance EMI formula
+        $EMI = ($P * $monthlyRate * pow(1 + $monthlyRate, $n)) / (pow(1 + $monthlyRate, $n) - 1);
+        $EMI = round($EMI, 2);
+
+        $balance = $P;
+
+        for ($i = 1; $i <= $n; $i++) {
             $dueDate = clone $startDate;
             $dueDate->modify("+{$i} months");
 
+            $interest = round($balance * $monthlyRate, 2);
+            $principalComponent = round($EMI - $interest, 2);
+            $balance = round($balance - $principalComponent, 2);
+
+            // Ensure final installment clears residual due to rounding
+            if ($i === $n && $balance !== 0.00) {
+                $principalComponent += $balance;
+                $EMI = $principalComponent + $interest;
+                $balance = 0.00;
+            }
+
             $installments[] = [
-                'loan_id'           => $loanId,
+                'loan_id'            => $loanId,
                 'installment_number' => $i,
-                'due_date'          => $dueDate->format('Y-m-d'),
-                'amount_due'        => $monthlyAmount,
-                'amount_paid'       => 0.00,
-                'status'            => 'pending',
+                'due_date'           => $dueDate->format('Y-m-d'),
+                'amount_due'         => $EMI,
+                'amount_paid'        => 0.00,
+                'status'             => 'pending',
+                'payment_method'     => null, // default null
+                'created_at'         => date('Y-m-d H:i:s'),
+                'updated_at'         => date('Y-m-d H:i:s'),
             ];
         }
 
         return $repaymentModel->insertBatch($installments);
     }
+
 
     public function applyAdvancePayment($loanId, $amount)
     {

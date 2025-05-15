@@ -94,7 +94,7 @@ use CodeIgniter\HTTP\SiteURI;
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="principal" class="form-label">Principal Amount *</label>
-                                <input type="number" class="form-control" id="principal" value="1000000" required>
+                                <input type="number" class="form-control" id="principal" value="" required>
                             </div>
                             <div class="col-md-4">
                                 <label for="repayment_period" class="form-label">Repayment Period(Months) *</label>
@@ -127,6 +127,10 @@ use CodeIgniter\HTTP\SiteURI;
                                 <label for="disburse_amount" class="form-label">Disburse Amount *</label>
                                 <input type="number" class="form-control" id="disburse_amount" disabled>
                             </div>
+
+                            <input type="hidden" name="" id="service_calculated">
+                            <input type="hidden" name="" id="insurance_calculated">
+                            
                         </div>
 
                         <div class="d-flex justify-content-end mt-4">
@@ -387,6 +391,9 @@ use CodeIgniter\HTTP\SiteURI;
         const serviceChargeInput = document.getElementById('service_charge');
         const crbAmountInput = document.getElementById('crb_amount');
         const insurancePremiumInput = document.getElementById('insurance_premium');
+        const calculatedInsurance = document.getElementById('insurance_calculated');
+        const calculatedServiceFee = document.getElementById('service_calculated');
+
 
 
 
@@ -399,6 +406,7 @@ use CodeIgniter\HTTP\SiteURI;
             const insurancePremium = parseInt(loanPrincipal * parseFloat(insurancePremiumInput.value)/100)
             const fees = parseFloat((loanPrincipal * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
             const disburse = parseFloat(loanPrincipal - fees);
+            const serviceCharge = loanPrincipal * (serviceChargeInput.value / 100);
 
             // Validate inputs
             if (isNaN(loanPrincipal) || isNaN(repaymentPeriod) || repaymentPeriod <= 0) {
@@ -432,6 +440,8 @@ use CodeIgniter\HTTP\SiteURI;
             repaymentInput.value = repayment.toFixed(2);
             feesInput.value = fees.toFixed(2);
             disburseAmountInput.value = disburse.toFixed(2);
+            calculatedInsurance.value = insurancePremium.toFixed(2);
+            calculatedServiceFee.value = serviceCharge.toFixed(2);
         }
 
         // Recalculate when any relevant input changes
@@ -499,9 +509,9 @@ use CodeIgniter\HTTP\SiteURI;
             loan_type: document.getElementById('loan_type').value,
             interest_method: document.getElementById('interest_method').value,
             interest_rate: document.getElementById('interest_rate').value,
-            insurance_premium: document.getElementById('insurance_premium').value,
+            insurance_premium: document.getElementById('insurance_calculated').value,
             crb_amount: document.getElementById('crb_amount').value,
-            service_charge: document.getElementById('service_charge').value,
+            service_charge: document.getElementById('service_calculated').value,
             principal: document.getElementById('principal').value,
             repayment_period: document.getElementById('repayment_period').value,
             request_date: document.getElementById('date').value,

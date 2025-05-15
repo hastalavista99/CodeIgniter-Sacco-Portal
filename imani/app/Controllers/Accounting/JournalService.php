@@ -19,13 +19,15 @@ use App\Models\UserModel;
 
 class JournalService extends BaseController
 {
+
     public function createLoanDisbursementEntry($loanData, $user)
     {
-      
-        // log_message('error', print_r($loanData, true));
         $journalEntryModel = new JournalEntryModel();
         $journalDetailModel = new JournalDetailsModel();
+        $accountModel = new AccountsModel();
+        $loanTypeModel = new LoanTypeModel();
 
+        // Create Journal Entry Header
         $entryData = [
             'date'        => date('Y-m-d'),
             'description' => 'Loan disbursement to Member ID ' . $loanData['member_id'],
@@ -35,36 +37,119 @@ class JournalService extends BaseController
 
         $entryId = $journalEntryModel->insert($entryData);
 
-        // Example account IDs (replace with actual ones)
-        $accountModel = new AccountsModel();
-        $loanTypeModel = new LoanTypeModel();
-
+        // Get Accounts
         $loanTypeDetails = $loanTypeModel->find($loanData['loan_type_id']);
-        $loanType = $loanTypeDetails['loan_name'];
-        $account = $accountModel->where('account_name', $loanType)->first();
+        $loanReceivableAccount = $accountModel->where('account_name', $loanTypeDetails['loan_name'])->first();
 
-        // log_message('error', print_r($account, true));
+        $insuranceIncomeAccount = $accountModel->where('account_name', 'Loan Insurance Income')->first();
+        $crbIncomeAccount       = $accountModel->where('account_name', 'CRB Charges')->first();
+        $serviceChargeAccount   = $accountModel->where('account_name', 'Loan Application Fee')->first();
 
-        $loanReceivableAccountId = $account['id']; // Member Loan Receivable
-        $cashOrLoanControlAccountId = 3; // Source of funds // Current savings Account
+        $loanControlAccountId = 3; // Replace with your SACCO bank/cash account ID
 
-        $amount = $loanData['disburse_amount'];
+        // Amounts from loanData
+        $principal       = $loanData['principal'];
+        $disburseAmount  = $loanData['disburse_amount'];
+        $insurance       = $loanData['insurance_premium'];
+        $crb             = $loanData['crb_amount'];
+        $serviceCharge   = $loanData['service_charge'];
 
-        $journalDetailModel->insertBatch([
-            [
+        $journalDetails = [];
+
+        // Debit: Loan Receivable (Disbursed to member)
+        $journalDetails[] = [
+            'journal_entry_id' => $entryId,
+            'account_id'       => $loanReceivableAccount['id'],
+            'debit'            => $disburseAmount,
+            'credit'           => 0,
+        ];
+
+        // Debit: Income accounts (charges retained by SACCO)
+        if ($insurance > 0) {
+            $journalDetails[] = [
                 'journal_entry_id' => $entryId,
-                'account_id'       => $loanReceivableAccountId,
-                'debit'            => $amount,
+                'account_id'       => $insuranceIncomeAccount['id'],
+                'debit'            => $insurance,
                 'credit'           => 0,
-            ],
-            [
+            ];
+        }
+
+        if ($crb > 0) {
+            $journalDetails[] = [
                 'journal_entry_id' => $entryId,
-                'account_id'       => $cashOrLoanControlAccountId,
-                'debit'            => 0,
-                'credit'           => $amount,
-            ],
-        ]);
+                'account_id'       => $crbIncomeAccount['id'],
+                'debit'            => $crb,
+                'credit'           => 0,
+            ];
+        }
+
+        if ($serviceCharge > 0) {
+            $journalDetails[] = [
+                'journal_entry_id' => $entryId,
+                'account_id'       => $serviceChargeAccount['id'],
+                'debit'            => $serviceCharge,
+                'credit'           => 0,
+            ];
+        }
+
+        // Credit: Loan Control (full principal goes out)
+        $journalDetails[] = [
+            'journal_entry_id' => $entryId,
+            'account_id'       => $loanControlAccountId,
+            'debit'            => 0,
+            'credit'           => $principal,
+        ];
+
+        return $journalDetailModel->insertBatch($journalDetails);
     }
+
+
+    // public function createLoanDisbursementEntry($loanData, $user)
+    // {
+
+    //     // log_message('error', print_r($loanData, true));
+    //     $journalEntryModel = new JournalEntryModel();
+    //     $journalDetailModel = new JournalDetailsModel();
+
+    //     $entryData = [
+    //         'date'        => date('Y-m-d'),
+    //         'description' => 'Loan disbursement to Member ID ' . $loanData['member_id'],
+    //         'reference'   => 'Loan #' . $loanData['id'],
+    //         'created_by'  => $user,
+    //     ];
+
+    //     $entryId = $journalEntryModel->insert($entryData);
+
+    //     // Example account IDs (replace with actual ones)
+    //     $accountModel = new AccountsModel();
+    //     $loanTypeModel = new LoanTypeModel();
+
+    //     $loanTypeDetails = $loanTypeModel->find($loanData['loan_type_id']);
+    //     $loanType = $loanTypeDetails['loan_name'];
+    //     $account = $accountModel->where('account_name', $loanType)->first();
+
+    //     // log_message('error', print_r($account, true));
+
+    //     $loanReceivableAccountId = $account['id']; // Member Loan Receivable
+    //     $cashOrLoanControlAccountId = 3; // Source of funds // Current savings Account
+
+    //     $amount = $loanData['disburse_amount'];
+
+    //     $journalDetailModel->insertBatch([
+    //         [
+    //             'journal_entry_id' => $entryId,
+    //             'account_id'       => $loanReceivableAccountId,
+    //             'debit'            => $amount,
+    //             'credit'           => 0,
+    //         ],
+    //         [
+    //             'journal_entry_id' => $entryId,
+    //             'account_id'       => $cashOrLoanControlAccountId,
+    //             'debit'            => 0,
+    //             'credit'           => $amount,
+    //         ],
+    //     ]);
+    // }
 
     public function createLoanRepaymentEntry($repaymentData, $user)
     {

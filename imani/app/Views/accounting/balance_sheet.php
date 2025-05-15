@@ -139,6 +139,12 @@
                             <?php endif; ?>
                         </p>
 
+                        <div class="d-flex justify-content-center align-items-center mt-4">
+                            <a href="<?= site_url('accounting/reports/balance-sheet/pdf') ?>" target="_blank" class="btn btn-primary mb-3">
+                                <i class="bi bi-filetype-pdf me-2"></i> Export to PDF
+                            </a>
+                        </div>
+
                     </div>
 
                 <?php else : ?>
