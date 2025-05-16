@@ -395,7 +395,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="/profile">
+              <a class="dropdown-item d-flex align-items-center" href="<?= site_url('/profile')?>">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -419,7 +419,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="/logout">
+              <a class="dropdown-item d-flex align-items-center" href="<?= site_url('/logout')?>">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
