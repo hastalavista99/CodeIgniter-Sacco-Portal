@@ -35,7 +35,7 @@
                 <div class="col-md-2 pt-3">
                     <div>
 
-                        <a href="<?= site_url('/accounting/journals/create')?>" class="btn btn-primary mb-3"><i class="bi-journal-plus me-1"></i>Add Journal Entry</a>
+                        <a href="<?= site_url('/accounting/journals/create') ?>" class="btn btn-primary mb-3"><i class="bi-journal-plus me-1"></i>Add Journal Entry</a>
                     </div>
                 </div>
 
@@ -67,33 +67,17 @@
                                         <td><?= $entry['posted'] ? 'Posted' : 'Unposted' ?></td>
                                         <td>
                                             <?php if (!$entry['posted']): ?>
-                                                <?php if (!user_can('post_journal_entries')): ?>
-                                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal" disabled>Post</button>
+                                                <?php if (user_can('post_journal_entries')): ?>
+                                                    <a href="<?= site_url('accounting/journal-entry/post/' . $entry['id']) ?>" class="btn btn-secondary btn-sm">Post</a>
                                                 <?php else: ?>
-                                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal">Post</button>
+                                                    <button type="button" class="btn btn-sm btn-secondary" disabled>Post</button>
                                                 <?php endif ?>
                                             <?php endif; ?>
                                             <a href="/accounting/journals/view/<?= $entry['id'] ?>" class="btn btn-info btn-sm">View</a>
-                                            <!-- <a href="<?= site_url('/accounting/journal/delete/')?><?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a> -->
+                                            <!-- <a href="<?= site_url('/accounting/journal/delete/') ?><?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a> -->
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="postJournalModal" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Post Journal?</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    This action cannot be reversed. Are you sure you want to post the Journal
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <a href="<?= site_url('accounting/journal-entry/post/' . $entry['id']) ?>" class="btn btn-primary">Post</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
@@ -113,5 +97,23 @@
     </div>
 </div>
 
+<!-- <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#postJournalModal">Post</button> -->
+<div class="modal" id="postJournalModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Post Journal?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                This action cannot be reversed. Are you sure you want to post the Journal
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="<?= site_url('accounting/journal-entry/post/' . $entry['id']) ?>" class="btn btn-primary">Post</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?= $this->endSection() ?>

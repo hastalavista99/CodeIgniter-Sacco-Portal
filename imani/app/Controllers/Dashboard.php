@@ -6,41 +6,67 @@ use App\Controllers\BaseController;
 use App\Models\BalancesModel;
 use App\Models\PaymentsModel;
 use App\Models\UserModel;
+use App\Models\MembersModel;
+use App\Models\Accounting\TransactionsModel;
+use App\Models\Accounting\SavingsAccountModel;
+use App\Models\Accounting\SharesAccountModel;
+use App\Models\LoanApplicationModel;
+use App\Models\LoanRepaymentModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Dashboard extends BaseController
 {
     public function index()
     {
-        $balancesModel = new BalancesModel();
+
         $paymentsModel = new PaymentsModel();
+        $memberModel = new MembersModel();
+        $savingsModel = new SavingsAccountModel();
+        $sharesModel = new SharesAccountModel();
+        $loanModel = new LoanApplicationModel();
+        $transactionsModel = new TransactionsModel();
+
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
+
+        if ($userInfo['role'] === 'member') {
+            $member = $memberModel->where('member_number', $userInfo['member_no'])->first();
+            $memberId = $member['id'];
+
+            $savings = $savingsModel->getMemberSavingsTotal($memberId);
+            $shares = $sharesModel->getMemberSharesTotal($memberId);
+            $loans = $loanModel->getMemberLoanSummary($memberId);
+            $transactions = $transactionsModel->getRecentTransactions($member['member_number']);
+        } else {
+            $savings = 0;
+            $shares = 0;
+            $loans = 0;
+        }
 
         // Check if member_no exists and is not empty
         $hasMemberNo = !empty($userInfo['member_no']);
 
         if ($hasMemberNo) {
-            $balance = $balancesModel
-                ->where('member_no', $userInfo['member_no'])
-                ->first();
 
             $payments = $paymentsModel
                 ->where('SUBSTRING(BillRefNumber, -10) =', $userInfo['mobile'])
                 ->orderBy('mp_date', 'DESC')
                 ->findAll(5);
         } else {
-            $balance = null;
+
             $payments = [];
         }
 
         $data = [
             'title' => 'Dashboard',
             'userInfo' => $userInfo,
-            'balance' => $balance,
+            'savings' => $savings,
+            'shares' => $shares,
+            'loans' => $loans,
             'payments' => $payments,
-            'hasMemberNo' => $hasMemberNo
+            'hasMemberNo' => $hasMemberNo,
+            'member' => $member ?? null,
         ];
         return view('dashboard/index', $data);
     }

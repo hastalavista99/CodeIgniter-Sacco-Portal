@@ -50,7 +50,7 @@
     </div>
     <hr>
 
-    <h3>Member Statement</h3>
+    <h3>Member Savings Statement</h3>
     <p><strong>Member:</strong> <?= esc($member['first_name'] . ' ' . $member['last_name']) ?> (<?= esc($member['member_number']) ?>)</p>
 
     <table class="transactions">
