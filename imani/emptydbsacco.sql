@@ -710,6 +710,7 @@ CREATE TABLE `transactions` (
   `payment_method` varchar(50) NOT NULL,
   `transaction_date` date NOT NULL,
   `description` text DEFAULT NULL,
+  `reference` VARCHAR(64) NOT NULL
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
