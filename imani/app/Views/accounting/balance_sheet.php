@@ -102,19 +102,24 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($balanceSheet['equity'] as $entry): ?>
+                                    <?php if ($entry['account_name'] === 'Current Period Surplus/Deficit'): ?>
+                                        <tr style="font-weight: bold ; color: #006400 !important;">
+                                        <?php else: ?>
+                                        <tr>
+                                        <?php endif; ?>
+
+                                            <td><?= esc($entry['account_name']) ?></td>
+                                            <td><?= esc(number_format($entry['balance'], 2)) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                     <tr>
-                                        <td><?= esc($entry['account_name']) ?></td>
-                                        <td><?= esc(number_format($entry['balance'], 2)) ?></td>
+                                        <td>
+                                            <strong>Total Equity</strong>
+                                        </td>
+                                        <td>
+                                            <strong><?= esc(number_format($balanceSheet['totals']['equity'], 2)) ?></strong>
+                                        </td>
                                     </tr>
-                                <?php endforeach; ?>
-                                <tr>
-                                    <td>
-                                        <strong>Total Equity</strong>
-                                    </td>
-                                    <td>
-                                        <strong><?= esc(number_format($balanceSheet['totals']['equity'], 2)) ?></strong>
-                                    </td>
-                                </tr>
                             </tbody>
 
                         </table>

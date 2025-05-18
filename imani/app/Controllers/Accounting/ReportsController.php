@@ -114,7 +114,6 @@ class ReportsController extends BaseController
 
     public function balanceSheet()
     {
-
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
@@ -133,8 +132,6 @@ class ReportsController extends BaseController
                 $debits = $journalDetailModel->where('account_id', $account['id'])->selectSum('debit')->get()->getRow()->debit ?? 0;
                 $credits = $journalDetailModel->where('account_id', $account['id'])->selectSum('credit')->get()->getRow()->credit ?? 0;
 
-                // Assets: Debit Increases, Credit Decreases
-                // Liabilities & Equity: Credit Increases, Debit Decreases
                 $balance = ($category === 'asset') ? ($debits - $credits) : ($credits - $debits);
 
                 $balanceSheet[$category][] = [
@@ -148,6 +145,35 @@ class ReportsController extends BaseController
             $balanceSheet['totals'][$category] = $total;
         }
 
+        // ✅ Calculate current period surplus/deficit
+        $incomeAccounts = $accountModel->where('category', 'income')->findAll();
+        $expenseAccounts = $accountModel->where('category', 'expense')->findAll();
+
+        $incomeTotal = 0;
+        foreach ($incomeAccounts as $account) {
+            $debit = $journalDetailModel->where('account_id', $account['id'])->selectSum('debit')->get()->getRow()->debit ?? 0;
+            $credit = $journalDetailModel->where('account_id', $account['id'])->selectSum('credit')->get()->getRow()->credit ?? 0;
+            $incomeTotal += ($credit - $debit);
+        }
+
+        $expenseTotal = 0;
+        foreach ($expenseAccounts as $account) {
+            $debit = $journalDetailModel->where('account_id', $account['id'])->selectSum('debit')->get()->getRow()->debit ?? 0;
+            $credit = $journalDetailModel->where('account_id', $account['id'])->selectSum('credit')->get()->getRow()->credit ?? 0;
+            $expenseTotal += ($debit - $credit);
+        }
+
+        $netProfit = $incomeTotal - $expenseTotal;
+
+        // ✅ Append to equity section
+        $balanceSheet['equity'][] = [
+            'account_name' => 'Current Period Surplus/Deficit',
+            'balance' => $netProfit
+        ];
+
+        // ✅ Update equity total
+        $balanceSheet['totals']['equity'] += $netProfit;
+
         $data = [
             'balanceSheet' => $balanceSheet,
             'title' => 'Balance Sheet',
@@ -156,6 +182,7 @@ class ReportsController extends BaseController
 
         return view('accounting/balance_sheet', $data);
     }
+
 
     public function balanceSheetPdf()
     {
@@ -428,60 +455,57 @@ class ReportsController extends BaseController
         if (!$organization) {
             return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
         }
-$loan = $loanModel->find($loanId);
-$member = $memberModel->find($loan['member_id']);
+        $loan = $loanModel->find($loanId);
+        $member = $memberModel->find($loan['member_id']);
 
-         // Generate amortization data (reuse from above method)
-    $P = (float) $loan['principal'];
-    $annualRate = (float) $loan['interest_rate'] / 100;
-    $monthlyRate = $annualRate / 12;
-    $n = (int) $loan['repayment_period'];
-    $EMI = ($P * $monthlyRate * pow(1 + $monthlyRate, $n)) / (pow(1 + $monthlyRate, $n) - 1);
-    $EMI = round($EMI, 2);
-    $balance = $P;
-    $schedule = [];
+        // Generate amortization data (reuse from above method)
+        $P = (float) $loan['principal'];
+        $annualRate = (float) $loan['interest_rate'] / 100;
+        $monthlyRate = $annualRate / 12;
+        $n = (int) $loan['repayment_period'];
+        $EMI = ($P * $monthlyRate * pow(1 + $monthlyRate, $n)) / (pow(1 + $monthlyRate, $n) - 1);
+        $EMI = round($EMI, 2);
+        $balance = $P;
+        $schedule = [];
 
-    for ($i = 1; $i <= $n; $i++) {
-        $interest = round($balance * $monthlyRate, 2);
-        $principal = round($EMI - $interest, 2);
-        $newBalance = round($balance - $principal, 2);
+        for ($i = 1; $i <= $n; $i++) {
+            $interest = round($balance * $monthlyRate, 2);
+            $principal = round($EMI - $interest, 2);
+            $newBalance = round($balance - $principal, 2);
 
-        if ($i === $n && $newBalance !== 0.00) {
-            $principal += $newBalance;
-            $EMI = $principal + $interest;
-            $newBalance = 0.00;
+            if ($i === $n && $newBalance !== 0.00) {
+                $principal += $newBalance;
+                $EMI = $principal + $interest;
+                $newBalance = 0.00;
+            }
+
+            $schedule[] = [
+                'installment' => $i,
+                'due_date' => (new DateTime($loan['request_date']))->modify("+$i months")->format('Y-m-d'),
+                'principal' => $principal,
+                'interest' => $interest,
+                'total' => $EMI,
+                'balance' => $newBalance,
+
+            ];
+
+            $balance = $newBalance;
         }
 
-        $schedule[] = [
-            'installment' => $i,
-            'due_date' => (new DateTime($loan['request_date']))->modify("+$i months")->format('Y-m-d'),
-            'principal' => $principal,
-            'interest' => $interest,
-            'total' => $EMI,
-            'balance' => $newBalance,
-            
-        ];
+        $html = view('loans/amortization_schedule_pdf', [
+            'loan' => $loan,
+            'schedule' => $schedule,
+            'member' => $member,
+            'organization' => $organization
+        ]);
 
-        $balance = $newBalance;
-    }
-
-    $html = view('loans/amortization_schedule_pdf', [
-        'loan' => $loan,
-        'schedule' => $schedule,
-        'member' => $member,
-        'organization' => $organization
-    ]);
-
-    $options = new Options();
-    $options->set('defaultFont', 'Arial');
-    $dompdf = new Dompdf($options);
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
-    $dompdf->stream('amortization_schedule_loan_' . $loanId . '.pdf', ['Attachment' => false]);
-
-        
-       
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream('amortization_schedule_loan_' . $loanId . '.pdf', ['Attachment' => false]);
     }
 }
 //  $repayments = $repaymentModel->where('loan_id', $loanId)->orderBy('installment_number')->findAll();

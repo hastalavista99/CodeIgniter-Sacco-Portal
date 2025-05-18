@@ -45,7 +45,7 @@ class JournalService extends BaseController
         $crbIncomeAccount       = $accountModel->where('account_name', 'CRB Charges')->first();
         $serviceChargeAccount   = $accountModel->where('account_name', 'Loan Application Fee')->first();
 
-        $loanControlAccountId = 3; // Replace with your SACCO bank/cash account ID
+        $loanControlAccountId = 3; // Replace with actual cash/bank account ID
 
         // Amounts from loanData
         $principal       = $loanData['principal'];
@@ -56,7 +56,7 @@ class JournalService extends BaseController
 
         $journalDetails = [];
 
-        // Debit: Loan Receivable (Disbursed to member)
+        // Debit: Loan Receivable (asset) — disbursed amount
         $journalDetails[] = [
             'journal_entry_id' => $entryId,
             'account_id'       => $loanReceivableAccount['id'],
@@ -64,13 +64,13 @@ class JournalService extends BaseController
             'credit'           => 0,
         ];
 
-        // Debit: Income accounts (charges retained by SACCO)
+        // Credit: Income accounts (SACCO earns the charges)
         if ($insurance > 0) {
             $journalDetails[] = [
                 'journal_entry_id' => $entryId,
                 'account_id'       => $insuranceIncomeAccount['id'],
-                'debit'            => $insurance,
-                'credit'           => 0,
+                'debit'            => 0,
+                'credit'           => $insurance,
             ];
         }
 
@@ -78,8 +78,8 @@ class JournalService extends BaseController
             $journalDetails[] = [
                 'journal_entry_id' => $entryId,
                 'account_id'       => $crbIncomeAccount['id'],
-                'debit'            => $crb,
-                'credit'           => 0,
+                'debit'            => 0,
+                'credit'           => $crb,
             ];
         }
 
@@ -87,12 +87,12 @@ class JournalService extends BaseController
             $journalDetails[] = [
                 'journal_entry_id' => $entryId,
                 'account_id'       => $serviceChargeAccount['id'],
-                'debit'            => $serviceCharge,
-                'credit'           => 0,
+                'debit'            => 0,
+                'credit'           => $serviceCharge,
             ];
         }
 
-        // Credit: Loan Control (full principal goes out)
+        // Credit: Cash/Loan Control Account (total cash out = principal)
         $journalDetails[] = [
             'journal_entry_id' => $entryId,
             'account_id'       => $loanControlAccountId,
@@ -102,6 +102,7 @@ class JournalService extends BaseController
 
         return $journalDetailModel->insertBatch($journalDetails);
     }
+
 
 
     // public function createLoanDisbursementEntry($loanData, $user)
