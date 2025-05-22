@@ -30,6 +30,15 @@
             </div>
         <?php endif; ?>
         <div class="card shadow border-none my-2 px-2">
+            <div class="d-flex justify-content-end mb-3">
+
+                <div class="col-md-2 pt-3">
+                    <div>
+                        <a href="<?= site_url('members/import-page') ?>" class="btn btn-primary"><i class="bi-download me-1"></i>Import Members</a>
+                    </div>
+                </div>
+
+            </div>
             <div class="card-body px-0 pb-2 mt-3">
                 <!-- Step Indicators -->
                 <div class="row step-indicator mb-4">
@@ -112,9 +121,9 @@
                             <input type="text" class="form-control" id="idNumber" value="<?= isset($member) ? esc($member['id_number']) : '' ?>">
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="terms_accepted" checked>
-                            <label class="form-check-label" for="terms_accepted">
-                                I accept the terms and conditions *
+                            <input class="form-check-input" type="checkbox" id="is_active" checked>
+                            <label class="form-check-label" for="is_active">
+                                Active?
                             </label>
                         </div>
 
@@ -209,7 +218,7 @@
                             </div>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="isBeneficiary" checked>
+                            <input class="form-check-input" type="checkbox" id="isBeneficiary">
                             <label class="form-check-label" for="isBeneficiary">Is Beneficiary?</label>
                         </div>
 
@@ -313,7 +322,7 @@
             });
         });
 
-        
+
         form.addEventListener('submit', function(e) {
             console.log('form submitted')
             e.preventDefault();
@@ -334,7 +343,7 @@
             formData.append('nationality', document.getElementById('nationality').value);
             formData.append('maritalStatus', document.getElementById('maritalStatus').value);
             formData.append('idNumber', document.getElementById('idNumber').value);
-            formData.append('termsAccepted', document.getElementById('terms_accepted').checked ? '1' : '0');
+            formData.append('isActive', document.getElementById('is_active').checked ? '1' : '0');
 
             // Contact Details (Step 2)
             formData.append('email', document.getElementById('email').value);
@@ -369,7 +378,7 @@
 
             // If this is an edit operation, change the URL and add the member ID
             if (memberIdInput && isEditInput) {
-                url = `<?= site_url('/members/update/')?>${memberIdInput.value}`;
+                url = `<?= site_url('/members/update/') ?>${memberIdInput.value}`;
                 formData.append('member_id', memberIdInput.value);
                 formData.append('is_edit', isEditInput.value);
             }

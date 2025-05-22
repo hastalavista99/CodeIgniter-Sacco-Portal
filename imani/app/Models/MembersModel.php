@@ -15,7 +15,7 @@ class MembersModel extends Model
     protected $allowedFields = [
         'member_number',
         'first_name', 'last_name', 'dob', 'join_date', 'gender', 
-        'nationality', 'marital_status', 'id_number', 'terms_accepted',
+        'nationality', 'marital_status', 'id_number', 'is_active',
         'email', 'phone_number', 'alternate_phone', 'street_address', 
         'address_line2', 'city', 'county', 'zip_code', 'photo_path'
     ];
@@ -38,7 +38,7 @@ class MembersModel extends Model
         'city'          => 'required',
         'county'        => 'required',
         'zip_code'      => 'required',
-        'terms_accepted'=> 'required'
+        'is_active '    => 'required'
     ];
     
     

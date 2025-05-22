@@ -127,6 +127,9 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('generate/(:num)', 'Members::generateStatement/$1');
         $routes->post('sms', 'Members::smsMember');
         $routes->get('all-info/(:num)', 'Members::allMemberInfo/$1');
+        $routes->get('import-page', 'ImportController::uploadPage');
+        $routes->get('download-template', 'ImportController::downloadTemplate');
+        $routes->post('import', 'ImportController::import');
     });
 
     $routes->group('accounting', function ($routes) {

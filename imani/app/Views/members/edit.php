@@ -112,9 +112,9 @@
                             <input type="text" class="form-control" id="idNumber">
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="termsAccepted">
-                            <label class="form-check-label" for="termsAccepted">
-                                I accept the terms and conditions *
+                            <input class="form-check-input" type="checkbox" id="isActive">
+                            <label class="form-check-label" for="isActive">
+                                Active?
                             </label>
                         </div>
 
@@ -329,7 +329,7 @@
             formData.append('nationality', document.getElementById('nationality').value);
             formData.append('maritalStatus', document.getElementById('maritalStatus').value);
             formData.append('idNumber', document.getElementById('idNumber').value);
-            formData.append('termsAccepted', document.getElementById('termsAccepted').checked ? '1' : '0');
+            formData.append('isActive', document.getElementById('isActive').checked ? '1' : '0');
 
             // Contact Details (Step 2)
             formData.append('email', document.getElementById('email').value);
