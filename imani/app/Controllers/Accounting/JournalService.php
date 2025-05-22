@@ -101,54 +101,6 @@ class JournalService extends BaseController
         return $journalDetailModel->insertBatch($journalDetails);
     }
 
-
-    // public function createLoanDisbursementEntry($loanData, $user)
-    // {
-
-    //     // log_message('error', print_r($loanData, true));
-    //     $journalEntryModel = new JournalEntryModel();
-    //     $journalDetailModel = new JournalDetailsModel();
-
-    //     $entryData = [
-    //         'date'        => date('Y-m-d'),
-    //         'description' => 'Loan disbursement to Member ID ' . $loanData['member_id'],
-    //         'reference'   => 'Loan #' . $loanData['id'],
-    //         'created_by'  => $user,
-    //     ];
-
-    //     $entryId = $journalEntryModel->insert($entryData);
-
-    //     // Example account IDs (replace with actual ones)
-    //     $accountModel = new AccountsModel();
-    //     $loanTypeModel = new LoanTypeModel();
-
-    //     $loanTypeDetails = $loanTypeModel->find($loanData['loan_type_id']);
-    //     $loanType = $loanTypeDetails['loan_name'];
-    //     $account = $accountModel->where('account_name', $loanType)->first();
-
-    //     // log_message('error', print_r($account, true));
-
-    //     $loanReceivableAccountId = $account['id']; // Member Loan Receivable
-    //     $cashOrLoanControlAccountId = 3; // Source of funds // Current savings Account
-
-    //     $amount = $loanData['disburse_amount'];
-
-    //     $journalDetailModel->insertBatch([
-    //         [
-    //             'journal_entry_id' => $entryId,
-    //             'account_id'       => $loanReceivableAccountId,
-    //             'debit'            => $amount,
-    //             'credit'           => 0,
-    //         ],
-    //         [
-    //             'journal_entry_id' => $entryId,
-    //             'account_id'       => $cashOrLoanControlAccountId,
-    //             'debit'            => 0,
-    //             'credit'           => $amount,
-    //         ],
-    //     ]);
-    // }
-
     public function createLoanRepaymentEntry($repaymentData, $user)
     {
         $journalEntryModel = new JournalEntryModel();
@@ -195,4 +147,6 @@ class JournalService extends BaseController
             ],
         ]);
     }
+
+    
 }

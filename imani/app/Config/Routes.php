@@ -129,7 +129,14 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('all-info/(:num)', 'Members::allMemberInfo/$1');
         $routes->get('import-page', 'ImportController::uploadPage');
         $routes->get('download-template', 'ImportController::downloadTemplate');
-        $routes->post('import', 'ImportController::import');
+        $routes->post('import', 'ImportController::importMembers');
+        $routes->get('download-savings-template', 'ImportController::downloadSavingsTemplate');
+        $routes->get('download-shares-template', 'ImportController::downloadSharesTemplate');
+        $routes->get('download-loans-template', 'ImportController::downloadLoansTemplate');
+        $routes->get('download-entrance-fee-template', 'ImportController::downloadEntranceFeeTemplate');
+        $routes->get('import-transactions-page', 'ImportController::importTransactionsPage');
+        $routes->post('import-transactions', 'ImportController::importTransactions');
+        $routes->post('preview-transactions', 'ImportController::previewTransactions');
     });
 
     $routes->group('accounting', function ($routes) {

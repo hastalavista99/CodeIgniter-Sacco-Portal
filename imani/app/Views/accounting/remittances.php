@@ -34,7 +34,11 @@
             <div class="card-body px-0 pb-2">
 
                 <div class="row mb-3">
-                    <h2>Member Details</h2>
+                    <div class="d-flex justify-content-between mt-2 mx-1">
+                        <h2>Member Details</h2>
+                        <a href="<?= site_url('members/import-transactions-page') ?>" class="btn btn-primary ps-2"><i class="bi-upload me-2" style="font-size:1.2rem;"></i>Import Transactions</a>
+                    </div>
+
                     <form id="memberForm">
                         <div class="col-md-6">
                             <label for="member-number" class="form-label">Member Number</label>
