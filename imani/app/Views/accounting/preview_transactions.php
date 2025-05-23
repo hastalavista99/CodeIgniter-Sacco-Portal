@@ -40,9 +40,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <a href="<?= site_url('members/import-transactions-page') ?>" class="btn btn-secondary"><i class="bi bi-x-lg me-2"></i>Cancel</a>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-check-lg me-2"></i>Confirm & Import</button>
 
-                    <button type="submit" class="btn btn-success">Confirm & Import</button>
-                    <a href="<?= site_url('members/import-transactions-page') ?>" class="btn btn-secondary">Cancel</a>
                 </form>
 
             </div>

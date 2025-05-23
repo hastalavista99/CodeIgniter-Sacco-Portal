@@ -442,7 +442,7 @@ class Members extends BaseController
             $model->update($memberId, $memberData);
 
             // Handle beneficiary data if provided
-            if (isset($benFirstName)) {
+            if (isset($beneficiaryData)) {
                 $beneficiaryModel = new BeneficiaryModel();
 
                 // Check if this member already has a beneficiary
@@ -456,6 +456,7 @@ class Members extends BaseController
                     $beneficiaryModel->insert($beneficiaryData);
                 }
             }
+
 
             $model->db->transComplete();
 
@@ -706,7 +707,7 @@ class Members extends BaseController
                 ->setBody($dompdf->output());
         } catch (\Throwable $e) {
             log_message('error', 'Loan statement generation failed: ' . $e->getMessage());
-            return $this->response->setStatusCode(500)->setBody('An unexpected error occurred.'. $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('An unexpected error occurred.' . $e->getMessage());
         }
     }
 

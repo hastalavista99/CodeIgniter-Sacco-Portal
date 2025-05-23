@@ -355,7 +355,7 @@ class ImportController extends BaseController
 
     public function importTransactions()
     {
-        $tempFile = $this->request->getFile('tempFile');
+        $tempFile = $this->request->getPost('tempFile');
         $filePath = WRITEPATH . 'uploads/' . $tempFile;
 
         if (!$tempFile || !file_exists($filePath)) {
