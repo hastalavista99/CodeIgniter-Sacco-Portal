@@ -83,8 +83,8 @@
                             <td><?= esc($member['zip_code']) ?></td>
                         </tr>
                         <tr>
-                            <th>Terms Accepted</th>
-                            <td><?= $member['terms_accepted'] ? 'Yes' : 'No' ?></td>
+                            <th>Active?</th>
+                            <td><?= $member['is_active'] ? 'Yes' : 'No' ?></td>
                         </tr>
                     </table>
                 </div>

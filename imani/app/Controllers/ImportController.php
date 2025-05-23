@@ -17,6 +17,7 @@ use App\Models\Accounting\SavingsAccountModel;
 use App\Controllers\Accounting\JournalService;
 use App\Controllers\LoanService;
 use App\Models\LoansModel;
+use App\Libraries\Hash;
 
 class ImportController extends BaseController
 {
@@ -49,6 +50,7 @@ class ImportController extends BaseController
             'join_date',
             'gender',
             'nationality',
+            'id_number',
             'email',
             'phone_number',
             'street_address',
@@ -66,6 +68,7 @@ class ImportController extends BaseController
             '2024-01-01',
             'female',
             'Kenyan',
+            '12345678',
             'jane@example.com',
             '0722000000',
             '123 Main St',
@@ -158,7 +161,7 @@ class ImportController extends BaseController
             $errors = [];
 
             foreach ($data as $index => $row) {
-                if (empty($row['A']) || empty($row['B']) || empty($row['C']) || empty($row['D']) || empty($row['E']) || empty($row['F']) || empty($row['G']) || empty($row['H']) || empty($row['I']) || empty($row['J']) || empty($row['K']) || empty($row['L']) || empty($row['M'])) {
+                if (empty($row['A']) || empty($row['B']) || empty($row['C']) || empty($row['D']) || empty($row['E']) || empty($row['F']) || empty($row['G']) || empty($row['H']) || empty($row['I']) || empty($row['J']) || empty($row['K']) || empty($row['L']) || empty($row['M']) || empty($row['N'])) {
                     $errors[] = "Row " . ($index + 2) . " has missing required fields.";
                     continue;
                 }
@@ -171,12 +174,13 @@ class ImportController extends BaseController
                     'join_date'        => $row['E'],
                     'gender'           => $row['F'],
                     'nationality'      => $row['G'],
-                    'email'            => $row['H'],
-                    'phone_number'     => $row['I'],
-                    'street_address'   => $row['J'],
-                    'city'             => $row['K'],
-                    'county'           => $row['L'],
-                    'zip_code'         => $row['M'],
+                    'id_number'        => $row['H'],
+                    'email'            => $row['I'],
+                    'phone_number'     => $row['J'],
+                    'street_address'   => $row['K'],
+                    'city'             => $row['L'],
+                    'county'           => $row['M'],
+                    'zip_code'         => $row['N'],
                     'is_active'        => 1,
                 ];
 
@@ -190,12 +194,39 @@ class ImportController extends BaseController
                 if (!$memberId) {
                     $errors[] = "Failed to import member on row " . ($index + 2);
                     continue;
+                } else {
+                    $this->createMemberSavingsAccount($memberId);
+
+                    // Create share capital account
+                    $this->createMemberShareAccount($memberId);
+
+                    $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    $pass = substr(str_shuffle($alpha_numeric), 0, 8);
+
+                    $createUser = new \App\Models\UserModel();
+                    new \App\Libraries\Hash();
+
+                    $data = [
+                        'user' => $member['first_name'],
+                        'name' => $member['first_name'],
+                        'member_no' => $member['member_number'],
+                        'email' => $member['email'] ? $member['email'] : '',
+                        'mobile' => $member['phone_number'],
+                        'password' => Hash::encrypt($pass),
+                        'role' => 'member',
+                    ];
+                    $createUser->save($data);
+
+                    $smsModel = new SendSMS();
+                    $msg = "Hi, " . $member['first_name'] . ", \n Welcome to Sacco Manager, Login to https://pay.macrologicsys.com/sacco to view your transactions.\nMember Number: " . $member['member_number'] . ", \nPassword: $pass\n Regards \n Sacco Manager";
+
+                    $smsModel->sendSMS($member['phone_number'], $msg);
                 }
 
                 $imported++;
             }
 
-            $summary = "$imported members imported successfully.";
+            $summary = "$imported member(s) imported successfully.";
             if ($skipped > 0) $summary .= " $skipped duplicates skipped.";
             if (!empty($errors)) $summary .= " Errors: " . implode(' ', $errors);
 
@@ -203,6 +234,42 @@ class ImportController extends BaseController
         } catch (\Throwable $e) {
             return redirect()->back()->with('error', 'Error processing file: ' . $e->getMessage());
         }
+    }
+
+    private function createMemberSavingsAccount(int $memberId)
+    {
+        $savingsAccountModel = new SavingsAccountModel();
+
+        // The main control account ID for member savings (from your chart of accounts)
+        $savingsControlAccountId = 74;
+
+        // Optional: Generate a unique account number (you can customize this)
+        $accountNumber = 'SAV' . str_pad($memberId, 5, '0', STR_PAD_LEFT);
+
+        $data = [
+            'member_id' => $memberId,
+            'account_id' => $savingsControlAccountId,
+            'account_number' => $accountNumber,
+            'account_type' => 'normal', // optional
+        ];
+
+        return $savingsAccountModel->insert($data);
+    }
+
+    private function createMemberShareAccount(int $memberId)
+    {
+        $shareAccountModel = new SharesAccountModel();
+
+        // The main control account ID for share capital
+        $shareCapitalAccountId = 73;
+
+        $data = [
+            'member_id' => $memberId,
+            'account_id' => $shareCapitalAccountId,
+            'shares_owned' => 0, // start with zero, increase on deposit
+        ];
+
+        return $shareAccountModel->insert($data);
     }
 
     public function importTransactionsPage()
@@ -246,6 +313,20 @@ class ImportController extends BaseController
             $data = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
             $headers = array_shift($data);
 
+            // check the headers are correct
+            $actualHeaders = array_map('strtolower', array_map('trim', array_values($headers)));
+            $expectedHeaders = ['member_number', 'transaction_type', 'amount', 'payment_method', 'transaction_date', 'description', 'service_transaction'];
+
+            $hasLoanId = in_array('loan_id', $actualHeaders);
+            if ($hasLoanId) {
+                array_splice($expectedHeaders, 1, 0, 'loan_id'); // insert after member_number
+            }
+
+            if ($actualHeaders !== $expectedHeaders) {
+                return redirect()->back()->with('error', 'Invalid Excel headers. Please use the official template to avoid missing or misordered columns.');
+            }
+
+            // Check if the data is empty
             if (empty($data)) {
                 return redirect()->back()->with('error', 'The uploaded file is empty or improperly formatted.');
             }
@@ -267,7 +348,6 @@ class ImportController extends BaseController
                 'title' => 'Preview Transactions',
                 'userInfo' => $userInfo,
             ]);
-
         } catch (\Throwable $e) {
             return redirect()->back()->with('error', 'Preview failed: ' . $e->getMessage());
         }
@@ -416,7 +496,6 @@ class ImportController extends BaseController
             if (!empty($errors)) $msg .= " Errors: " . implode(' ', $errors);
 
             return redirect()->to('members/import-transactions-page')->with('message', $msg);
-
         } catch (\Throwable $e) {
             return redirect()->to('members/import-transactions-page')->with('error', 'Processing failed: ' . $e->getMessage());
         }

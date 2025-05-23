@@ -21,14 +21,15 @@
                         <a id="downloadBtn" href="<?= site_url('members/download-template') ?>" class="btn btn-info mb-2" onclick="handleDownload(event)">
                             <i class="bi-filetype-xlsx me-2"> <span id="downloadText"></i>Download Template</span>
                         </a>
+                        <button class="btn btn-primary" type="button" disabled="" id="download-loading-btn" style="display: none;">
+                            <span class="spinner-border spinner-border-sm" style="width: 16px !important; height: 16px;" role="status" aria-hidden="true"></span>
+                            <i class="bi-filetype-xlsx me-2"></i>
+                            Downloading...
+                        </button>
                         <p class="small">Click the button above to download the Excel template for member import.</p>
                     </div>
 
-                    <button class="btn btn-primary" type="button" disabled="" id="download-loading-btn" style="display: none;">
-                        <span class="spinner-border spinner-border-sm" style="width: 16px !important; height: 16px;" role="status" aria-hidden="true"></span>
-                        <i class="bi-filetype-xlsx me-2"></i>
-                        Downloading...
-                    </button>
+
                 </div>
 
 
