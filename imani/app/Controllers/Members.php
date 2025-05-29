@@ -273,7 +273,7 @@ class Members extends BaseController
             'member' => $member,
             'savings' => $savings,
             'shares' => $shares,
-            'loans' => $loans,
+            'loans' => $loans[0] ?? null, // Get recent/last loan summary if exists
             'title' => 'Member View - ' . $member['first_name'] . " " . $member['last_name'],
             'userInfo' => $userInfo,
             'recentTransactions' => $transactions,
@@ -671,7 +671,7 @@ class Members extends BaseController
             foreach ($loans as $loan) {
                 $loanDetails = $loanModel->getApplicationWithDetails($loan['id']);
                 $repayments = $repaymentModel->where('loan_id', $loan['id'])
-                    ->orderBy('payment_date', 'asc')
+                    ->orderBy('due_date', 'asc')
                     ->findAll();
 
                 // Running balance calculation
