@@ -129,6 +129,7 @@ class LoanApplicationModel extends Model
     $loans = $db->table('loan_applications')
         ->select('id, disburse_amount')
         ->where('member_id', $memberId)
+        ->where('loan_status', 'approved')
         ->orderBy('request_date', 'DESC')
         ->get()
         ->getResultArray();
