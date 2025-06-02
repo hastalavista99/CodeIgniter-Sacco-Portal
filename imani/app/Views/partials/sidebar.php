@@ -3,7 +3,7 @@
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="<?= site_url('/dashboard')?>">
+      <a class="nav-link collapsed" href="<?= site_url('/dashboard') ?>">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
@@ -12,7 +12,7 @@
     <?php if ($userInfo['role'] == 'admin') { ?>
 
       <li class="nav-item">
-        <a href="<?= site_url('/members')?>" class="nav-link collapsed">
+        <a href="<?= site_url('/members') ?>" class="nav-link collapsed">
           <i class="bi bi-people"></i>
           <span>Members</span>
 
@@ -50,35 +50,35 @@
       </li>
 
       <?php if (user_can('view_payments')): ?>
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#payments" role="button" aria-expanded="false"
-          aria-controls="collapseExample">
-          <i class="bi bi-cash-stack"></i>
-          <span>
-            Payments
-          </span>
-          <i class="bi bi-chevron-down ms-auto"></i>
-        </a>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-toggle="collapse" href="#payments" role="button" aria-expanded="false"
+            aria-controls="collapseExample">
+            <i class="bi bi-cash-stack"></i>
+            <span>
+              Payments
+            </span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
 
-        <div class="collapse" id="payments">
-          <ul>
-            <li class="nav-item">
-              <a href="<?= site_url('/payments') ?>" class="nav-link collapsed">
-                <i class="bi bi-phone"></i>
-                <span>
-                  PayBill
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('/payments/ac_bank') ?>" class="nav-link collapsed">
-                <i class="bi bi-bank"></i>
-                <span>
-                  CO-OP
-                </span>
-              </a>
-            </li>
-            <!-- <li class="nav-item">
+          <div class="collapse" id="payments">
+            <ul>
+              <li class="nav-item">
+                <a href="<?= site_url('/payments') ?>" class="nav-link collapsed">
+                  <i class="bi bi-phone"></i>
+                  <span>
+                    PayBill
+                  </span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= site_url('/payments/ac_bank') ?>" class="nav-link collapsed">
+                  <i class="bi bi-bank"></i>
+                  <span>
+                    CO-OP
+                  </span>
+                </a>
+              </li>
+              <!-- <li class="nav-item">
               <a href="<?= site_url('payments/deposits') ?>" class="nav-link collapsed">
                 <i class="bi bi-piggy-bank"></i>
                 <span>
@@ -110,9 +110,9 @@
                 </span>
               </a>
             </li> -->
-          </ul>
-        </div>
-      </li>
+            </ul>
+          </div>
+        </li>
       <?php endif; ?>
 
       <li class="nav-item">
@@ -246,6 +246,13 @@
         </div>
       </li>
       <li class="nav-item">
+        <a href="<?= site_url('staff') ?>" class="nav-link collapsed">
+          <i class="bi bi-person-badge"></i>
+          <span>Staff</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#settings" role="button" aria-expanded="false"
           aria-controls="collapseExample">
           <i class="bi bi-gear
@@ -274,12 +281,12 @@
             </li>
             <?php if (user_can('manage_users')): ?>
 
-            <li class="nav-item">
-              <a href="<?= site_url('/users') ?>" class="nav-link collapsed">
-                <i class="bi bi-person-check"></i>
-                <span>Users</span>
-              </a>
-            </li>
+              <li class="nav-item">
+                <a href="<?= site_url('/users') ?>" class="nav-link collapsed">
+                  <i class="bi bi-person-check"></i>
+                  <span>Users</span>
+                </a>
+              </li>
             <?php endif; ?>
             <!-- <li class="nav-item">
               <a href="<?= site_url('/settings') ?>" class="nav-link collapsed">
@@ -288,12 +295,12 @@
               </a>
             </li> -->
             <?php if (user_can('access_system_parameters')): ?>
-            <li class="nav-item">
-              <a href="<?= site_url('/admin/settings') ?>" class="nav-link collapsed">
-                <i class="bi bi-person-gear"></i>
-                <span>Admin Settings</span>
-              </a>
-            </li>
+              <li class="nav-item">
+                <a href="<?= site_url('/admin/settings') ?>" class="nav-link collapsed">
+                  <i class="bi bi-person-gear"></i>
+                  <span>Admin Settings</span>
+                </a>
+              </li>
             <?php endif; ?>
           </ul>
         </div>
@@ -309,7 +316,7 @@
       </li>
     <?php } ?>
     <li class="nav-item">
-      <a href="<?= site_url('/myPayments')?>" class="nav-link collapsed">
+      <a href="<?= site_url('/myPayments') ?>" class="nav-link collapsed">
         <i class="bi-cash-stack"></i>
         <span>My Payments</span>
       </a>

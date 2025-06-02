@@ -12,6 +12,7 @@ use App\Models\Accounting\SavingsAccountModel;
 use App\Models\Accounting\SharesAccountModel;
 use App\Models\LoanApplicationModel;
 use App\Models\LoanRepaymentModel;
+use App\Models\StaffModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Dashboard extends BaseController
@@ -25,6 +26,7 @@ class Dashboard extends BaseController
         $sharesModel = new SharesAccountModel();
         $loanModel = new LoanApplicationModel();
         $transactionsModel = new TransactionsModel();
+        $staffModel = new StaffModel();
 
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
@@ -55,6 +57,7 @@ class Dashboard extends BaseController
         $depositData = [];
         $sharesData = [];
         $repaymentData = [];
+        
 
         $memberNo = $userInfo['role'] === 'member' ? $userInfo['member_no'] : null;
 
@@ -67,6 +70,7 @@ class Dashboard extends BaseController
             $depositData[] = $transactionsModel->getMonthlyTotal('savings', $yearMonth, $memberNo);
             $sharesData[] = $transactionsModel->getMonthlyTotal('share_deposits', $yearMonth, $memberNo);
             $repaymentData[] = $transactionsModel->getMonthlyTotal('loan', $yearMonth, $memberNo);
+            $staffNumber = $staffModel->getActiveStaffMembers();
         }
 
 
@@ -83,6 +87,7 @@ class Dashboard extends BaseController
             'depositData' => $depositData,
             'sharesData' => $sharesData,
             'repaymentData' => $repaymentData,
+            'staffNumber' => $staffNumber ?? 0,
         ];
         return view('dashboard/index', $data);
     }

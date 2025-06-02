@@ -291,3 +291,27 @@ INSERT INTO `accounts` (`id`, `account_name`, `account_code`, `category`, `paren
 (119, 'SACCO Meeting', '700240', 'expense', 3);
 (120, 'Loan Insurance Income', '600140', 'income', 3);
 
+
+02/06/2025
+
+CREATE TABLE staff (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    staff_number VARCHAR(20) UNIQUE NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    phone VARCHAR(20) UNIQUE NOT NULL,
+    gender ENUM('male', 'female', 'other') DEFAULT 'other',
+    position VARCHAR(100),
+    department VARCHAR(100),
+    hire_date DATE,
+    photo VARCHAR(100),
+    status ENUM('active', 'inactive', 'terminated') DEFAULT 'active',
+    user_id INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+);
+
+
+

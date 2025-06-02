@@ -153,6 +153,32 @@
                         </div>
                     </div><!-- End Sales Card -->
 
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card sales-card">
+
+                            <div class="card-body">
+                                <h5 class="card-title">Active Staff <span>| To Date</span></h5>
+
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </div>
+                                    <a href="<?= site_url('staff') ?>" target="_blank">
+                                        <div class="ps-3">
+                                            
+                                            <h6>
+                                                <?= isset($staff) && is_numeric($staff) ? esc($staff) : '-' ?>
+                                            </h6>
+
+                                        </div>
+                                    </a>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
 
                     <!-- Sales Card -->
                     <div class="col-xxl-4 col-md-6">
@@ -359,6 +385,37 @@
 
                     </div>
                 </div><!-- End Recent Activity -->
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Shares vs Member Savings <span>| Today</span></h5>
+                        <canvas id="pieChart"></canvas>
+<script>
+    const pieChart = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieChart, {
+        type: 'pie',
+        data: {
+            labels: ['Total Savings', 'Total Shares'],
+            datasets: [{
+                label: 'Shares vs Savings',
+                data: [<?= $savings ?>, <?= $shares ?>],
+                backgroundColor: ['#36A2EB', '#FF6384'],
+                borderColor: ['#ffffff', '#ffffff'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+                    </div>
+                </div>
             </div><!-- End Right side columns -->
 
         </div>

@@ -167,6 +167,17 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('reports/cashbook', 'Accounting\ReportsController::cashBook');
         $routes->get('reports/cashbook/pdf', 'Accounting\ReportsController::cashbookPdf');
     });
+
+    $routes->group('staff', function ($routes) {
+        $routes->get('/', 'StaffController::index');
+        $routes->get('create', 'StaffController::create');
+        $routes->post('store', 'StaffController::store');
+        $routes->get('edit/(:num)', 'StaffController::edit/$1');
+        $routes->post('update/(:num)', 'StaffController::update/$1');
+        $routes->get('delete/(:num)', 'StaffController::delete/$1');
+        $routes->get('view/(:num)', 'StaffController::view/$1');
+    });
+    
 });
 
 $routes->post('auth/uploadImage', [Auth::class, 'uploadImage']);
