@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Libraries\Hash;
 use App\Models\UserModel;
 use App\Models\StaffModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -68,9 +69,11 @@ class StaffController extends BaseController
 
         if ($createUser === 'yes') {
             $userId = $userModel->insert([
-                'username' => $this->request->getPost('email'),
+                'user' => $this->request->getPost('first_name') . ' ' . $this->request->getPost('last_name'),
+                'name' => $this->request->getPost('email'),
                 'email' => $this->request->getPost('email'),
-                'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+                'mobile' => $this->request->getPost('phone'),
+                'password' => Hash::encrypt($this->request->getPost('password')),
                 'role' => 'staff',
             ]);
         }
