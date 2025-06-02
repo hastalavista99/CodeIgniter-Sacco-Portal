@@ -39,24 +39,36 @@ class Dashboard extends BaseController
             $loans = $loanModel->getMemberLoanSummary($memberId);
             $transactions = $transactionsModel->getRecentTransactions($member['member_number']);
         } else {
-            $savings = 0;
-            $shares = 0;
-            $loans = 0;
+            $savings = $savingsModel->getTotalSavings();
+            $shares = $sharesModel->getTotalShares();
+            $loans = $loanModel->getTotalLoans();
+            $totalMembers = $memberModel->getActiveMembers();
         }
 
-        // Check if member_no exists and is not empty
-        $hasMemberNo = !empty($userInfo['member_no']);
+        $payments = $paymentsModel
+            ->where('SUBSTRING(BillRefNumber, -10) =', $userInfo['mobile'])
+            ->orderBy('mp_date', 'DESC')
+            ->findAll(5);
 
-        if ($hasMemberNo) {
+        // Transaction activity for chart (last 6 months)
+        $months = [];
+        $depositData = [];
+        $sharesData = [];
+        $repaymentData = [];
 
-            $payments = $paymentsModel
-                ->where('SUBSTRING(BillRefNumber, -10) =', $userInfo['mobile'])
-                ->orderBy('mp_date', 'DESC')
-                ->findAll(5);
-        } else {
+        $memberNo = $userInfo['role'] === 'member' ? $userInfo['member_no'] : null;
 
-            $payments = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthLabel = date('M', strtotime("-$i months"));
+            $yearMonth = date('Y-m', strtotime("-$i months"));
+
+            $months[] = $monthLabel;
+
+            $depositData[] = $transactionsModel->getMonthlyTotal('savings', $yearMonth, $memberNo);
+            $sharesData[] = $transactionsModel->getMonthlyTotal('share_deposits', $yearMonth, $memberNo);
+            $repaymentData[] = $transactionsModel->getMonthlyTotal('loan', $yearMonth, $memberNo);
         }
+
 
         $data = [
             'title' => 'Dashboard',
@@ -65,33 +77,13 @@ class Dashboard extends BaseController
             'shares' => $shares,
             'loans' => $loans,
             'payments' => $payments,
-            'hasMemberNo' => $hasMemberNo,
             'member' => $member ?? null,
+            'members' => $totalMembers ?? null,
+            'months' => $months,
+            'depositData' => $depositData,
+            'sharesData' => $sharesData,
+            'repaymentData' => $repaymentData,
         ];
         return view('dashboard/index', $data);
-    }
-
-    // save the member number from the dashboard modal
-    public function updateMemberNo()
-    {
-        if ($this->request->isAJAX()) {
-            $memberNo = strtoupper($this->request->getPost('member_no'));
-            $loggedInUserId = session()->get('loggedInUser');
-
-            $userModel = new UserModel();
-
-            try {
-                $userModel->update($loggedInUserId, ['member_no' => $memberNo]);
-                return $this->response->setJSON([
-                    'success' => true,
-                    'message' => 'Member number updated successfully'
-                ]);
-            } catch (\Exception $e) {
-                return $this->response->setJSON([
-                    'success' => false,
-                    'message' => 'Failed to update member number'
-                ]);
-            }
-        }
     }
 }

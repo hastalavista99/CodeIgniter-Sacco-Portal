@@ -42,4 +42,17 @@ class SharesAccountModel extends Model
         return ($totals->total_shares);
     }
     
+    // get total shares for all members
+    public function getTotalShares()
+    {
+        $db = \Config\Database::connect();
+    
+        // Sum shares for all members
+        $totals = $db->table('share_accounts')
+            ->selectSum('shares_owned', 'total_shares')
+            ->get()
+            ->getRow();
+    
+        return ($totals->total_shares);
+    }
 }

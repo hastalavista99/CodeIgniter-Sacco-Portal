@@ -63,4 +63,29 @@ class MembersModel extends Model
         
         return ($db->transStatus() === false) ? false : $memberId;
     }
+
+    // get total members
+    public function getTotalMembers()
+    {
+        $db = \Config\Database::connect();
+        
+        // Count total members
+        $totalMembers = $db->table($this->table)
+            ->countAllResults();
+        
+        return $totalMembers;
+    }
+    
+    // get active members
+    public function getActiveMembers()
+    {
+        $db = \Config\Database::connect();
+        
+        // Count active members
+        $activeMembers = $db->table($this->table)
+            ->where('is_active', 1)
+            ->countAllResults();
+        
+        return $activeMembers;
+    }
 }

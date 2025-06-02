@@ -37,4 +37,19 @@ class TransactionsModel extends Model
             ->limit($limit)
             ->find();
     }
+
+    public function getMonthlyTotal(string $type, string $yearMonth, ?string $memberNo = null): float
+    {
+        $builder = $this->selectSum('amount')
+            ->where('service_transaction', $type)
+            ->like('transaction_date', $yearMonth, 'after');
+
+        if ($memberNo) {
+            $builder->where('member_number', $memberNo);
+        }
+
+        $result = $builder->get()->getRow();
+
+        return (float) ($result->amount ?? 0);
+    }
 }

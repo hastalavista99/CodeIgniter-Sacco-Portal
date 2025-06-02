@@ -122,49 +122,62 @@ class LoanApplicationModel extends Model
     }
 
     public function getMemberLoanSummary($memberId)
-{
-    $db = \Config\Database::connect();
+    {
+        $db = \Config\Database::connect();
 
-    // Get loan applications for the member
-    $loans = $db->table('loan_applications')
-        ->select('id, disburse_amount')
-        ->where('member_id', $memberId)
-        ->where('loan_status', 'approved')
-        ->orderBy('request_date', 'DESC')
-        ->get()
-        ->getResultArray();
+        // Get loan applications for the member
+        $loans = $db->table('loan_applications')
+            ->select('id, disburse_amount')
+            ->where('member_id', $memberId)
+            ->where('loan_status', 'approved')
+            ->orderBy('request_date', 'DESC')
+            ->get()
+            ->getResultArray();
 
-    if (empty($loans)) {
-        return [];
+        if (empty($loans)) {
+            return [];
+        }
+
+        $loanSummaries = [];
+
+        foreach ($loans as $loan) {
+            $loanId = $loan['id'];
+            $disbursed = $loan['disburse_amount'];
+
+            // Get repayment summary for this loan
+            $repayment = $this->select('loan_applications.*, loan_repayments.amount_due, SUM(loan_repayments.amount_paid) AS amount_paid')
+                ->join('loan_repayments', 'loan_repayments.loan_id = loan_applications.id', 'left')
+                ->where('loan_applications.id', $loanId)
+                ->get()
+                ->getRow();
+
+            $totalDue  = $repayment->total_loan ?? 0;
+            $totalPaid = $repayment->amount_paid ?? 0;
+            $balance   = $totalDue - $totalPaid;
+
+            $loanSummaries[] = [
+                'loan_id'         => $loanId,
+                'disbursed'       => $disbursed,
+                'total_due'       => $totalDue,
+                'total_paid'      => $totalPaid,
+                'balance'         => $balance,
+            ];
+        }
+
+        return $loanSummaries;
     }
 
-    $loanSummaries = [];
+    // get total for all loans in the system
+    public function getTotalLoans()
+    {
+        $db = \Config\Database::connect();
 
-    foreach ($loans as $loan) {
-        $loanId = $loan['id'];
-        $disbursed = $loan['disburse_amount'];
-
-        // Get repayment summary for this loan
-        $repayment = $this->select('loan_applications.*, loan_repayments.amount_due, SUM(loan_repayments.amount_paid) AS amount_paid')
-            ->join('loan_repayments', 'loan_repayments.loan_id = loan_applications.id', 'left')
-            ->where('loan_applications.id', $loanId)
+        $total = $db->table('loan_applications')
+            ->selectSum('disburse_amount')
+            ->where('loan_status', 'approved')
             ->get()
             ->getRow();
 
-        $totalDue  = $repayment->total_loan ?? 0;
-        $totalPaid = $repayment->amount_paid ?? 0;
-        $balance   = $totalDue - $totalPaid;
-
-        $loanSummaries[] = [
-            'loan_id'         => $loanId,
-            'disbursed'       => $disbursed,
-            'total_due'       => $totalDue,
-            'total_paid'      => $totalPaid,
-            'balance'         => $balance,
-        ];
+        return $total->disburse_amount ?? 0;
     }
-
-    return $loanSummaries;
-}
-
 }

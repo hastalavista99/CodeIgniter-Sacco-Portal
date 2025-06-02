@@ -23,16 +23,16 @@
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-currency-dollar"></i>
                                     </div>
-                                    <?php if($userInfo['role'] === 'member') {?>
-                                    <a href="<?= site_url('members/generate/shares/' . $member['id']) ?>" target="_blank">
-                                        <div class="ps-3">
-                                            <span class="">KES</span>
-                                            <h6>
-                                                <?= isset($shares) && is_numeric($shares) ? esc(number_format($shares)) : '-' ?>
-                                            </h6>
+                                    <?php if ($userInfo['role'] === 'member') { ?>
+                                        <a href="<?= site_url('members/generate/shares/' . $member['id']) ?>" target="_blank">
+                                            <div class="ps-3">
+                                                <span class="">KES</span>
+                                                <h6>
+                                                    <?= isset($shares) && is_numeric($shares) ? esc(number_format($shares)) : '-' ?>
+                                                </h6>
 
-                                        </div>
-                                    </a>
+                                            </div>
+                                        </a>
                                     <?php } else { ?>
                                         <div class="ps-3">
                                             <span class="">KES</span>
@@ -60,16 +60,16 @@
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-currency-dollar"></i>
                                     </div>
-                                    <?php if($userInfo['role'] === 'member') {?>
-                                    <a href="<?= site_url('members/generate/savings/' . $member['id']) ?>" target="_blank">
-                                        <div class="ps-3">
-                                            <span class="">KES</span>
-                                            <h6>
-                                                <?= isset($savings) && is_numeric($savings) ? esc(number_format($savings)) : '-' ?>
-                                            </h6>
+                                    <?php if ($userInfo['role'] === 'member') { ?>
+                                        <a href="<?= site_url('members/generate/savings/' . $member['id']) ?>" target="_blank">
+                                            <div class="ps-3">
+                                                <span class="">KES</span>
+                                                <h6>
+                                                    <?= isset($savings) && is_numeric($savings) ? esc(number_format($savings)) : '-' ?>
+                                                </h6>
 
-                                        </div>
-                                    </a>
+                                            </div>
+                                        </a>
                                     <?php } else { ?>
                                         <div class="ps-3">
                                             <span class="">KES</span>
@@ -91,21 +91,26 @@
                         <div class="card info-card customers-card">
 
                             <div class="card-body">
-                                <h5 class="card-title">Loan Balance <span></span></h5>
+                                <?php if ($userInfo['role'] === 'member') { ?>
+                                    <h5 class="card-title">Loan Balance <span></span></h5>
+                                <?php } else { ?>
+                                    <h5 class="card-title">Total Loans Given <span>| To Date</span></h5>
+                                <?php } ?>
+
 
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-currency-dollar"></i>
                                     </div>
-                                    <?php if($userInfo['role'] === 'member') {?>
-                                    <a href="<?= site_url('members/generate/loans/' . $member['id']) ?>" target="_blank">
-                                        <div class="ps-3">
-                                            <span class="">KES</span>
-                                            <h6>
-                                                <?= isset($loans) && is_numeric($loans) ? esc(number_format($loans)) : '-' ?>
-                                            </h6>
-                                        </div>
-                                    </a>
+                                    <?php if ($userInfo['role'] === 'member') { ?>
+                                        <a href="<?= site_url('members/generate/loans/' . $member['id']) ?>" target="_blank">
+                                            <div class="ps-3">
+                                                <span class="">KES</span>
+                                                <h6>
+                                                    <?= isset($loans) && is_numeric($loans) ? esc(number_format($loans)) : '-' ?>
+                                                </h6>
+                                            </div>
+                                        </a>
                                     <?php } else { ?>
                                         <div class="ps-3">
                                             <span class="">KES</span>
@@ -119,7 +124,120 @@
                             </div>
                         </div>
 
-                    </div><!-- End Customers Card -->
+                    </div>
+
+                    <!-- Sales Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card sales-card">
+
+                            <div class="card-body">
+                                <h5 class="card-title">Active Loans <span>| To Date</span></h5>
+
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </div>
+                                    <a href="<?= site_url('loans') ?>" target="_blank">
+                                        <div class="ps-3">
+                                            <span class="">KES</span>
+                                            <h6>
+                                                <?= isset($loans) && is_numeric($loans) ? esc(number_format($loans)) : '-' ?>
+                                            </h6>
+
+                                        </div>
+                                    </a>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div><!-- End Sales Card -->
+
+
+                    <!-- Sales Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card sales-card">
+
+                            <div class="card-body">
+                                <h5 class="card-title">Total Active Members <span>| To Date</span></h5>
+
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <a href="<?= site_url('members/') ?>" target="_blank">
+                                        <div class="ps-3">
+
+                                            <h6>
+                                                <?= isset($members) && is_numeric($members) ? esc($members) : '-' ?>
+                                            </h6>
+
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div><!-- End Sales Card -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Transactions <span>| Last 6 Months</span></h5>
+                                <!-- Line Chart -->
+                                <canvas id="lineChart" style="max-height: 400px;"></canvas>
+                                <script>
+                                    const ctx = document.getElementById('lineChart').getContext('2d');
+                                    const lineChart = new Chart(ctx, {
+                                        type: 'line',
+                                        data: {
+                                            labels: <?= json_encode($months) ?>,
+                                            datasets: [{
+                                                    label: 'Deposits',
+                                                    data: <?= json_encode($depositData) ?>,
+                                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                                    tension: 0.4,
+                                                    fill: false
+                                                },
+                                                {
+                                                    label: 'Loans',
+                                                    data: <?= json_encode($sharesData) ?>,
+                                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                                    tension: 0.4,
+                                                    fill: false
+                                                },
+                                                {
+                                                    label: 'Repayments',
+                                                    data: <?= json_encode($repaymentData) ?>,
+                                                    borderColor: 'rgba(153, 102, 255, 1)',
+                                                    tension: 0.4,
+                                                    fill: false
+                                                }
+                                            ]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top'
+                                                },
+                                                title: {
+                                                    display: true,
+                                                    text: 'Monthly Transaction Activity'
+                                                }
+                                            },
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true
+                                                }
+                                            }
+                                        }
+                                    });
+                                </script>
+
+                            </div>
+
+                        </div>
+                    </div>
 
                     <!-- Recent Sales -->
                     <div class="col-12">
@@ -159,6 +277,9 @@
 
                         </div>
                     </div><!-- End Recent Sales -->
+
+
+
 
                 </div>
             </div><!-- End Left side columns -->

@@ -46,4 +46,18 @@ class SavingsAccountModel extends Model
 
         return (float) $totals->total_savings;
     }
+
+    // get total savings for all members
+    public function getTotalSavings()
+    {
+        $db = \Config\Database::connect();
+
+        // Step 3: Sum DEBITS only to the member’s savings account
+        $totals = $db->table('savings_accounts')
+            ->selectSum('balance', 'total_savings')
+            ->get()
+            ->getRow();
+
+        return (float) $totals->total_savings;
+    }
 }
