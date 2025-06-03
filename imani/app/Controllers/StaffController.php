@@ -23,7 +23,6 @@ class StaffController extends BaseController
             'staffMembers' => $staffModel->findAll(),
         ];
         return view('staff/index', $data);
-        
     }
 
     public function create()
@@ -61,7 +60,7 @@ class StaffController extends BaseController
         // Upload profile photo
         $photo = $this->request->getFile('photo');
         $photoName = $photo->getRandomName();
-        $photo->move(WRITEPATH . 'uploads/staff/', $photoName);
+        $photo->move(FCPATH . 'public/uploads/staff/', $photoName);
 
         // Optionally create user account
         $createUser = $this->request->getPost('create_user');
@@ -95,4 +94,25 @@ class StaffController extends BaseController
 
         return redirect()->to('/staff')->with('success', 'Staff member added successfully.');
     }
+
+    public function view($id)
+    {
+        $staffModel = new StaffModel();
+        $userModel = new UserModel();
+        $loggedInUser = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUser);
+
+        $staffMember = $staffModel->find($id);
+        if (!$staffMember) {
+            return redirect()->to('/staff')->with('error', 'Staff member not found.');
+        }
+
+        $data = [
+            'title' => 'Staff Profile: ' . $staffMember['first_name'] . ' ' . $staffMember['last_name'],
+            'userInfo' => $userInfo,
+            'staff' => $staffMember,
+        ];
+        return view('staff/view', $data);
+    }
+
 }

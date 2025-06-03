@@ -25,6 +25,7 @@ class Dashboard extends BaseController
         $savingsModel = new SavingsAccountModel();
         $sharesModel = new SharesAccountModel();
         $loanModel = new LoanApplicationModel();
+        $repaymentModel = new LoanRepaymentModel();
         $transactionsModel = new TransactionsModel();
         $staffModel = new StaffModel();
 
@@ -57,7 +58,7 @@ class Dashboard extends BaseController
         $depositData = [];
         $sharesData = [];
         $repaymentData = [];
-        
+
 
         $memberNo = $userInfo['role'] === 'member' ? $userInfo['member_no'] : null;
 
@@ -71,6 +72,43 @@ class Dashboard extends BaseController
             $sharesData[] = $transactionsModel->getMonthlyTotal('share_deposits', $yearMonth, $memberNo);
             $repaymentData[] = $transactionsModel->getMonthlyTotal('loan', $yearMonth, $memberNo);
             $staffNumber = $staffModel->getActiveStaffMembers();
+        }
+
+
+        // data for loans vs repayments chart
+        $loanData = $loanModel
+            ->select("DATE_FORMAT(request_date, '%Y-%m') as month, SUM(disburse_amount) as total_loans")
+            ->groupBy('month')
+            ->orderBy('month')
+            ->findAll();
+
+        $loanRepaymentData = $repaymentModel
+            ->select("DATE_FORMAT(updated_at, '%Y-%m') as month, SUM(amount_paid) as total_repayments")
+            ->groupBy('month')
+            ->orderBy('month')
+            ->findAll();
+
+        $loansPerMonth = [];
+        $repaymentsPerMonth = [];
+
+        // Convert results into key-value arrays for easy lookup
+        $loanMap = [];
+        foreach ($loanData as $row) {
+            $loanMap[$row['month']] = $row['total_loans'];
+        }
+        $repaymentMap = [];
+        foreach ($loanRepaymentData as $row) {
+            $repaymentMap[$row['month']] = $row['total_repayments'];
+        }
+
+        // Merge months
+        $allMonths = array_unique(array_merge(array_keys($loanMap), array_keys($repaymentMap)));
+        sort($allMonths);
+
+        foreach ($allMonths as $month) {
+            $months[] = $month;
+            $loansPerMonth[] = $loanMap[$month] ?? 0;
+            $repaymentsPerMonth[] = $repaymentMap[$month] ?? 0;
         }
 
 
@@ -88,6 +126,8 @@ class Dashboard extends BaseController
             'sharesData' => $sharesData,
             'repaymentData' => $repaymentData,
             'staffNumber' => $staffNumber ?? 0,
+            'loansPerMonth' => $loansPerMonth,
+            'repaymentsPerMonth' => $repaymentsPerMonth,
         ];
         return view('dashboard/index', $data);
     }

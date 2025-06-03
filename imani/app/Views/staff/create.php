@@ -77,8 +77,9 @@
                             <input type="date" name="hire_date" class="form-control">
                         </div>
                         <div class="form-group mb-3">
+                            <!-- jpg only -->
                             <label for="photo">Profile Photo</label>
-                            <input type="file" name="photo" class="form-control" required>
+                            <input type="file" name="photo" class="form-control" accept=".jpg" required>
                         </div>
 
                         <div class="mb-3 col-3">

@@ -94,7 +94,7 @@
                                 <?php if ($userInfo['role'] === 'member') { ?>
                                     <h5 class="card-title">Loan Balance <span></span></h5>
                                 <?php } else { ?>
-                                    <h5 class="card-title">Total Loans Given <span>| To Date</span></h5>
+                                    <h5 class="card-title">Loans Given <span>| To Date</span></h5>
                                 <?php } ?>
 
 
@@ -161,13 +161,13 @@
 
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-currency-dollar"></i>
+                                        <i class="bi bi-person-badge"></i>
                                     </div>
                                     <a href="<?= site_url('staff') ?>" target="_blank">
                                         <div class="ps-3">
-                                            
+
                                             <h6>
-                                                <?= isset($staff) && is_numeric($staff) ? esc($staff) : '-' ?>
+                                                <?= isset($staffNumber) && is_numeric($staffNumber) ? esc($staffNumber) : '-' ?>
                                             </h6>
 
                                         </div>
@@ -185,7 +185,7 @@
                         <div class="card info-card sales-card">
 
                             <div class="card-body">
-                                <h5 class="card-title">Total Active Members <span>| To Date</span></h5>
+                                <h5 class="card-title">Members <span>| To Date</span></h5>
 
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -220,21 +220,21 @@
                                             datasets: [{
                                                     label: 'Deposits',
                                                     data: <?= json_encode($depositData) ?>,
-                                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                                    borderColor: '#2eca6a',
                                                     tension: 0.4,
                                                     fill: false
                                                 },
                                                 {
-                                                    label: 'Loans',
+                                                    label: 'Shares',
                                                     data: <?= json_encode($sharesData) ?>,
-                                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                                    borderColor: '#4154f1',
                                                     tension: 0.4,
                                                     fill: false
                                                 },
                                                 {
                                                     label: 'Repayments',
                                                     data: <?= json_encode($repaymentData) ?>,
-                                                    borderColor: 'rgba(153, 102, 255, 1)',
+                                                    borderColor: '#ff771d',
                                                     tension: 0.4,
                                                     fill: false
                                                 }
@@ -267,38 +267,53 @@
 
                     <!-- Recent Sales -->
                     <div class="col-12">
-                        <div class="card recent-sales overflow-auto">
-
+                        <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Recent Transactions</h5>
-                                <?php if (!empty($payments) && is_array($payments)) : ?>
-                                    <table class="table table-borderless datatable">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">TransID</th>
-                                                <th scope="col">BillRefNumber</th>
-                                                <th scope="col">Amount</th>
-                                                <th scope="col">Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($payments as $payment_item) : ?>
-                                                <tr>
-                                                    <td><?= esc($payment_item['mp_name']) ?></td>
-                                                    <td><?= esc($payment_item['TransID']) ?></td>
-                                                    <td><?= esc($payment_item['BillRefNumber']) ?></td>
-                                                    <td><?= esc(number_format($payment_item['TransAmount'], 2)) ?></td>
-                                                    <td><?= esc($payment_item['mp_date']) ?></td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                <?php else : ?>
-                                    <h3>No Payments</h3>
-                                    <p>Unable to find any payments for you.</p>
-                                <?php endif; ?>
-
+                                <h5 class="card-title">Loans vs Repayments (Monthly)</h5>
+                                <canvas id="loanRepaymentChart" style="max-height: 400px;"></canvas>
+                                <script>
+                                    const repayChart = document.getElementById('loanRepaymentChart').getContext('2d');
+                                    new Chart(repayChart, {
+                                        type: 'bar',
+                                        data: {
+                                            labels: <?= json_encode($months) ?>,
+                                            datasets: [{
+                                                    label: 'Loans Disbursed',
+                                                    data: <?= json_encode($loansPerMonth) ?>,
+                                                    backgroundColor: '#36A2EB'
+                                                },
+                                                {
+                                                    label: 'Repayments',
+                                                    data: <?= json_encode($repaymentsPerMonth) ?>,
+                                                    backgroundColor: '#4BC0C0'
+                                                }
+                                            ]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true,
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Amount (KES)'
+                                                    }
+                                                },
+                                                x: {
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Month'
+                                                    }
+                                                }
+                                            },
+                                            plugins: {
+                                                legend: {
+                                                    position: 'bottom'
+                                                }
+                                            }
+                                        }
+                                    });
+                                </script>
                             </div>
 
                         </div>
@@ -390,30 +405,30 @@
                     <div class="card-body">
                         <h5 class="card-title">Shares vs Member Savings <span>| Today</span></h5>
                         <canvas id="pieChart"></canvas>
-<script>
-    const pieChart = document.getElementById('pieChart').getContext('2d');
-    new Chart(pieChart, {
-        type: 'pie',
-        data: {
-            labels: ['Total Savings', 'Total Shares'],
-            datasets: [{
-                label: 'Shares vs Savings',
-                data: [<?= $savings ?>, <?= $shares ?>],
-                backgroundColor: ['#36A2EB', '#FF6384'],
-                borderColor: ['#ffffff', '#ffffff'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
-</script>
+                        <script>
+                            const pieChart = document.getElementById('pieChart').getContext('2d');
+                            new Chart(pieChart, {
+                                type: 'pie',
+                                data: {
+                                    labels: ['Total Savings', 'Total Shares'],
+                                    datasets: [{
+                                        label: 'Shares vs Savings',
+                                        data: [<?= $savings ?>, <?= $shares ?>],
+                                        backgroundColor: ['#4154f1', '#2eca6a'],
+                                        borderColor: ['#ffffff', '#ffffff'],
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            position: 'bottom'
+                                        }
+                                    }
+                                }
+                            });
+                        </script>
                     </div>
                 </div>
             </div><!-- End Right side columns -->

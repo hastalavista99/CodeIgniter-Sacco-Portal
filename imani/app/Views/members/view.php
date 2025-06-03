@@ -18,7 +18,7 @@
                                 <h5 class="card-title">Total Savings</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3">
-                                        <h6><?= number_format($savings ?? 0, 2) ?><small>/-</small></h6>
+                                        <h6><?= number_format($savings ?? 0, 2) ?><small></small></h6>
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                                 <h5 class="card-title">Total Shares</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3 d-inline-block">
-                                        <h6><?= number_format($shares ?? 0, 2) ?><small>/-</small></h6>
+                                        <h6><?= number_format($shares ?? 0, 2) ?><small></small></h6>
                                     </div>
                                 </div>
                             </div>
@@ -44,7 +44,7 @@
                                 <h5 class="card-title">Outstanding Loan</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="ps-3">
-                                        <h6><?= number_format($loans['balance'] ?? 0, 2) ?><small>/-</small></h6>
+                                        <h6><?= number_format($loans['balance'] ?? 0, 2) ?><small></small></h6>
                                     </div>
                                 </div>
                             </div>

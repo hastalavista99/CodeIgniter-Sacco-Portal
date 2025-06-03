@@ -176,6 +176,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->post('update/(:num)', 'StaffController::update/$1');
         $routes->get('delete/(:num)', 'StaffController::delete/$1');
         $routes->get('view/(:num)', 'StaffController::view/$1');
+
     });
     
 });
