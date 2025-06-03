@@ -27,13 +27,16 @@
         <div class="card shadow border-none my-2 px-2">
 
             <div class="card-body px-0 pb-2">
-                <div class="row mt-4">
+                <div class="row p-2">
                     <div class="col-md-3">
-                        <?php if ($staff['photo']): ?>
-                            <img src="<?= base_url('uploads/staff/' . $staff['photo']) ?>" alt="Photo" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px;">
-                        <?php else: ?>
-                            <img src="<?= base_url('assets/img/default-user.png') ?>" class="img-thumbnail" alt="No Photo">
-                        <?php endif; ?>
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <?php if ($staff['photo']): ?>
+                                <img src="<?= base_url('uploads/staff/' . $staff['photo']) ?>" alt="Photo" class=" img-thumbnail" style="width: 200px; height: 200px; object-fit: cover; border-radius: 20px;">
+                            <?php else: ?>
+                                <img src="<?= base_url('assets/img/default-user.png') ?>" class="img-thumbnail" alt="No Photo">
+                            <?php endif; ?>
+                        </div>
+
                     </div>
 
                     <div class="col-md-9">
@@ -76,7 +79,12 @@
                             </tr>
                         </table>
 
-                        <a href="<?= site_url('staff') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left me-2"></i> Back to List</a>
+                        <div class="d-flex justify-content-around align-items-center">
+                            <a href="<?= site_url('staff') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left me-2"></i> Back to List</a>
+                            <a href="<?= site_url('staff/badge/' . $staff['id']) ?>" class="btn btn-warning" target="_blank"><i class="bi bi-person-badge me-2"></i>Print Badge</a>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
