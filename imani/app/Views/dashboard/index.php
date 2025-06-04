@@ -181,7 +181,7 @@
 
 
                     <!-- Sales Card -->
-                    <div class="col-xxl-4 col-md-6">
+                    <div class="col-xxl-4 col-xl-12">
                         <div class="card info-card sales-card">
 
                             <div class="card-body">

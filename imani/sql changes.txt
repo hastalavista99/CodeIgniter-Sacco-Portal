@@ -313,6 +313,19 @@ CREATE TABLE staff (
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
+04/06/2025
+ALTER TABLE loan_repayments
+ADD COLUMN principal_due DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+ADD COLUMN interest_due DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+ADD COLUMN principal_paid DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+ADD COLUMN interest_paid DECIMAL(10,2) NOT NULL DEFAULT 0.00
+AFTER due_date;
+
+ALTER TABLE loan_repayments MODIFY COLUMN amount_due DECIMAL(10,2) AS (principal_due + interest_due) STORED;
+
+ALTER TABLE loan_repayments MODIFY COLUMN amount_paid DECIMAL(10,2) AS (principal_paid + interest_paid) STORED;
+
+
 
 
 

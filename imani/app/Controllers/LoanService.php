@@ -23,6 +23,12 @@ use DateTime;
 
 class LoanService extends BaseController
 {
+    /**
+     * Generate loan installments based on the loan details
+     *
+     * @param int $loanId
+     * @return bool|array Returns false if loan is not found or not approved, otherwise returns an array of installments
+     */
     public function generateInstallments($loanId)
     {
         $loanModel = new LoanApplicationModel();
@@ -42,7 +48,7 @@ class LoanService extends BaseController
         $n = (int) $loan['repayment_period'];
         $startDate = new DateTime($loan['request_date']);
 
-        // Monthly repayment using reducing balance EMI formula
+        // Monthly EMI formula (reducing balance)
         $EMI = ($P * $monthlyRate * pow(1 + $monthlyRate, $n)) / (pow(1 + $monthlyRate, $n) - 1);
         $EMI = round($EMI, 2);
 
@@ -56,7 +62,7 @@ class LoanService extends BaseController
             $principalComponent = round($EMI - $interest, 2);
             $balance = round($balance - $principalComponent, 2);
 
-            // Ensure final installment clears residual due to rounding
+            // Adjust the last installment
             if ($i === $n && $balance !== 0.00) {
                 $principalComponent += $balance;
                 $EMI = $principalComponent + $interest;
@@ -68,9 +74,13 @@ class LoanService extends BaseController
                 'installment_number' => $i,
                 'due_date'           => $dueDate->format('Y-m-d'),
                 'amount_due'         => $EMI,
+                'principal_due'      => $principalComponent,
+                'interest_due'       => $interest,
+                'principal_paid'     => 0.00,
+                'interest_paid'      => 0.00,
                 'amount_paid'        => 0.00,
                 'status'             => 'pending',
-                'payment_method'     => null, // default null
+                'payment_method'     => null,
                 'created_at'         => date('Y-m-d H:i:s'),
                 'updated_at'         => date('Y-m-d H:i:s'),
             ];
@@ -80,46 +90,100 @@ class LoanService extends BaseController
     }
 
 
+    /**
+     * Apply advance payment to loan installments
+     *
+     * @param int $loanId
+     * @param float $amount
+     */
     public function applyAdvancePayment($loanId, $amount)
     {
         $repaymentModel = new \App\Models\LoanRepaymentModel();
-        $remaining = floatval($amount);
+        $loanModel = new \App\Models\LoanApplicationModel();
 
-        // Get all installments (pending or partially paid)
+        $remaining = floatval($amount);
+        $loan = $loanModel->find($loanId);
+
+        if (!$loan) {
+            log_message('error', "Loan ID $loanId not found");
+            return;
+        }
+
+        $monthlyRate = (float) $loan['interest_rate'] / 100 / 12;
+        $loanAmount = floatval($loan['principal']);
+
         $installments = $repaymentModel
             ->where('loan_id', $loanId)
-            ->whereIn('status', ['pending', 'overdue'])
             ->orderBy('due_date', 'ASC')
             ->findAll();
 
+        if (!$installments) {
+            log_message('error', "No installments found for Loan ID $loanId");
+            return;
+        }
+
+        // Step 1: Track remaining principal
+        $remainingPrincipal = $loanAmount;
+        foreach ($installments as $i => $installment) {
+            $remainingPrincipal -= floatval($installment['principal_paid']);
+            $installments[$i]['_remaining_principal'] = $remainingPrincipal;
+        }
+
+        // Step 2: Apply advance
         foreach ($installments as $installment) {
+            $id = $installment['id'];
+            $status = $installment['status'];
+
+            if (!in_array($status, ['pending', 'overdue'])) {
+                log_message('debug', "Skipping installment ID $id with status '$status'");
+                continue;
+            }
+
             if ($remaining <= 0) {
+                log_message('debug', "Advance exhausted.");
                 break;
             }
 
-            $due = $installment['amount_due'] - $installment['amount_paid'];
-            $payNow = min($due, $remaining);
+            $alreadyPaid = floatval($installment['amount_paid']);
+            $due = floatval($installment['amount_due']) - $alreadyPaid;
+            if ($due <= 0) {
+                log_message('debug', "Installment ID $id already fully paid");
+                continue;
+            }
 
-            $newAmountPaid = $installment['amount_paid'] + $payNow;
+            $interestDue = floatval($installment['interest_due']);
+            $interestPaid = floatval($installment['interest_paid']);
+            $principalPaid = floatval($installment['principal_paid']);
 
-            // Calculate new status
-            $newStatus = ($newAmountPaid >= $installment['amount_due']) ? 'paid' : 'pending';
+            $interestRemaining = $interestDue - $interestPaid;
+            $payNow = min($remaining, $due);
 
-            // Update this installment
-            $repaymentModel->update($installment['id'], [
-                'amount_paid' => $newAmountPaid,
-                'payment_date' => date('Y-m-d'),
-                'payment_method' => 'advance_payment', // optional
-                'status' => $newStatus,
-            ]);
+            $interestPayment = min($payNow, $interestRemaining);
+            $principalPayment = $payNow - $interestPayment;
+
+            log_message('debug', "Installment #$id | PayNow: $payNow | InterestDue: $interestDue | AlreadyPaid: $alreadyPaid | InterestRemaining: $interestRemaining | PrincipalPayment: $principalPayment");
+
+            $updateData = [
+                'amount_paid'    => $alreadyPaid + $payNow,
+                'interest_paid'  => $interestPaid + $interestPayment,
+                'principal_paid' => $principalPaid + $principalPayment,
+                'payment_date'   => date('Y-m-d'),
+                'payment_method' => 'advance_payment',
+                'status'         => ($alreadyPaid + $payNow >= floatval($installment['amount_due'])) ? 'paid' : 'pending',
+            ];
+
+            $success = $repaymentModel->update($id, $updateData);
+
+            if (!$success) {
+                log_message('error', "Failed to update installment ID $id");
+            } else {
+                log_message('debug', "Updated installment ID $id: " . json_encode($updateData));
+            }
 
             $remaining -= $payNow;
         }
 
-        if ($remaining > 0) {
-            // If still remaining (member has overpaid beyond all current installments)
-            // Create a new future installment or handle manually (optional)
-        }
+        log_message('debug', "Advance payment complete. Remaining unallocated: $remaining");
     }
 
 
@@ -132,16 +196,16 @@ class LoanService extends BaseController
         $description = $data['description'] ?? '';
         $user = session()->get('loggedInUser');
 
-        // Apply repayment + advance
+        // Apply repayment logic
         $this->applyAdvancePayment($loanId, $amountPaid);
 
-        // Then create journal entry
+        // Post journal entry
         $journalService = new JournalService();
         $journalService->createLoanRepaymentEntry([
-            'loan_id' => $loanId,
-            'amount_paid' => $amountPaid,
-            'payment_date' => $paymentDate,
-            'description' => $description,
+            'loan_id'        => $loanId,
+            'amount_paid'    => $amountPaid,
+            'payment_date'   => $paymentDate,
+            'description'    => $description,
             'payment_method' => $paymentMethod,
         ], $user);
     }

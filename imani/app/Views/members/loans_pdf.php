@@ -24,7 +24,7 @@
         .transactions th,
         .transactions td {
             border: 1px solid #ccc;
-            padding: 5px;
+            padding: 4px;
         }
 
         .table-header {
@@ -79,7 +79,6 @@
                 <table class="transactions">
                     <thead>
                         <tr class="table-header">
-                            <th>#</th>
                             <th>Installment</th>
                             <th>Due Date</th>
                             <th>Amount Due</th>
@@ -96,9 +95,8 @@
                         <?php else: 
                             foreach ($stmt['repayments'] as $i => $r): ?>
                             <tr>
-                                <td><?= $i + 1 ?></td>
                                 <td><?= esc($r['installment_number']) ?></td>
-                                <td><?= esc($r['due_date']) ?></td>
+                                <td><small><?= esc($r['due_date']) ?></small></td>
                                 <td><?= number_format($r['amount_due'], 2) ?></td>
                                 <td><?= number_format($r['amount_paid'], 2) ?></td>
                                 <td><?= esc($r['payment_date']) ?></td>

@@ -103,50 +103,76 @@ class JournalService extends BaseController
 
     public function createLoanRepaymentEntry($repaymentData, $user)
     {
-        $journalEntryModel = new JournalEntryModel();
-        $journalDetailModel = new JournalDetailsModel();
 
-        log_message('debug', print_r($repaymentData, true));
+        $journalEntryModel   = new JournalEntryModel();
+        $journalDetailModel  = new JournalDetailsModel();
+        $repaymentModel      = new \App\Models\LoanRepaymentModel();
+        $accountModel        = new AccountsModel();
+        $loanTypeModel       = new LoanTypeModel();
+        $loanApplicationModel = new LoanApplicationModel();
 
+        $loanId = $repaymentData['loan_id'];
+        $paymentDate = $repaymentData['payment_date'] ?? date('Y-m-d');
+
+        log_message('debug', 'Loan repayments data on ' . $paymentDate . ' for Loan ID ' . $loanId . ' data: ' . json_encode($repaymentData));
+
+        // Create the journal entry
         $entryData = [
-            'date'        => $repaymentData['payment_date'] ?? date('Y-m-d'),
-            'description' => 'Loan repayment for Loan ID ' . $repaymentData['loan_id'],
-            'reference'   => 'Repayment #' . $repaymentData['loan_id'],
+            'date'        => $paymentDate,
+            'description' => 'Loan repayment for Loan ID ' . $loanId,
+            'reference'   => 'Repayment #' . $loanId,
             'created_by'  => $user,
         ];
 
         $entryId = $journalEntryModel->insert($entryData);
 
-        $cashAccountId = 3; // Cash or Bank account
-        $accountModel = new AccountsModel();
-        $loanTypeModel = new LoanTypeModel();
-        $loanApplicationModel = new LoanApplicationModel();
+        // Define accounts
+        $cashAccountId = 3; // Bank
+        $interestIncomeAccountId = 82; // actual ID for Interest Income
 
-        $loan = $loanApplicationModel->find($repaymentData['loan_id']);
-
+        // Find the loan and its receivable account
+        $loan = $loanApplicationModel->find($loanId);
         $loanTypeDetails = $loanTypeModel->find($loan['loan_type_id']);
         $loanType = $loanTypeDetails['loan_name'];
-        $account = $accountModel->where('account_name', $loanType)->first();
 
-        $loanReceivableAccountId = $account['id']; // Member Loan Receivable
+        $loanReceivableAccount = $accountModel->where('account_name', $loanType)->first();
+        $loanReceivableAccountId = $loanReceivableAccount['id'];
 
-        $amount = $repaymentData['amount_paid'];
 
-        $journalDetailModel->insertBatch([
+        $totalPrincipalPaid = 0;
+        $totalInterestPaid = 0;
+
+        $totalPrincipalPaid = floatval($repaymentData['principal_paid'] ?? 0);
+        $totalInterestPaid = floatval($repaymentData['interest_paid'] ?? 0);
+        $totalPaid = $totalPrincipalPaid + $totalInterestPaid;
+
+        if ($totalPaid === 0) {
+            log_message('error', 'No loan repayments found on ' . $paymentDate . ' for Loan ID ' . $loanId . ' data: ' . json_encode($repaymentData));
+            return;
+        }
+
+        // Create journal details
+        $entries = [
             [
                 'journal_entry_id' => $entryId,
                 'account_id'       => $cashAccountId,
-                'debit'            => $amount,
+                'debit'            => $totalPaid,
                 'credit'           => 0,
             ],
             [
                 'journal_entry_id' => $entryId,
                 'account_id'       => $loanReceivableAccountId,
                 'debit'            => 0,
-                'credit'           => $amount,
+                'credit'           => $totalPrincipalPaid,
             ],
-        ]);
-    }
+            [
+                'journal_entry_id' => $entryId,
+                'account_id'       => $interestIncomeAccountId,
+                'debit'            => 0,
+                'credit'           => $totalInterestPaid,
+            ],
+        ];
 
-    
+        $journalDetailModel->insertBatch($entries);
+    }
 }

@@ -38,7 +38,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xxl-4 col-md-6">
+                    <div class="col-xxl-4 col-xl-12">
                         <div class="card info-card customers-card">
                             <div class="card-body">
                                 <h5 class="card-title">Outstanding Loan</h5>
