@@ -166,6 +166,12 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('reports/income-statement/pdf', 'Accounting\ReportsController::incomeStatementPdf');
         $routes->get('reports/cashbook', 'Accounting\ReportsController::cashBook');
         $routes->get('reports/cashbook/pdf', 'Accounting\ReportsController::cashbookPdf');
+        $routes->get('reports/general-ledger', 'Accounting\ReportsController::generalLedger');
+        $routes->post('reports/general-ledger', 'Accounting\ReportsController::generalLedger');
+        $routes->get('reports/general-ledger/pdf', 'Accounting\ReportsController::generalLedgerPdf');
+        $routes->get('reports/general-ledger/excel', 'Accounting\ReportsController::generalLedgerExcel');
+
+
     });
 
     $routes->group('staff', function ($routes) {

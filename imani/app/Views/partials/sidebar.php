@@ -242,6 +242,13 @@
                 <span>Cashbook</span>
               </a>
             </li>
+
+            <li class="nav-item">
+              <a href="<?= site_url('accounting/reports/general-ledger') ?>" class="nav-link collapsed">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>General Ledger</span>
+              </a>
+            </li>
           </ul>
         </div>
       </li>

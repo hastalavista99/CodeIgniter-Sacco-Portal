@@ -9,6 +9,8 @@ use App\Models\Accounting\JournalEntryModel;
 use App\Models\UserModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use DateTime;
 
 class ReportsController extends BaseController
@@ -507,25 +509,141 @@ class ReportsController extends BaseController
         $dompdf->render();
         $dompdf->stream('amortization_schedule_loan_' . $loanId . '.pdf', ['Attachment' => false]);
     }
+
+    public function generalLedger()
+    {
+        helper('form');
+        $userModle = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModle->find($loggedInUserId);
+
+        $accountModel = new AccountsModel();
+        $journalModel = new JournalDetailsModel();
+
+        $start = $this->request->getPost('start_date') ?? date('Y-m-01');
+        $end = $this->request->getPost('end_date') ?? date('Y-m-d');
+        $accountId = $this->request->getPost('account_id');
+
+        $query = $journalModel
+            ->select('journal_entries.date, journal_entries.description, journal_entries.reference, journal_entry_details.debit, journal_entry_details.credit')
+            ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
+            ->where('journal_entries.date >=', $start)
+            ->where('journal_entries.date <=', $end);
+
+        if (!empty($accountId)) {
+            $query->where('journal_entry_details.account_id', $accountId);
+        }
+
+        $data = [
+            'accounts' => $accountModel->findAll(),
+            'entries'  => $query->orderBy('journal_entries.date', 'ASC')->findAll(),
+            'userInfo' => $userInfo,
+            'title' => 'General Ledger',
+            'startDate' => $start,
+            'endDate' => $end,
+            'accountId' => $accountId
+        ];
+
+        return view('accounting/general_ledger', $data);
+    }
+    
+
+    public function generalLedgerPdf()
+    {
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
+        $accountId = $this->request->getGet('account_id');
+
+        $journalModel = new JournalDetailsModel();
+
+         $query = $journalModel
+        ->select('journal_entries.date, journal_entries.description, journal_entries.reference, journal_entry_details.debit, journal_entry_details.credit, accounts.account_name')
+        ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
+        ->join('accounts', 'accounts.id = journal_entry_details.account_id')
+        ->where('journal_entries.date >=', $startDate)
+        ->where('journal_entries.date <=', $endDate);
+
+    if (!empty($accountId)) {
+        $query->where('journal_entry_details.account_id', $accountId);
+    }
+
+    $entries = $query->orderBy('journal_entries.date', 'ASC')->findAll();
+
+        if (empty($entries)) {
+            return $this->response->setStatusCode(404)->setBody('No entries found for the specified date range.');
+        }
+
+        $orgModel = new \App\Models\OrganizationModel();
+
+        $organization = $orgModel->first();
+        if (!$organization) {
+            return $this->response->setStatusCode(500)->setBody('Organization profile is missing.');
+        }
+
+        $data = [
+            'entries' => $entries,
+            'organization' => $organization,
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ];
+
+        $html = view('accounting/gl_pdf', $data);
+
+        $options = new Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("general_ledger.pdf", ["Attachment" => true]);
+    }
+
+    public function generalLedgerExcel()
+    {
+        $journalModel = new JournalDetailsModel();
+
+    $start = $this->request->getGet('start_date') ?? date('Y-m-01');
+    $end = $this->request->getGet('end_date') ?? date('Y-m-d');
+    $accountId = $this->request->getGet('account_id');
+
+    $query = $journalModel
+        ->select('journal_entries.date, journal_entries.description, journal_entries.reference, journal_entry_details.debit, journal_entry_details.credit, accounts.account_name')
+        ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
+        ->join('accounts', 'accounts.id = journal_entry_details.account_id')
+        ->where('journal_entries.date >=', $start)
+        ->where('journal_entries.date <=', $end);
+
+    if (!empty($accountId)) {
+        $query->where('journal_entry_details.account_id', $accountId);
+    }
+
+    $entries = $query->orderBy('journal_entries.date', 'ASC')->findAll();
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'Date');
+    $sheet->setCellValue('B1', 'Account');
+    $sheet->setCellValue('C1', 'Reference');
+    $sheet->setCellValue('D1', 'Description');
+    $sheet->setCellValue('E1', 'Debit');
+    $sheet->setCellValue('F1', 'Credit');
+
+    $row = 2;
+    foreach ($entries as $entry) {
+        $sheet->setCellValue("A{$row}", $entry['date']);
+        $sheet->setCellValue("B{$row}", $entry['account_name']);
+        $sheet->setCellValue("C{$row}", $entry['reference']);
+        $sheet->setCellValue("D{$row}", $entry['description']);
+        $sheet->setCellValue("E{$row}", $entry['debit']);
+        $sheet->setCellValue("F{$row}", $entry['credit']);
+        $row++;
+    }
+
+    $writer = new Xlsx($spreadsheet);
+    $filename = 'General_Ledger.xlsx';
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header("Content-Disposition: attachment; filename=\"$filename\"");
+    $writer->save("php://output");
+    exit;
+    }
 }
-//  $repayments = $repaymentModel->where('loan_id', $loanId)->orderBy('installment_number')->findAll();
-//         $member = $memberModel->find($loan['member_id']);
-
-//         if (!$loan || !$repayments) {
-//             return redirect()->back()->with('error', 'Loan or repayment schedule not found.');
-//         }
-
-//         $data = [
-//             'loan' => $loan,
-//             'repayments' => $repayments,
-//             'member' => $member,
-//             'title' => 'Amortization Schedule',
-//             'organization' => $organization
-//         ];
-
-//         $dompdf = new \Dompdf\Dompdf();
-//         $html = view('loans/amortization_schedule_pdf', $data);
-//         $dompdf->loadHtml($html);
-//         $dompdf->setPaper('A4', 'portrait');
-//         $dompdf->render();
-//         $dompdf->stream("amortization_schedule_loan_{$loanId}.pdf", ['Attachment' => false]);

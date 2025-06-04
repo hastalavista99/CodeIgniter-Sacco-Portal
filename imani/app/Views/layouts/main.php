@@ -252,30 +252,7 @@
     .err {
       color: #F44336;
     }
-/* 
-    .success-icon:before {
-      content: '';
-      position: absolute;
-      width: 5px;
-      height: 30px;
-      background-color: #4CAF50;
-      left: 28px;
-      top: 12px;
-      border-radius: 2px;
-      transform: rotate(45deg);
-    }
 
-    .success-icon:after {
-      content: '';
-      position: absolute;
-      width: 5px;
-      height: 55px;
-      background-color: #4CAF50;
-      left: 46px;
-      top: 3px;
-      border-radius: 2px;
-      transform: rotate(-45deg);
-    } */
 
     .error-icon {
       width: 80px;
@@ -288,29 +265,7 @@
       box-sizing: content-box;
     }
 
-    /* .error-icon:before {
-      content: '';
-      position: absolute;
-      width: 5px;
-      height: 60px;
-      background-color: #F44336;
-      left: 37px;
-      top: 10px;
-      border-radius: 2px;
-      transform: rotate(45deg);
-    }
 
-    .error-icon:after {
-      content: '';
-      position: absolute;
-      width: 5px;
-      height: 60px;
-      background-color: #F44336;
-      left: 37px;
-      top: 10px;
-      border-radius: 2px;
-      transform: rotate(-45deg);
-    } */
 
     .spinner-icon {
       width: 80px;
@@ -564,6 +519,19 @@
       ],
       pagingType: 'simple',
       pageLength: 60
+    });
+
+    new DataTable('#journalsTable', {
+      layout: {
+        topStart: {
+          buttons: ['colvis']
+        }
+      },
+      order: [
+        [0, 'desc']
+      ],
+      pagingType: 'simple',
+      pageLength: 40
     });
   </script>
 

@@ -44,7 +44,7 @@
 
                 <?php if (!empty($entries) && is_array($entries)) : ?>
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered" id="journalsTable">
                             <thead>
                                 <tr>
                                     <th>ID</th>
