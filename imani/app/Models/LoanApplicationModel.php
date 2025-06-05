@@ -167,6 +167,46 @@ class LoanApplicationModel extends Model
         return $loanSummaries;
     }
 
+    public function getMemberLoanBalance($memberId, $loanId)
+    {
+        $db = \Config\Database::connect();
+
+        // Fetch the specific loan for the member
+        $loan = $db->table('loan_applications')
+            ->select('id, disburse_amount')
+            ->where('id', $loanId)
+            ->where('member_id', $memberId)
+            ->where('loan_status', 'approved')
+            ->get()
+            ->getRow();
+
+        if (!$loan) {
+            return null; // or return []; depending on how you want to handle "not found"
+        }
+
+        $disbursed = $loan->disburse_amount;
+
+        // Get repayment summary for this loan
+        $repayment = $this->select('loan_applications.*, SUM(loan_repayments.amount_paid) AS amount_paid')
+            ->join('loan_repayments', 'loan_repayments.loan_id = loan_applications.id', 'left')
+            ->where('loan_applications.id', $loanId)
+            ->get()
+            ->getRow();
+
+        $totalDue  = $repayment->total_loan ?? 0;
+        $totalPaid = $repayment->amount_paid ?? 0;
+        $balance   = $totalDue - $totalPaid;
+
+        return [
+            'loan_id'    => $loanId,
+            'disbursed'  => $disbursed,
+            'total_due'  => $totalDue,
+            'total_paid' => $totalPaid,
+            'balance'    => $balance,
+        ];
+    }
+
+
     // get total for all loans in the system
     public function getTotalLoans()
     {

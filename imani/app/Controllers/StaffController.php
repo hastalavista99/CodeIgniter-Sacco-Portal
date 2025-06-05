@@ -77,6 +77,12 @@ class StaffController extends BaseController
                 'password' => Hash::encrypt($this->request->getPost('password')),
                 'role' => 'staff',
             ]);
+
+            $sms = new SendSMS();
+            $mobile= $this->request->getPost('phone');
+            $msg = "Welcome " . $this->request->getPost('first_name') . ", your account has been created successfully. Your login details are: Username: " . $this->request->getPost('email') . ", Password: " . $this->request->getPost('password');
+
+            $sms->sendSMS($mobile, $msg);
         }
 
         $staffModel->insert([
@@ -206,7 +212,7 @@ class StaffController extends BaseController
         return redirect()->to('/staff')->with('success', 'Staff member updated successfully.');
     }
 
-     public function badge($id)
+    public function badge($id)
     {
         $orgModel = new OrganizationModel();
         $organization = $orgModel->first();

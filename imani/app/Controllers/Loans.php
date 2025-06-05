@@ -200,6 +200,11 @@ class Loans extends BaseController
         $loanModel->insert($loanData);
         $loanAppId = $loanModel->getInsertID();
 
+        $sms = new SendSMS();
+        $memberModel = new MembersModel();
+        $member = $memberModel->find($loanData['member_id']);
+        $sms->sendSMS($member['phone_number'], "Your loan application has been received. We will notify you once it is processed.");
+
         // Save guarantors
         if (!empty($data['guarantors'])) {
             foreach ($data['guarantors'] as $guarantor) {
@@ -210,6 +215,9 @@ class Loans extends BaseController
                     'mobile' => $guarantor['mobile'],
                     'amount' => $guarantor['amount'],
                 ]);
+
+                // Send SMS to guarantor
+                $sms->sendSMS($guarantor['mobile'], "You have been added as a guarantor for loan application #$loanAppId by {$member['first_name']} {$member['last_name']} for Ksh {$guarantor['amount']}. Please contact us for more details.");
             }
         }
 
@@ -301,24 +309,32 @@ class Loans extends BaseController
         $journalService = new JournalService();
         $journalService->createLoanDisbursementEntry($loanData, $user);
 
+        $sms = new SendSMS();
+        $memberModel = new MembersModel();
+        $member = $memberModel->find($loanData['member_id']);
+        $sms->sendSMS($member['phone_number'], "Your loan application has been approved. Contact us for more details on disbursement.");
+
         return redirect()->back()->with('success', 'Loan approved and installments generated.');
     }
 
-    public function checkLoan($memberNumber)
+    public function checkLoan($memberId)
     {
         $loanModel = new \App\Models\LoanApplicationModel();
+        
 
         // Get latest *approved* loan for that member
         $loan = $loanModel
-            ->where('member_id', $memberNumber)
+            ->where('member_id', $memberId)
             ->where('loan_status', 'approved')
             ->orderBy('id', 'DESC')
             ->first();
 
+        $loanSummary = $loanModel->getMemberLoanBalance($memberId, $loan['id']);
         if ($loan) {
             return $this->response->setJSON([
                 'loan_id'     => $loan['id'],
                 'loan_amount' => $loan['principal'],
+                'balance'    => $loanSummary['balance'],
             ]);
         } else {
             return $this->response->setJSON([

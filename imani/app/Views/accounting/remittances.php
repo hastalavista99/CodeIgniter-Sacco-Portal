@@ -318,6 +318,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        const amountInput = document.getElementById("amount");
         let today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
         document.getElementById("date").value = today; // Set default value
 
@@ -359,7 +360,7 @@
         // Show/hide loan type selection based on transaction type
         let transactionType = document.getElementById('service-transaction');
         let descriptionInput = document.getElementById("description");
-
+        let balance;
         if (transactionType) {
             transactionType.addEventListener('change', function() {
                 let memberID = document.getElementById('member-id').value;
@@ -378,6 +379,7 @@
                     descriptionInput.value = "Share Deposits";
                 }
 
+
                 if (this.value === 'loans') {
                     fetch(`<?= site_url('/loans/check-loan/') ?>${encodeURIComponent(memberID)}`)
                         .then(response => {
@@ -388,8 +390,9 @@
                         })
                         .then(data => {
                             if (data.loan_id) {
+                                balance = data.balance;
                                 document.getElementById('loan-id').value = data.loan_id;
-                                document.getElementById('details').innerText = `Loan ID: ${data.loan_id}, Loan Amount: ${data.loan_amount}`
+                                document.getElementById('details').innerText = `Loan ID: ${data.loan_id}, Loan Amount: ${data.loan_amount}, Balance: ${data.balance}`;
                             } else {
                                 alert('Member has no loans!');
                             }
@@ -400,6 +403,18 @@
                 }
             });
         }
+
+        // event listener for amount to check if it is more than balance and alert ="cannot overpay loan, balance is X"
+        amountInput.addEventListener('input', function() {
+            if (transactionType.value === 'loans' && balance !== undefined) {
+                let amount = parseFloat(this.value);
+                if (amount > balance) {
+                    alert(`Cannot overpay loan, balance is ${balance}`);
+                    this.value = balance; // Reset to balance
+                }
+            }
+        });
+
     });
 </script>
 

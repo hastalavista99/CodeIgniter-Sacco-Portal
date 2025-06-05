@@ -31,11 +31,11 @@
                 <div class="row mt-3 mb-3 d-flex justify-content-between align-items-center">
                     <div class="col-md-3">
                         <label class="form-label">Start Date:</label>
-                        <input type="date" name="start_date" class="form-control" required value="<?= $startDate?>">
+                        <input type="date" name="start_date" class="form-control" required value="<?= $startDate ?>">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">End Date:</label>
-                        <input type="date" name="end_date" class="form-control" required value="<?= $endDate?>">
+                        <input type="date" name="end_date" class="form-control" required value="<?= $endDate ?>">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Account:</label>
@@ -87,9 +87,33 @@
                 </table>
 
                 <div style="margin-top: 20px;">
-                    <a href="<?= site_url('accounting/reports/general-ledger/pdf?start_date=' . $startDate . '&end_date=' . $endDate . '&account_id=' . $accountId) ?>" class="btn btn-danger"><i class="bi bi-filetype-pdf me-2"></i>Export PDF</a>
-                    <a href="<?= site_url('accounting/reports/general-ledger/excel') ?>" class="btn btn-success"><i class="bi bi-filetype-xlsx me-2"></i>Export Excel</a>
+                    <div class="d-flex gap-2 justify-content-center align-items-center mb-2">
+                        <a href="<?= site_url('accounting/reports/general-ledger/pdf?start_date=' . $startDate . '&end_date=' . $endDate . '&account_id=' . $accountId) ?>" class="btn btn-danger"><i class="bi bi-filetype-pdf me-2"></i>Export PDF</a>
+                        <a href="<?= site_url('accounting/reports/general-ledger/excel') ?>" class="btn btn-success" id="exportBtn" onclick="handleDownload(event)"><i class="bi bi-filetype-xlsx me-2"></i>Export Excel</a>
+                        <button class="btn btn-success" type="button" disabled="" id="loading-btn" style="display: none;">
+                            <span class="spinner-border spinner-border-sm" style="width: 16px !important; height: 16px;" role="status" aria-hidden="true"></span>
+                            <i class="bi bi-filetype-xlsx me-2"></i>
+                            Exporting
+                        </button>
+                    </div>
                 </div>
+
+                <script>
+                    function handleDownload(event) {
+                        const btn = document.getElementById('exportBtn');
+                        const spinner = document.getElementById('loading-btn');
+
+                        // Change UI to loading state
+                        btn.style.display = 'none';
+                        spinner.style.display = 'block';
+
+                        // Let download continue normally, reset after short delay
+                        setTimeout(() => {
+                            spinner.style.display = 'none';
+                            btn.style.display = 'inline-block';
+                        }, 3000); // Adjust timing if needed
+                    }
+                </script>
 
             </div>
         </div>

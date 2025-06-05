@@ -325,7 +325,11 @@ ALTER TABLE loan_repayments MODIFY COLUMN amount_due DECIMAL(10,2) AS (principal
 
 ALTER TABLE loan_repayments MODIFY COLUMN amount_paid DECIMAL(10,2) AS (principal_paid + interest_paid) STORED;
 
+05/06/2025
 
+ALTER TABLE `loan_applications` CHANGE `loan_status` `loan_status` ENUM('approved','rejected','pending','paid') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+INSERT INTO `interest_types` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'No Interest', 'No interest rate for the loan', current_timestamp(), current_timestamp());
 
 
 

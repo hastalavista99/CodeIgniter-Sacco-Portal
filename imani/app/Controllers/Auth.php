@@ -349,8 +349,8 @@ class Auth extends BaseController
             $id = $query['id'];
             $phone = $query['mobile'];
 
-            $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            $otp = substr(str_shuffle($alpha_numeric), 0, 6);
+            $numeric = '0123456789';
+            $otp = substr(str_shuffle($numeric), 0, 4);
             $expires = date("U") + 300;
             $data = [
                 'username' => $name,
@@ -363,8 +363,10 @@ class Auth extends BaseController
                 $smsSend = new SendSMS();
                 $smsSend->sendSMS($phone, $sms);
             }
+            // GET the last 3 digits of a phone number
+            $phonePart= substr($phone, -3);
             session()->set('userId', $id);
-            session()->setFlashdata('success', 'OTP sent to mobile number');
+            session()->setFlashdata('success', 'OTP sent to mobile number - 07xx xxx ' . $phonePart);
             return redirect()->to('confirm/otp')->withInput();
         }
     }

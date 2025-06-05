@@ -37,18 +37,15 @@ use CodeIgniter\HTTP\SiteURI;
                     <input type="hidden" name="member-id" id="member-id">
                 </div>
                 <div class="row step-indicator mb-4">
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="step active" id="step-indicator-1"><i class="bi bi-pencil-square"></i></div>
                         <div class="step-label">Loan Information</div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="step" id="step-indicator-2"><i class="bi bi-people"></i></div>
                         <div class="step-label">Guarantors</div>
                     </div>
-                    <div class="col-4">
-                        <div class="step" id="step-indicator-3"><i class="bi bi-list-check"></i></div>
-                        <div class="step-label">Details Confirmation</div>
-                    </div>
+                    
                 </div>
 
                 <!-- Form -->
@@ -184,23 +181,11 @@ use CodeIgniter\HTTP\SiteURI;
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
                             <button type="button" class="btn btn-secondary prev-step" data-step="2">Previous: Loan Information</button>
-                            <button type="button" class="btn btn-primary next-step" data-step="2">Next: Details Confirmation</button>
+                            <button type="submit" class="btn btn-success">Submit Details</button>
+                            
                         </div>
                     </div>
-
-                    <!-- Step 3: Details Confirmation -->
-                    <div class="form-step" id="step-3">
-                        <h5 class="mb-4">Step 3: Details Confirmation</h5>
-
-                        <div class="mb-3" id="confirm-details-div">
-
-                        </div>
-
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                            <button type="button" class="btn btn-secondary prev-step" data-step="3">Previous: Guarantor Info</button>
-                            <button type="submit" class="btn btn-success">Submit Form</button>
-                        </div>
-                    </div>
+                   
                 </form>
             </div>
         </div>
@@ -421,8 +406,8 @@ use CodeIgniter\HTTP\SiteURI;
             let repayment = 0;
 
             if (interestMethod === 'Flat Rate') {
-                interest = loanPrincipal * monthlyRate * repaymentPeriod;
-                totalLoan = loanPrincipal + interest;
+                interest = Math.ceil(loanPrincipal * monthlyRate * repaymentPeriod); // round up to the nearest number
+                totalLoan = Math.ceil(loanPrincipal + interest); // round up to the nearest number
                 repayment = totalLoan / repaymentPeriod;
 
             } else if (interestMethod === 'Reducing Balance') {
@@ -431,8 +416,8 @@ use CodeIgniter\HTTP\SiteURI;
                 const P = loanPrincipal;
 
                 repayment = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-                totalLoan = repayment * n;
-                interest = totalLoan - loanPrincipal;
+                totalLoan = Math.ceil(repayment * n); // round up to the nearest number
+                interest = Math.ceil(totalLoan - loanPrincipal);
             }
 
             totalLoanInput.value = totalLoan.toFixed(2);
@@ -650,8 +635,6 @@ use CodeIgniter\HTTP\SiteURI;
         }
     });
 </script>
-
-
 
 
 <?= $this->endSection() ?>

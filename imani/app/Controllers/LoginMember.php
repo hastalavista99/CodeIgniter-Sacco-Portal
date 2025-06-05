@@ -46,7 +46,6 @@ class LoginMember extends BaseController
         $data = LoginMember::userDetails();
 
         $data['title'] = 'Profile';
-        $data['users'] = $model->orderBy('auth_id', 'DESC')->findAll();
         return view('users/profile', $data);
     }
 
