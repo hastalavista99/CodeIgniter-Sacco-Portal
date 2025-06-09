@@ -62,7 +62,7 @@ class StaffController extends BaseController
         // Upload profile photo
         $photo = $this->request->getFile('photo');
         $photoName = $photo->getRandomName();
-        $photo->move(FCPATH . 'public/uploads/staff/', $photoName);
+        $photo->move(FCPATH . 'uploads/staff/', $photoName);
 
         // Optionally create user account
         $createUser = $this->request->getPost('create_user');

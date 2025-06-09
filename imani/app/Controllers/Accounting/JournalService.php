@@ -138,10 +138,6 @@ class JournalService extends BaseController
         $loanReceivableAccount = $accountModel->where('account_name', $loanType)->first();
         $loanReceivableAccountId = $loanReceivableAccount['id'];
 
-
-        $totalPrincipalPaid = 0;
-        $totalInterestPaid = 0;
-
         $totalPrincipalPaid = floatval($repaymentData['principal_paid'] ?? 0);
         $totalInterestPaid = floatval($repaymentData['interest_paid'] ?? 0);
         $totalPaid = $totalPrincipalPaid + $totalInterestPaid;

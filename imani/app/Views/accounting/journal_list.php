@@ -73,7 +73,7 @@
                                                     <button type="button" class="btn btn-sm btn-secondary" disabled>Post</button>
                                                 <?php endif ?>
                                             <?php endif; ?>
-                                            <a href="/accounting/journals/view/<?= $entry['id'] ?>" class="btn btn-info btn-sm">View</a>
+                                            <a href="<?= site_url('accounting/journals/view/' . $entry['id']) ?>" class="btn btn-info btn-sm">View</a>
                                             <!-- <a href="<?= site_url('/accounting/journal/delete/') ?><?= $entry['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a> -->
                                         </td>
                                     </tr>
