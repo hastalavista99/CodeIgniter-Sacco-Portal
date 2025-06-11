@@ -1,0 +1,79 @@
+# System Junk Files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+*~
+.directory
+.Trash-*
+
+# Environment & Config
+.env
+.env.*
+.vagrant
+Vagrantfile
+
+# CodeIgniter Writable Directory
+writable/cache/*
+!writable/cache/index.html
+writable/logs/*
+!writable/logs/index.html
+writable/session/*
+!writable/session/index.html
+writable/uploads/*
+!writable/uploads/index.html
+writable/debugbar/*
+!writable/debugbar/.gitkeep
+php_errors.log
+
+# CI4 User Guide (optional)
+user_guide_src/build/
+user_guide_src/cilexer/build/
+user_guide_src/cilexer/dist/
+user_guide_src/cilexer/pycilexer.egg-info/
+
+# Test Files
+tests/coverage*
+phpunit
+phpunit*.xml
+.phpunit.result.cache
+
+# Vendor & Build Tools
+vendor/
+composer.lock
+node_modules/
+package-lock.json
+yarn.lock
+
+# IDE/Editor Specific
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+.phpintel
+_modules/
+.php-version
+
+# NetBeans
+nbproject/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/
+
+# API Gen/Results
+/api/
+results/
