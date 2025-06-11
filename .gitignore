@@ -1,70 +1,106 @@
-# System Junk Files
+#-------------------------
+# Operating Specific Junk Files
+#-------------------------
+
+# OS X
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# OS X Thumbnails
 ._*
+
+# Windows image file caches
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Recycle Bin used on file shares
 $RECYCLE.BIN/
+
+# Windows Installer files
 *.cab
 *.msi
 *.msm
 *.msp
+
+# Windows shortcuts
 *.lnk
+
+# Linux
 *~
+
+# KDE directory preferences
 .directory
+
+# Linux trash folder which might appear on any partition or disk
 .Trash-*
 
-# Environment & Config
+#-------------------------
+# Environment Files
+#-------------------------
+# These should never be under version control,
+# as it poses a security risk.
 .env
-.env.*
 .vagrant
 Vagrantfile
 
-# CodeIgniter Writable Directory
+#-------------------------
+# Temporary Files
+#-------------------------
 writable/cache/*
 !writable/cache/index.html
+
 writable/logs/*
 !writable/logs/index.html
+
 writable/session/*
 !writable/session/index.html
+
 writable/uploads/*
 !writable/uploads/index.html
+
 writable/debugbar/*
 !writable/debugbar/.gitkeep
+
 php_errors.log
 
-# CI4 User Guide (optional)
-user_guide_src/build/
-user_guide_src/cilexer/build/
-user_guide_src/cilexer/dist/
-user_guide_src/cilexer/pycilexer.egg-info/
+#-------------------------
+# User Guide Temp Files
+#-------------------------
+user_guide_src/build/*
+user_guide_src/cilexer/build/*
+user_guide_src/cilexer/dist/*
+user_guide_src/cilexer/pycilexer.egg-info/*
 
+#-------------------------
 # Test Files
+#-------------------------
 tests/coverage*
+
+# Don't save phpunit under version control.
 phpunit
-phpunit*.xml
-.phpunit.result.cache
 
-# Vendor & Build Tools
+#-------------------------
+# Composer
+#-------------------------
 vendor/
-composer.lock
-node_modules/
-package-lock.json
-yarn.lock
 
-# IDE/Editor Specific
-.vscode/
-.idea/
-*.iml
-*.sublime-workspace
-*.sublime-project
-.phpintel
-_modules/
+#-------------------------
+# IDE / Development Files
+#-------------------------
+
+# Modules Testing
+_modules/*
+
+# phpenv local config
 .php-version
 
-# NetBeans
+# Jetbrains editors (PHPStorm, etc)
+.idea/
+*.iml
+
+# Netbeans
 nbproject/
 build/
 nbbuild/
@@ -74,6 +110,17 @@ nbactions.xml
 nb-configuration.xml
 .nb-gradle/
 
-# API Gen/Results
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+.phpintel
 /api/
-results/
+
+# Visual Studio Code
+.vscode/
+
+/results/
+/phpunit*.xml
