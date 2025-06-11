@@ -1,0 +1,175 @@
+ERROR - 2025-06-11 20:26:54 --> Error connecting to the database: mysqli_sql_exception: No such file or directory in /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/BaseModel.php(717): CodeIgniter\Model->doFirst()
+#6 /opt/lampp/htdocs/gloha/app/Controllers/BankController.php(52): CodeIgniter\BaseModel->first()
+#7 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\BankController->receive()
+#8 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /opt/lampp/htdocs/gloha/public/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: No such file or directory in /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#4 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/BaseModel.php(717): CodeIgniter\Model->doFirst()
+#5 /opt/lampp/htdocs/gloha/app/Controllers/BankController.php(52): CodeIgniter\BaseModel->first()
+#6 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\BankController->receive()
+#7 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#8 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#9 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#10 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#11 /opt/lampp/htdocs/gloha/public/index.php(56): CodeIgniter\Boot::bootWeb()
+#12 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2025-06-11 20:26:54 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: No such file or directory
+[Method: POST, Route: bank/receive]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(717): CodeIgniter\Model->doFirst()
+ 5 APPPATH/Controllers/BankController.php(52): CodeIgniter\BaseModel->first()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\BankController->receive()
+ 7 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/opt/lampp/htdocs/gloha/public/index.php')
+ERROR - 2025-06-11 20:27:22 --> Error connecting to the database: mysqli_sql_exception: No such file or directory in /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/BaseModel.php(717): CodeIgniter\Model->doFirst()
+#6 /opt/lampp/htdocs/gloha/app/Controllers/Auth.php(136): CodeIgniter\BaseModel->first()
+#7 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\Auth->loginUser()
+#8 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /opt/lampp/htdocs/gloha/public/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: No such file or directory in /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#4 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/BaseModel.php(717): CodeIgniter\Model->doFirst()
+#5 /opt/lampp/htdocs/gloha/app/Controllers/Auth.php(136): CodeIgniter\BaseModel->first()
+#6 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\Auth->loginUser()
+#7 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#8 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#9 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#10 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#11 /opt/lampp/htdocs/gloha/public/index.php(56): CodeIgniter\Boot::bootWeb()
+#12 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2025-06-11 20:27:22 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: No such file or directory
+[Method: POST, Route: loginUser]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(717): CodeIgniter\Model->doFirst()
+ 5 APPPATH/Controllers/Auth.php(136): CodeIgniter\BaseModel->first()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Auth->loginUser()
+ 7 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/opt/lampp/htdocs/gloha/public/index.php')
+ERROR - 2025-06-11 20:27:44 --> Error connecting to the database: mysqli_sql_exception: No such file or directory in /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/BaseModel.php(717): CodeIgniter\Model->doFirst()
+#6 /opt/lampp/htdocs/gloha/app/Controllers/Auth.php(136): CodeIgniter\BaseModel->first()
+#7 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\Auth->loginUser()
+#8 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /opt/lampp/htdocs/gloha/public/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: No such file or directory in /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#4 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/BaseModel.php(717): CodeIgniter\Model->doFirst()
+#5 /opt/lampp/htdocs/gloha/app/Controllers/Auth.php(136): CodeIgniter\BaseModel->first()
+#6 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\Auth->loginUser()
+#7 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#8 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#9 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#10 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#11 /opt/lampp/htdocs/gloha/public/index.php(56): CodeIgniter\Boot::bootWeb()
+#12 /opt/lampp/htdocs/gloha/vendor/codeigniter4/framework/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2025-06-11 20:27:44 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: No such file or directory
+[Method: POST, Route: loginUser]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(717): CodeIgniter\Model->doFirst()
+ 5 APPPATH/Controllers/Auth.php(136): CodeIgniter\BaseModel->first()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Auth->loginUser()
+ 7 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/opt/lampp/htdocs/gloha/public/index.php')
+DEBUG - 2025-06-11 20:32:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-06-11 20:32:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-06-11 20:33:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-06-11 21:21:22 --> TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, false given
+[Method: POST, Route: bank/receive]
+in APPPATH/Controllers/BankController.php on line 70.
+ 1 APPPATH/Controllers/BankController.php(70): hash_equals()
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\BankController->receive()
+ 3 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/opt/lampp/htdocs/gloha/public/index.php')
+CRITICAL - 2025-06-11 21:22:07 --> TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, false given
+[Method: POST, Route: bank/receive]
+in APPPATH/Controllers/BankController.php on line 70.
+ 1 APPPATH/Controllers/BankController.php(70): hash_equals()
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\BankController->receive()
+ 3 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/opt/lampp/htdocs/gloha/public/index.php')
