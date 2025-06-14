@@ -332,4 +332,9 @@ ALTER TABLE `loan_applications` CHANGE `loan_status` `loan_status` ENUM('approve
 INSERT INTO `interest_types` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'No Interest', 'No interest rate for the loan', current_timestamp(), current_timestamp());
 
 
+14/06/2025
 
+INSERT INTO `system_parameters` (`param_key`, `param_value`, `description`) VALUES
+('last_closed_period', '2024-12', 'Last closed accounting period in YYYY-MM format');
+
+INSERT INTO `system_parameters` (`id`, `param_key`, `param_value`, `description`) VALUES (NULL, 'loan_overpay_account', 'savings', 'Loan Overpayments to go to the following account');

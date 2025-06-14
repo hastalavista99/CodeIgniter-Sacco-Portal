@@ -181,6 +181,10 @@
                                     <input class="form-check-input" type="checkbox" name="permissions[]" value="reverse_transactions" id="reverse_transactions">
                                     <label class="form-check-label" for="reverse_transactions">Reverse Transactions</label>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="close_month" id="close_month">
+                                    <label class="form-check-label" for="close_month">Close Accounting Periods</label>
+                                </div>
                             </div>
 
                         </div>

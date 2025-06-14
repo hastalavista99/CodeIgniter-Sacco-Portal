@@ -109,6 +109,16 @@
                     </div>
                 </form>
 
+    
+                <?php if (user_can('close_month')): ?>
+                    <form method="post" action="<?= site_url('admin/close-month') ?>" class="mt-4">
+                        <?= csrf_field() ?>
+                        <h4>Close Current Month</h4>
+                        <p>Current System Date: <strong><?= get_system_date() ?></strong></p>
+                        <button type="submit" class="btn btn-danger">Close Month</button>
+                    </form>
+                    <?php endif; ?>
+
 
             </div>
         </div>

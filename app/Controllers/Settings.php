@@ -21,9 +21,30 @@ class Settings extends BaseController
         $data = [
             'title' => 'System Settings',
             'userInfo' => $userInfo,
-            
+
         ];
         return view('settings', $data);
     }
+
+    public function closeMonth()
+    {
+        $currentPeriod = date('Y-m', strtotime(get_system_date()));
+        $lastClosed = get_system_parameter('last_closed_period');
+
+        if ($lastClosed && $currentPeriod <= $lastClosed) {
+            return redirect()->back()->with('error', 'This period is already closed or before the last closed period.');
+        }
+
+        // Optional: Run calculations like interest, dividend accrual, etc.
+
+        // Update system parameter
+        $model = new \App\Models\SystemParameterModel();
+        $model->where('param_key', 'last_closed_period')
+            ->set(['param_value' => $currentPeriod])
+            ->update();
+
+        return redirect()->back()->with('success', 'Month closed successfully: ' . $currentPeriod);
+    }
+
 
 }

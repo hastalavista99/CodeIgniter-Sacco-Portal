@@ -93,6 +93,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/settings', 'Settings::index');
     $routes->get('admin/settings', 'AdminSettingsController::getSettings',  ['filter' => 'permission:access_system_parameters']);
     $routes->post('admin/settings', 'AdminSettingsController::postSettings');
+    $routes->post('admin/close-month', 'Settings::closeMonth', ['filter' => 'permission:close_month']);
     $routes->get('unauthorized', 'Pages::unauthorized');
 
 
@@ -166,6 +167,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('reports/income-statement/pdf', 'Accounting\ReportsController::incomeStatementPdf');
         $routes->get('reports/cashbook', 'Accounting\ReportsController::cashBook');
         $routes->get('reports/cashbook/pdf', 'Accounting\ReportsController::cashbookPdf');
+        $routes->get('reports/value-balances/pdf', 'Accounting\ReportsController::valueBalancesPdf');
         $routes->get('reports/general-ledger', 'Accounting\ReportsController::generalLedger');
         $routes->post('reports/general-ledger', 'Accounting\ReportsController::generalLedger');
         $routes->get('reports/general-ledger/pdf', 'Accounting\ReportsController::generalLedgerPdf');

@@ -34,7 +34,7 @@ class Members extends BaseController
         $userInfo = $userModel->find($loggedInUserId);
 
         $data = [
-            'members'  => $model->findAll(),
+            'members' => $model->findAll(),
             'title' => 'Members',
             'userInfo' => $userInfo,
         ];
@@ -235,7 +235,7 @@ class Members extends BaseController
         if ($member) {
             return $this->response->setJSON([
                 'id' => $member['id'],
-                'name' => $member['first_name'] . " " .  $member['last_name'],
+                'name' => $member['first_name'] . " " . $member['last_name'],
                 'mobile' => $member['phone_number']
             ]);
         }
@@ -310,8 +310,6 @@ class Members extends BaseController
 
         return view('members/all_info', $data);
     }
-
-
 
     public function edit($id)
     {
@@ -511,6 +509,8 @@ class Members extends BaseController
             $savings = $savingsModel->getMemberSavingsTotal($memberId);
             $shares = $sharesModel->getMemberSharesTotal($memberId);
             $loans = $loanModel->getMemberLoanSummary($memberId);
+            // log loan details
+            // log_message('debug', print_r($loans, true));
             if (empty($transactions)) {
                 // Optional: Render PDF anyway, or abort
                 log_message('warning', "No transactions found for member ID: {$memberId}");
@@ -681,7 +681,7 @@ class Members extends BaseController
                 }
 
                 $loanStatements[] = [
-                    'loan'       => $loanDetails,
+                    'loan' => $loanDetails,
                     'repayments' => $repayments,
                 ];
             }

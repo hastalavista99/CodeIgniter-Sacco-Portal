@@ -76,7 +76,8 @@
               'view_reports' => 'View Financial Reports',
               'create_members' => 'Create Members',
               'edit_settings' => 'Edit System Settings',
-              'reverse_transactions' => 'Reverse Transactions'
+              'reverse_transactions' => 'Reverse Transactions',
+              'close_month' => 'Close Month',
             ];
 
             $currentPermissions = json_decode($user['permissions'] ?? '[]', true);

@@ -6,6 +6,11 @@ use App\Controllers\BaseController;
 use App\Models\Accounting\AccountsModel;
 use App\Models\Accounting\JournalDetailsModel;
 use App\Models\Accounting\JournalEntryModel;
+use App\Models\Accounting\SavingsAccountModel;
+use App\Models\Accounting\SharesAccountModel;
+use App\Models\LoanApplicationModel;
+use App\Models\MembersModel;
+use App\Models\OrganizationModel;
 use App\Models\UserModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -373,6 +378,66 @@ class ReportsController extends BaseController
     }
 
 
+
+    // Balances for all members
+    public function valueBalancesPdf()
+    {
+        try {
+            $memberModel = new MembersModel();
+            $orgModel = new OrganizationModel();
+            $savingsModel = new SavingsAccountModel();
+            $sharesModel = new SharesAccountModel();
+            $loanModel = new LoanApplicationModel();
+
+            $organization = $orgModel->first();
+            $members = $memberModel->findAll();
+
+            if (!$organization) {
+                return $this->response->setStatusCode(500)->setBody('Organization profile missing.');
+            }
+
+            $rows = [];
+
+            foreach ($members as $member) {
+                $memberId = $member['id'];
+
+                $savings = $savingsModel->getMemberSavingsTotal($memberId);
+                $shares = $sharesModel->getMemberSharesTotal($memberId);
+                $loans = $loanModel->getMemberLoanSummary($memberId);
+
+                $rows[] = [
+                    'member_number' => $member['member_number'],
+                    'name' => $member['first_name'] . ' ' . $member['last_name'],
+                    'savings' => number_format($savings ?? 0, 2),
+                    'shares' => number_format($shares ?? 0, 2),
+                    'loan_balance' => number_format($loans[0]['balance'] ?? 0, 2),
+                ];
+            }
+
+            $data = [
+                'organization' => $organization,
+                'rows' => $rows
+            ];
+
+            $html = view('accounting/all_member_balances_pdf', $data);
+
+            $options = new Options();
+            $options->set('defaultFont', 'DejaVu Sans');
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+
+            return $this->response
+                ->setHeader('Content-Type', 'application/pdf')
+                ->setBody($dompdf->output());
+
+        } catch (\Throwable $e) {
+            log_message('error', 'Balance report error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('Error generating report.');
+        }
+    }
+
     public function cashBook()
     {
         $startDate = $this->request->getGet('start_date') ?? date('Y-m-01');
@@ -412,7 +477,7 @@ class ReportsController extends BaseController
         $orgModel = new \App\Models\OrganizationModel();
 
         $start = $this->request->getGet('start');
-        $end   = $this->request->getGet('end');
+        $end = $this->request->getGet('end');
 
         $organization = $orgModel->first();
         if (!$organization) {
@@ -536,7 +601,7 @@ class ReportsController extends BaseController
 
         $data = [
             'accounts' => $accountModel->findAll(),
-            'entries'  => $query->orderBy('journal_entries.date', 'ASC')->findAll(),
+            'entries' => $query->orderBy('journal_entries.date', 'ASC')->findAll(),
             'userInfo' => $userInfo,
             'title' => 'General Ledger',
             'startDate' => $start,
@@ -546,7 +611,7 @@ class ReportsController extends BaseController
 
         return view('accounting/general_ledger', $data);
     }
-    
+
 
     public function generalLedgerPdf()
     {
@@ -556,18 +621,18 @@ class ReportsController extends BaseController
 
         $journalModel = new JournalDetailsModel();
 
-         $query = $journalModel
-        ->select('journal_entries.date, journal_entries.description, journal_entries.reference, journal_entry_details.debit, journal_entry_details.credit, accounts.account_name')
-        ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
-        ->join('accounts', 'accounts.id = journal_entry_details.account_id')
-        ->where('journal_entries.date >=', $startDate)
-        ->where('journal_entries.date <=', $endDate);
+        $query = $journalModel
+            ->select('journal_entries.date, journal_entries.description, journal_entries.reference, journal_entry_details.debit, journal_entry_details.credit, accounts.account_name')
+            ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
+            ->join('accounts', 'accounts.id = journal_entry_details.account_id')
+            ->where('journal_entries.date >=', $startDate)
+            ->where('journal_entries.date <=', $endDate);
 
-    if (!empty($accountId)) {
-        $query->where('journal_entry_details.account_id', $accountId);
-    }
+        if (!empty($accountId)) {
+            $query->where('journal_entry_details.account_id', $accountId);
+        }
 
-    $entries = $query->orderBy('journal_entries.date', 'ASC')->findAll();
+        $entries = $query->orderBy('journal_entries.date', 'ASC')->findAll();
 
         if (empty($entries)) {
             return $this->response->setStatusCode(404)->setBody('No entries found for the specified date range.');
@@ -602,48 +667,48 @@ class ReportsController extends BaseController
     {
         $journalModel = new JournalDetailsModel();
 
-    $start = $this->request->getGet('start_date') ?? date('Y-m-01');
-    $end = $this->request->getGet('end_date') ?? date('Y-m-d');
-    $accountId = $this->request->getGet('account_id');
+        $start = $this->request->getGet('start_date') ?? date('Y-m-01');
+        $end = $this->request->getGet('end_date') ?? date('Y-m-d');
+        $accountId = $this->request->getGet('account_id');
 
-    $query = $journalModel
-        ->select('journal_entries.date, journal_entries.description, journal_entries.reference, journal_entry_details.debit, journal_entry_details.credit, accounts.account_name')
-        ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
-        ->join('accounts', 'accounts.id = journal_entry_details.account_id')
-        ->where('journal_entries.date >=', $start)
-        ->where('journal_entries.date <=', $end);
+        $query = $journalModel
+            ->select('journal_entries.date, journal_entries.description, journal_entries.reference, journal_entry_details.debit, journal_entry_details.credit, accounts.account_name')
+            ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_entry_id')
+            ->join('accounts', 'accounts.id = journal_entry_details.account_id')
+            ->where('journal_entries.date >=', $start)
+            ->where('journal_entries.date <=', $end);
 
-    if (!empty($accountId)) {
-        $query->where('journal_entry_details.account_id', $accountId);
-    }
+        if (!empty($accountId)) {
+            $query->where('journal_entry_details.account_id', $accountId);
+        }
 
-    $entries = $query->orderBy('journal_entries.date', 'ASC')->findAll();
+        $entries = $query->orderBy('journal_entries.date', 'ASC')->findAll();
 
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    $sheet->setCellValue('A1', 'Date');
-    $sheet->setCellValue('B1', 'Account');
-    $sheet->setCellValue('C1', 'Reference');
-    $sheet->setCellValue('D1', 'Description');
-    $sheet->setCellValue('E1', 'Debit');
-    $sheet->setCellValue('F1', 'Credit');
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Date');
+        $sheet->setCellValue('B1', 'Account');
+        $sheet->setCellValue('C1', 'Reference');
+        $sheet->setCellValue('D1', 'Description');
+        $sheet->setCellValue('E1', 'Debit');
+        $sheet->setCellValue('F1', 'Credit');
 
-    $row = 2;
-    foreach ($entries as $entry) {
-        $sheet->setCellValue("A{$row}", $entry['date']);
-        $sheet->setCellValue("B{$row}", $entry['account_name']);
-        $sheet->setCellValue("C{$row}", $entry['reference']);
-        $sheet->setCellValue("D{$row}", $entry['description']);
-        $sheet->setCellValue("E{$row}", $entry['debit']);
-        $sheet->setCellValue("F{$row}", $entry['credit']);
-        $row++;
-    }
+        $row = 2;
+        foreach ($entries as $entry) {
+            $sheet->setCellValue("A{$row}", $entry['date']);
+            $sheet->setCellValue("B{$row}", $entry['account_name']);
+            $sheet->setCellValue("C{$row}", $entry['reference']);
+            $sheet->setCellValue("D{$row}", $entry['description']);
+            $sheet->setCellValue("E{$row}", $entry['debit']);
+            $sheet->setCellValue("F{$row}", $entry['credit']);
+            $row++;
+        }
 
-    $writer = new Xlsx($spreadsheet);
-    $filename = 'General_Ledger.xlsx';
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header("Content-Disposition: attachment; filename=\"$filename\"");
-    $writer->save("php://output");
-    exit;
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'General_Ledger.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        $writer->save("php://output");
+        exit;
     }
 }

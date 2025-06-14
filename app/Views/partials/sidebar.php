@@ -249,6 +249,13 @@
                 <span>General Ledger</span>
               </a>
             </li>
+
+            <li class="nav-item">
+              <a href="<?= site_url('accounting/reports/value-balances/pdf') ?>" class="nav-link collapsed" target="_blank">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>Value Balances</span>
+              </a>
+            </li>
           </ul>
         </div>
       </li>

@@ -10,6 +10,8 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 require APPPATH . 'Helpers/userpermissionhelper.php';
 require APPPATH . 'Helpers/generatestaffqrcode.php';
+require APPPATH . 'Helpers/monthclosehelper.php';
+require APPPATH . 'Helpers/systemparameterhelper.php';
 
 
 

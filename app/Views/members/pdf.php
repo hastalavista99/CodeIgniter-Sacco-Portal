@@ -83,7 +83,7 @@
                 <tr>
                     <td><b>Loans</b></td>
                     <td>
-                        <h4><?= number_format($loan_balance['balance'], 2) ?></h4>
+                        <h4><?= number_format($loan_balance[0]['balance'], 2) ?></h4>
                     </td>
                 </tr>
             <?php else: ?>
