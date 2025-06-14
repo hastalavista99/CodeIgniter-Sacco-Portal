@@ -142,6 +142,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
 
     $routes->group('accounting', function ($routes) {
         $routes->get('remittances/get-member/(:segment)', 'Members::getMember/$1');
+        $routes->get('remittances/search-member-name', 'Members::searchMemberName');
         $routes->post('remittances/create', 'Accounting\JournalController::remittanceCreate');
         $routes->get('trial-balance', 'Accounting\ReportsController::trialBalance');
         $routes->get('balance-sheet', 'Accounting\ReportsController::balanceSheet');

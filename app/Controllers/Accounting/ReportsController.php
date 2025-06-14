@@ -9,6 +9,7 @@ use App\Models\Accounting\JournalEntryModel;
 use App\Models\Accounting\SavingsAccountModel;
 use App\Models\Accounting\SharesAccountModel;
 use App\Models\LoanApplicationModel;
+use App\Models\LoanRepaymentModel;
 use App\Models\MembersModel;
 use App\Models\OrganizationModel;
 use App\Models\UserModel;
@@ -512,10 +513,10 @@ class ReportsController extends BaseController
 
     public function exportSchedulePdf($loanId)
     {
-        $loanModel = new \App\Models\LoanApplicationModel();
-        $repaymentModel = new \App\Models\LoanRepaymentModel();
-        $memberModel = new \App\Models\MembersModel();
-        $orgModel = new \App\Models\OrganizationModel();
+        $loanModel = new LoanApplicationModel();
+        $repaymentModel = new LoanRepaymentModel();
+        $memberModel = new MembersModel();
+        $orgModel = new OrganizationModel();
 
 
         $organization = $orgModel->first();

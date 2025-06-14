@@ -7,19 +7,19 @@
     <div class="col-lg-12">
         <?php
         if (!empty(session()->getFlashdata('success'))) {
-        ?>
+            ?>
             <div class="alert alert-success alert-dismissible fade show">
                 <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
                 <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
             </div>
-        <?php
+            <?php
         } else if (!empty(session()->getFlashdata('fail'))) {
-        ?>
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
-                <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php
+            ?>
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php
         }
         ?>
         <?php if (session()->getFlashdata('errors')): ?>
@@ -34,19 +34,39 @@
             <div class="card-body px-0 pb-2">
 
                 <div class="row mb-3">
+
+
                     <div class="d-flex justify-content-between mt-2 mx-1">
                         <h2>Member Details</h2>
-                        <a href="<?= site_url('members/import-transactions-page') ?>" class="btn btn-primary ps-2"><i class="bi-upload me-2" style="font-size:1.2rem;"></i>Import Transactions</a>
+                        <a href="<?= site_url('members/import-transactions-page') ?>" class="btn btn-primary ps-2"><i
+                                class="bi-upload me-2" style="font-size:1.2rem;"></i>Import Transactions</a>
                     </div>
 
-                    <form id="memberForm">
+                    <div class="row">
                         <div class="col-md-6">
-                            <label for="member-number" class="form-label">Member Number</label>
-                            <input type="text" name="member-number" id="member-number" class="form-control" required>
+                            <form id="memberForm">
+                                <div class="col-md-6">
+                                    <label for="member-number" class="form-label">Member Number</label>
+                                    <input type="text" name="member-number" id="member-number" class="form-control"
+                                        required>
+                                </div>
+                                <button type="button" id="fetchMemberBtn" class="btn btn-primary mt-2">Fetch
+                                    Member</button>
+                            </form>
                         </div>
-                        <button type="button" id="fetchMemberBtn" class="btn btn-primary mt-2">Fetch Member</button>
-                    </form>
+                        <div class="col-md-6 position-relative mb-3">
+                            <label for="member-name-search" class="form-label">Search Member Name</label>
+                            <input type="text" id="member-name-search" class="form-control" placeholder="Type name...">
+                            <div id="name-suggestions" class="list-group position-absolute w-100"
+                                style="z-index: 1000;">
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
+
+
                 <input type="hidden" name="member-id" id="member-id">
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -151,8 +171,8 @@
 <script>
     let transactions = []; // Store transactions temporarily
 
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("remittanceForm").addEventListener("submit", function(event) {
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("remittanceForm").addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent actual form submission
 
             // Get form values
@@ -210,13 +230,13 @@
             });
         }
 
-        window.removeTransaction = function(index) {
+        window.removeTransaction = function (index) {
             transactions.splice(index, 1); // Remove from array
             updateTransactionsTable(); // Refresh table
         };
 
         // Submit all transactions
-        document.getElementById("submitAllBtn").addEventListener("click", function() {
+        document.getElementById("submitAllBtn").addEventListener("click", function () {
             if (transactions.length === 0) {
                 alert("No transactions to submit.");
                 return;
@@ -225,15 +245,15 @@
 
             let csrfToken = document.querySelector('input[name="<?= csrf_token() ?>"]').value;
             fetch("<?= site_url('accounting/remittances/create') ?>", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken
-                    },
-                    body: JSON.stringify({
-                        transactions: transactions
-                    }),
-                })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken
+                },
+                body: JSON.stringify({
+                    transactions: transactions
+                }),
+            })
                 .then(response => response.json())
                 .then(data => {
                     showLoadingState(false);
@@ -317,7 +337,7 @@
 </script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const amountInput = document.getElementById("amount");
         let today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
         document.getElementById("date").value = today; // Set default value
@@ -325,7 +345,7 @@
         // Ensure fetchMemberBtn exists before adding an event listener
         let fetchMemberBtn = document.getElementById('fetchMemberBtn');
         if (fetchMemberBtn) {
-            fetchMemberBtn.addEventListener('click', function() {
+            fetchMemberBtn.addEventListener('click', function () {
                 console.log("Fetch Member button clicked");
 
                 let memberNo = document.getElementById('member-number').value.trim();
@@ -357,12 +377,61 @@
         }
 
 
+        // search by  name
+        const nameInput = document.getElementById('member-name-search');
+        const suggestionBox = document.getElementById('name-suggestions');
+
+        let debounceTimer;
+
+        nameInput.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+
+            const query = this.value.trim();
+            if (query.length < 2) {
+                suggestionBox.innerHTML = '';
+                return;
+            }
+
+            debounceTimer = setTimeout(() => {
+                fetch(`<?= site_url('/accounting/remittances/search-member-name') ?>?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        suggestionBox.innerHTML = '';
+                        if (data.length === 0) {
+                            suggestionBox.innerHTML = '<div class="list-group-item">No results found</div>';
+                            return;
+                        }
+
+                        data.forEach(member => {
+                            const item = document.createElement('div');
+                            item.classList.add('list-group-item', 'list-group-item-action');
+                            item.textContent = `${member.name} (${member.member_number})`;
+                            item.addEventListener('click', () => {
+                                document.getElementById('member-id').value = member.id;
+                                document.getElementById('member-name').value = member.name;
+                                document.getElementById('member-mobile').value = member.mobile;
+                                document.getElementById('member-number').value = member.member_number;
+                                nameInput.value = member.name;
+                                suggestionBox.innerHTML = '';
+                            });
+                            suggestionBox.appendChild(item);
+                        });
+                    });
+            }, 300); // debounce delay
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!suggestionBox.contains(e.target) && e.target !== nameInput) {
+                suggestionBox.innerHTML = '';
+            }
+        });
+
         // Show/hide loan type selection based on transaction type
         let transactionType = document.getElementById('service-transaction');
         let descriptionInput = document.getElementById("description");
         let balance;
         if (transactionType) {
-            transactionType.addEventListener('change', function() {
+            transactionType.addEventListener('change', function () {
                 let memberID = document.getElementById('member-id').value;
                 if (memberID === '') {
                     alert("Please enter a Member Number.");
@@ -405,7 +474,7 @@
         }
 
         // event listener for amount to check if it is more than balance and alert ="cannot overpay loan, balance is X"
-        amountInput.addEventListener('input', function() {
+        amountInput.addEventListener('input', function () {
             if (transactionType.value === 'loans' && balance !== undefined) {
                 let amount = parseFloat(this.value);
                 if (amount > balance) {

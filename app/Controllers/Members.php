@@ -243,6 +243,21 @@ class Members extends BaseController
         return $this->response->setJSON(['error' => 'Member not found'])->setStatusCode(404);
     }
 
+    public function searchMemberName()
+    {
+        $query = $this->request->getGet('q');
+        $memberModel = new MembersModel();
+
+        $members = $memberModel->like('first_name', $query)
+            ->orLike('last_name', $query)
+            ->select('id, member_number, CONCAT(first_name, " ", last_name) as name, phone_number as mobile')
+            ->limit(10)
+            ->findAll();
+
+        return $this->response->setJSON($members);
+    }
+
+
 
     public function view($id)
     {
