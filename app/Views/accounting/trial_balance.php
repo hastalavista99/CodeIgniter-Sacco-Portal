@@ -60,10 +60,10 @@
                             </tbody>
                         </table>
                         <p><strong>Status:</strong>
-                            <?php if ($totalDebit === $totalCredit): ?>
+                            <?php if (abs($totalDebit - $totalCredit) < 0.00001): ?>
                                 ✅ Balanced
                             <?php else: ?>
-                                ❌ Not Balanced
+                                ❌ Difference = <?php echo $totalDebit - $totalCredit?>
                             <?php endif; ?>
                         </p>
 

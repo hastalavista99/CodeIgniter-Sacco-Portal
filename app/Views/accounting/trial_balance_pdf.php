@@ -49,7 +49,7 @@
     </div>
     <hr>
 
-
+<h1>Trial Balance</h1>
     <table class="transactions">
         <thead>
             <tr class="table-header">
