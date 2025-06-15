@@ -81,7 +81,9 @@
                         <tr class="table-header">
                             <th>Installment</th>
                             <th>Due Date</th>
-                            <th>Amount Due</th>
+                            <th>Due Principal</th>
+                            <th>Due Interest</th>
+                            <th>Total Due</th>
                             <th>Amount Paid</th>
                             <th>Payment Date</th>
                             <th>Method</th>
@@ -97,6 +99,8 @@
                             <tr>
                                 <td><?= esc($r['installment_number']) ?></td>
                                 <td><small><?= esc($r['due_date']) ?></small></td>
+                                <td><?= number_format($r['principal_due'], 2) ?></td>
+                                <td><?= number_format($r['interest_due'], 2) ?></td>
                                 <td><?= number_format($r['amount_due'], 2) ?></td>
                                 <td><?= number_format($r['amount_paid'], 2) ?></td>
                                 <td><?= esc($r['payment_date']) ?></td>

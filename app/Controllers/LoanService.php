@@ -70,19 +70,19 @@ class LoanService extends BaseController
             }
 
             $installments[] = [
-                'loan_id'            => $loanId,
+                'loan_id' => $loanId,
                 'installment_number' => $i,
-                'due_date'           => $dueDate->format('Y-m-d'),
-                'amount_due'         => $EMI,
-                'principal_due'      => $principalComponent,
-                'interest_due'       => $interest,
-                'principal_paid'     => 0.00,
-                'interest_paid'      => 0.00,
-                'amount_paid'        => 0.00,
-                'status'             => 'pending',
-                'payment_method'     => null,
-                'created_at'         => date('Y-m-d H:i:s'),
-                'updated_at'         => date('Y-m-d H:i:s'),
+                'due_date' => $dueDate->format('Y-m-d'),
+                'amount_due' => $EMI,
+                'principal_due' => $principalComponent,
+                'interest_due' => $interest,
+                'principal_paid' => 0.00,
+                'interest_paid' => 0.00,
+                'amount_paid' => 0.00,
+                'status' => 'pending',
+                'payment_method' => null,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ];
         }
 
@@ -129,6 +129,10 @@ class LoanService extends BaseController
             $installments[$i]['_remaining_principal'] = $remainingPrincipal;
         }
 
+        // Totals to return
+        $totalInterestPaid = 0;
+        $totalPrincipalPaid = 0;
+
         // Step 2: Apply advance
         foreach ($installments as $installment) {
             $id = $installment['id'];
@@ -163,27 +167,36 @@ class LoanService extends BaseController
 
             log_message('debug', "Installment #$id | PayNow: $payNow | InterestDue: $interestDue | AlreadyPaid: $alreadyPaid | InterestRemaining: $interestRemaining | PrincipalPayment: $principalPayment");
 
+            $interestPaid = round($interestPaid + $interestPayment,2);
             $updateData = [
-                'amount_paid'    => $alreadyPaid + $payNow,
-                'interest_paid'  => $interestPaid + $interestPayment,
-                'principal_paid' => $principalPaid + $principalPayment,
-                'payment_date'   => date('Y-m-d'),
+                'amount_paid' => round($alreadyPaid + $payNow, 2),
+                'interest_paid' => round($interestPaid + $interestPayment,2),
+                'principal_paid' => round($principalPaid + $principalPayment, 2),
+                'payment_date' => date('Y-m-d'),
                 'payment_method' => 'advance_payment',
-                'status'         => ($alreadyPaid + $payNow >= floatval($installment['amount_due'])) ? 'paid' : 'pending',
+                'status' => ($alreadyPaid + $payNow >= floatval($installment['amount_due'])) ? 'paid' : 'pending',
             ];
 
             $success = $repaymentModel->update($id, $updateData);
+
 
             if (!$success) {
                 log_message('error', "Failed to update installment ID $id");
             } else {
                 log_message('debug', "Updated installment ID $id: " . json_encode($updateData));
+                $totalInterestPaid += $interestPaid;
+                $totalPrincipalPaid += $principalPayment;
             }
 
             $remaining -= $payNow;
         }
 
         log_message('debug', "Advance payment complete. Remaining unallocated: $remaining");
+        return [
+            'principal_paid' => $totalPrincipalPaid,
+            'interest_paid' => $totalInterestPaid
+        ];
+
     }
 
 
@@ -197,16 +210,18 @@ class LoanService extends BaseController
         $user = session()->get('loggedInUser');
 
         // Apply repayment logic
-        $this->applyAdvancePayment($loanId, $amountPaid);
+        $breakdown = $this->applyAdvancePayment($loanId, $amountPaid);
 
         // Post journal entry
         $journalService = new JournalService();
         $journalService->createLoanRepaymentEntry([
-            'loan_id'        => $loanId,
-            'amount_paid'    => $amountPaid,
-            'payment_date'   => $paymentDate,
-            'description'    => $description,
+            'loan_id' => $loanId,
+            'amount_paid' => $amountPaid,
+            'payment_date' => $paymentDate,
+            'description' => $description,
             'payment_method' => $paymentMethod,
+            'interest_paid' => $breakdown['interest_paid'],
+            'principal_paid' => $breakdown['principal_paid'],
         ], $user);
     }
 }

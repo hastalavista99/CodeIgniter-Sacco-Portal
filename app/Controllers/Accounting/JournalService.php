@@ -139,7 +139,8 @@ class JournalService extends BaseController
         $loanReceivableAccountId = $loanReceivableAccount['id'];
 
         $totalPrincipalPaid = floatval($repaymentData['principal_paid'] ?? 0);
-        $totalInterestPaid = floatval($repaymentData['interest_paid'] ?? 0);
+        $totalInterestPaid = floatval($repaymentData['interest_paid']);
+        log_message('debug', 'interest paid is '. $totalInterestPaid);
         $totalPaid = $totalPrincipalPaid + $totalInterestPaid;
 
         if ($totalPaid === 0) {

@@ -710,11 +710,11 @@ class Members extends BaseController
             // Generate PDF
             $html = view('members/loans_pdf', $data);
 
-            $options = new \Dompdf\Options();
+            $options = new Options();
             $options->set('defaultFont', 'DejaVu Sans');
-            $dompdf = new \Dompdf\Dompdf($options);
+            $dompdf = new Dompdf($options);
             $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->setPaper('A4', 'landscape');
             $dompdf->render();
 
             return $this->response

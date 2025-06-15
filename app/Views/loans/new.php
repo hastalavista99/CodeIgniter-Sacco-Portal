@@ -14,14 +14,32 @@ use CodeIgniter\HTTP\SiteURI;
         <div class="card shadow border-none my-2 px-2">
             <div class="card-body px-0 pb-2">
                 <div class="row mb-3">
-                    <h2>Member Details</h2>
-                    <form id="memberForm">
+                    <div class="d-flex justify-content-between mt-2 mx-1">
+                        <h2>Member Details</h2>
+                        <a href="<?= site_url('members/import-transactions-page') ?>" class="btn btn-primary ps-2"><i
+                                class="bi-upload me-2" style="font-size:1.2rem;"></i>Import Loans</a>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
-                            <label for="member-number" class="form-label">Member Number</label>
-                            <input type="text" name="member-number" id="member-number" class="form-control" required>
+                            <form id="memberForm">
+                                <div class="col-md-6">
+                                    <label for="member-number" class="form-label">Member Number</label>
+                                    <input type="text" name="member-number" id="member-number" class="form-control"
+                                        required>
+                                </div>
+                                <button type="button" id="fetchMemberBtn" class="btn btn-primary mt-2">Fetch
+                                    Member</button>
+                            </form>
                         </div>
-                        <button type="button" id="fetchMemberBtn" class="btn btn-primary mt-2">Fetch Member</button>
-                    </form>
+                        <div class="col-md-6 position-relative mb-3">
+                            <label for="member-name-search" class="form-label">Search Member Name</label>
+                            <input type="text" id="member-name-search" class="form-control" placeholder="Type name...">
+                            <div id="name-suggestions" class="list-group position-absolute w-100"
+                                style="z-index: 1000;">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -45,7 +63,7 @@ use CodeIgniter\HTTP\SiteURI;
                         <div class="step" id="step-indicator-2"><i class="bi bi-people"></i></div>
                         <div class="step-label">Guarantors</div>
                     </div>
-                    
+
                 </div>
 
                 <!-- Form -->
@@ -66,17 +84,20 @@ use CodeIgniter\HTTP\SiteURI;
                             </div>
                             <div class="col-md-6">
                                 <label for="interest_method" class="form-label">Interest Method *</label>
-                                <input type="text" name="interest_method" id="interest_method" class="form-control" disabled>
+                                <input type="text" name="interest_method" id="interest_method" class="form-control"
+                                    disabled>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-3">
                                 <label for="interest_rate" class="form-label">Interest Rate(monthly)</label>
-                                <input type="number" class="form-control" id="interest_rate" name="interest_rate" disabled>
+                                <input type="number" class="form-control" id="interest_rate" name="interest_rate"
+                                    disabled>
                             </div>
                             <div class="col-md-3">
                                 <label for="insurance_premium" class="form-label">Insurance Premium(%)</label>
-                                <input type="number" class="form-control" id="insurance_premium" name="insurance_premium" disabled>
+                                <input type="number" class="form-control" id="insurance_premium"
+                                    name="insurance_premium" disabled>
                             </div>
                             <div class="col-md-3">
                                 <label for="crb_amount" class="form-label">CRB Amount</label>
@@ -110,7 +131,8 @@ use CodeIgniter\HTTP\SiteURI;
                             </div>
                             <div class="col-md-2">
                                 <label for="total_interest" class="form-label">Total Interest *</label>
-                                <input type="number" class="form-control" id="total_interest" name="total_interest" disabled>
+                                <input type="number" class="form-control" id="total_interest" name="total_interest"
+                                    disabled>
                             </div>
                             <div class="col-md-2">
                                 <label for="fees" class="form-label">Fees & Charges *</label>
@@ -127,11 +149,12 @@ use CodeIgniter\HTTP\SiteURI;
 
                             <input type="hidden" name="" id="service_calculated">
                             <input type="hidden" name="" id="insurance_calculated">
-                            
+
                         </div>
 
                         <div class="d-flex justify-content-end mt-4">
-                            <button type="button" class="btn btn-primary next-step" data-step="1">Next: Guarantor Details</button>
+                            <button type="button" class="btn btn-primary next-step" data-step="1">Next: Guarantor
+                                Details</button>
                         </div>
                     </div>
 
@@ -144,17 +167,20 @@ use CodeIgniter\HTTP\SiteURI;
                                 <label for="guarantor-number" class="form-label">Member Number</label>
                                 <input type="text" name="guarantor-number" id="guarantor-number" class="form-control">
                             </div>
-                            <button type="button" id="fetchGuarantorBtn" class="btn btn-primary mt-2">Fetch guarantor</button>
+                            <button type="button" id="fetchGuarantorBtn" class="btn btn-primary mt-2">Fetch
+                                guarantor</button>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="guarantor-name" class="form-label">Guarantor Name</label>
-                                <input type="text" name="guarantor-name" id="guarantor-name" class="form-control" disabled>
+                                <input type="text" name="guarantor-name" id="guarantor-name" class="form-control"
+                                    disabled>
                             </div>
                             <div class="col-md-4">
                                 <label for="guarantor-mobile" class="form-label">Mobile Number</label>
-                                <input type="text" name="guarantor-mobile" id="guarantor-mobile" class="form-control" disabled>
+                                <input type="text" name="guarantor-mobile" id="guarantor-mobile" class="form-control"
+                                    disabled>
                             </div>
                             <div class="col-md-4">
                                 <label for="guarantor-amount" class="form-label">Guaranteed Amount</label>
@@ -180,12 +206,13 @@ use CodeIgniter\HTTP\SiteURI;
                         </table>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                            <button type="button" class="btn btn-secondary prev-step" data-step="2">Previous: Loan Information</button>
+                            <button type="button" class="btn btn-secondary prev-step" data-step="2">Previous: Loan
+                                Information</button>
                             <button type="submit" class="btn btn-success">Submit Details</button>
-                            
+
                         </div>
                     </div>
-                   
+
                 </form>
             </div>
         </div>
@@ -193,7 +220,7 @@ use CodeIgniter\HTTP\SiteURI;
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         // Form steps navigation
         const form = document.getElementById('multiStepForm');
         const steps = document.querySelectorAll('.form-step');
@@ -203,7 +230,7 @@ use CodeIgniter\HTTP\SiteURI;
 
         // Next button click handler
         nextButtons.forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 const currentStep = parseInt(this.getAttribute('data-step'));
                 const currentStepElement = document.getElementById(`step-${currentStep}`);
                 const nextStepElement = document.getElementById(`step-${currentStep + 1}`);
@@ -242,7 +269,7 @@ use CodeIgniter\HTTP\SiteURI;
 
         // Previous button click handler
         prevButtons.forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 const currentStep = parseInt(this.getAttribute('data-step'));
                 const currentStepElement = document.getElementById(`step-${currentStep}`);
                 const prevStepElement = document.getElementById(`step-${currentStep - 1}`);
@@ -270,7 +297,7 @@ use CodeIgniter\HTTP\SiteURI;
         // Ensure fetchMemberBtn exists before adding an event listener
         let fetchMemberBtn = document.getElementById('fetchMemberBtn');
         if (fetchMemberBtn) {
-            fetchMemberBtn.addEventListener('click', function() {
+            fetchMemberBtn.addEventListener('click', function () {
                 // console.log("Fetch Member button clicked");
 
                 let memberNo = document.getElementById('member-number').value.trim();
@@ -279,7 +306,7 @@ use CodeIgniter\HTTP\SiteURI;
                     return;
                 }
 
-                fetch(`<?= site_url('/accounting/remittances/get-member/')?>${encodeURIComponent(memberNo)}`)
+                fetch(`<?= site_url('/accounting/remittances/get-member/') ?>${encodeURIComponent(memberNo)}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -305,10 +332,10 @@ use CodeIgniter\HTTP\SiteURI;
         // Fetch interest Method
         const loanType = document.getElementById('loan_type');
 
-        loanType.addEventListener('change', function() {
+        loanType.addEventListener('change', function () {
             let loanId = loanType.value;
 
-            fetch(`<?= site_url('/loans/get-interest/')?>${encodeURIComponent(loanId)}`)
+            fetch(`<?= site_url('/loans/get-interest/') ?>${encodeURIComponent(loanId)}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -337,14 +364,14 @@ use CodeIgniter\HTTP\SiteURI;
         // fetch guarantor details
         const fetchGuarantorBtn = document.getElementById('fetchGuarantorBtn');
 
-        fetchGuarantorBtn.addEventListener('click', function() {
+        fetchGuarantorBtn.addEventListener('click', function () {
             let guarantorNumber = document.getElementById('guarantor-number').value.trim();
             if (guarantorNumber === '') {
                 alert("Please enter a valid Member Number.");
                 return;
             }
 
-            fetch(`<?= site_url('/accounting/remittances/get-member/')?>${encodeURIComponent(guarantorNumber)}`)
+            fetch(`<?= site_url('/accounting/remittances/get-member/') ?>${encodeURIComponent(guarantorNumber)}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -372,7 +399,7 @@ use CodeIgniter\HTTP\SiteURI;
         const totalInterestInput = document.getElementById('total_interest');
         const repaymentInput = document.getElementById('monthly_repayment');
         const feesInput = document.getElementById('fees');
-        const disburseAmountInput = document.getElementById('disburse_amount'); 
+        const disburseAmountInput = document.getElementById('disburse_amount');
         const serviceChargeInput = document.getElementById('service_charge');
         const crbAmountInput = document.getElementById('crb_amount');
         const insurancePremiumInput = document.getElementById('insurance_premium');
@@ -388,7 +415,7 @@ use CodeIgniter\HTTP\SiteURI;
             const interestMethod = interestMethodInput.value;
             const loanPrincipal = parseFloat(principalInput.value);
             const repaymentPeriod = parseInt(repaymentPeriodInput.value);
-            const insurancePremium = parseInt(loanPrincipal * parseFloat(insurancePremiumInput.value)/100)
+            const insurancePremium = parseInt(loanPrincipal * parseFloat(insurancePremiumInput.value) / 100)
             const fees = parseFloat((loanPrincipal * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
             const disburse = parseFloat(loanPrincipal - fees);
             const serviceCharge = loanPrincipal * (serviceChargeInput.value / 100);
@@ -438,7 +465,7 @@ use CodeIgniter\HTTP\SiteURI;
         // Add guarantors to table 
         const addBtn = document.getElementById('addBtn');
 
-        addBtn.addEventListener('click', function(e) {
+        addBtn.addEventListener('click', function (e) {
             e.preventDefault(); // Prevent form submission 
 
             const number = document.getElementById('guarantor-number').value.trim();
@@ -482,9 +509,60 @@ use CodeIgniter\HTTP\SiteURI;
     });
 </script>
 
+<!-- script to search by name -->
+<script>
+    const nameInput = document.getElementById('member-name-search');
+    const suggestionBox = document.getElementById('name-suggestions');
+
+    let debounceTimer;
+
+    nameInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+
+        const query = this.value.trim();
+        if (query.length < 2) {
+            suggestionBox.innerHTML = '';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`<?= site_url('/accounting/remittances/search-member-name') ?>?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    suggestionBox.innerHTML = '';
+                    if (data.length === 0) {
+                        suggestionBox.innerHTML = '<div class="list-group-item">No results found</div>';
+                        return;
+                    }
+
+                    data.forEach(member => {
+                        const item = document.createElement('div');
+                        item.classList.add('list-group-item', 'list-group-item-action');
+                        item.textContent = `${member.name} (${member.member_number})`;
+                        item.addEventListener('click', () => {
+                            document.getElementById('member-id').value = member.id;
+                            document.getElementById('member-name').value = member.name;
+                            document.getElementById('member-mobile').value = member.mobile;
+                            document.getElementById('member-number').value = member.member_number;
+                            nameInput.value = member.name;
+                            suggestionBox.innerHTML = '';
+                        });
+                        suggestionBox.appendChild(item);
+                    });
+                });
+        }, 300); // debounce delay
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!suggestionBox.contains(e.target) && e.target !== nameInput) {
+            suggestionBox.innerHTML = '';
+        }
+    });
+</script>
+
 <!-- Submission of Loan Data -->
 <script>
-    document.getElementById('loanApplicationForm').addEventListener('submit', function(e) {
+    document.getElementById('loanApplicationForm').addEventListener('submit', function (e) {
         e.preventDefault();
         showLoadingState(true);
 
@@ -522,15 +600,15 @@ use CodeIgniter\HTTP\SiteURI;
         });
 
         // Send data to backend using fetch
-        fetch('<?= site_url('/loans/application/submit')?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest', // optional: for CI4 to detect AJAX
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
+        fetch('<?= site_url('/loans/application/submit') ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest', // optional: for CI4 to detect AJAX
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
             .then(response => {
                 if (!response.ok) throw new Error("Network response was not ok");
                 return response.json();
