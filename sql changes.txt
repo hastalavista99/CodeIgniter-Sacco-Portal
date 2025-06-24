@@ -338,3 +338,44 @@ INSERT INTO `system_parameters` (`param_key`, `param_value`, `description`) VALU
 ('last_closed_period', '2024-12', 'Last closed accounting period in YYYY-MM format');
 
 INSERT INTO `system_parameters` (`id`, `param_key`, `param_value`, `description`) VALUES (NULL, 'loan_overpay_account', 'savings', 'Loan Overpayments to go to the following account');
+
+-- Registration Form Table (site/member/new)
+CREATE TABLE IF NOT EXISTS members_registration (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    dob DATE NOT NULL,
+    id_number VARCHAR(50) NOT NULL,
+    physical_address VARCHAR(255),
+    postal_address VARCHAR(255),
+    email VARCHAR(150) NOT NULL,
+    phone_number VARCHAR(50) NOT NULL,
+    area_chief VARCHAR(100),
+    next_of_kin_name VARCHAR(100),
+    next_of_kin_relationship VARCHAR(100),
+    next_of_kin_address VARCHAR(255),
+    next_of_kin_phone VARCHAR(50),
+    next_of_kin_email VARCHAR(150),
+    employer VARCHAR(150),
+    personal_number VARCHAR(50),
+    date_of_appointment DATE,
+    working_station VARCHAR(150),
+    employer_email VARCHAR(150),
+    employment_type ENUM('permanent','temporary'),
+    monthly_contribution DECIMAL(10,2),
+    remittance_mode ENUM('payrollCheckOff','bankTransfer','mobileMoney'),
+    employer_authorization TINYINT(1),
+    business_name VARCHAR(150),
+    business_postal_address VARCHAR(255),
+    business_postal_code VARCHAR(20),
+    business_nature VARCHAR(150),
+    business_physical_location VARCHAR(255),
+    mobile_banking TINYINT(1),
+    beneficiary_first_name VARCHAR(100),
+    beneficiary_last_name VARCHAR(100),
+    beneficiary_dob DATE,
+    beneficiary_id VARCHAR(50),
+    beneficiary_relationship VARCHAR(100),
+    entitlement_percentage VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
