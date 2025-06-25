@@ -393,25 +393,28 @@
 
     <main>
         <div class="container">
-            <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+            <section
+                class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
                             <?php
                             if (!empty(session()->getFlashdata('success'))) {
-                            ?>
+                                ?>
                                 <div class="alert alert-success alert-dismissible fade show">
                                     <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
-                                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+                                    <button type="button" class="container btn-close" aria-label="Close"
+                                        data-bs-dismiss="alert"></button>
                                 </div>
-                            <?php
+                                <?php
                             } else if (!empty(session()->getFlashdata('fail'))) {
-                            ?>
-                                <div class="alert alert-danger alert-dismissible fade show">
-                                    <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
-                                    <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
-                                </div>
-                            <?php
+                                ?>
+                                    <div class="alert alert-danger alert-dismissible fade show">
+                                        <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+                                        <button type="button" class="container btn-close" aria-label="Close"
+                                            data-bs-dismiss="alert"></button>
+                                    </div>
+                                <?php
                             }
                             ?>
                             <?php if (session()->getFlashdata('errors')): ?>
@@ -464,16 +467,17 @@
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <label for="firstName" class="form-label">First Name *</label>
-                                                    <input type="text" class="form-control" id="firstName" required>
+                                                    <input type="text" class="form-control" id="firstName" name="first_name" required>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="lastName" class="form-label">Last Name *</label>
-                                                    <input type="text" class="form-control" id="lastName" required>
+                                                    <input type="text" class="form-control" id="lastName" name="last_name" required>
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
-                                                    <label for="passportPhoto" class="form-label">Passport Photo *</label>
+                                                    <label for="passportPhoto" class="form-label">Passport Photo
+                                                        *</label>
                                                     <input type="file" class="form-control" id="passportPhoto" name="passport_photo" accept="image/*" required>
                                                 </div>
                                             </div>
@@ -481,68 +485,74 @@
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <label for="dob" class="form-label">Date of Birth *</label>
-                                                    <input type="date" class="form-control" id="dob" required>
+                                                    <input type="date" class="form-control" id="dob" name="dob" required>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="idNumber" class="form-label">ID Number *</label>
-                                                    <input type="text" class="form-control" id="idNumber" required>
+                                                    <input type="text" class="form-control" id="idNumber" name="id_number" required>
                                                 </div>
 
                                             </div>
 
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
-                                                    <label for="physicalAddress" class="form-label">Physical Address *</label>
-                                                    <input type="text" class="form-control" id="physicalAddress" required>
+                                                    <label for="physicalAddress" class="form-label">Physical Address
+                                                        *</label>
+                                                    <input type="text" class="form-control" id="physicalAddress" name="physical_address" required>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label for="postalAddress" class="form-label">Postal Address *</label>
-                                                    <input type="text" class="form-control" id="postalAddress" required>
+                                                    <label for="postalAddress" class="form-label">Postal Address
+                                                        *</label>
+                                                    <input type="text" class="form-control" id="postalAddress" name="postal_address" required>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <label for="email" class="form-label">Personal Email *</label>
-                                                    <input type="text" class="form-control" id="email" required>
+                                                    <input type="text" class="form-control" id="email" name="email" required>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="phoneNumber" class="form-label">Phone Number *</label>
-                                                    <input type="text" class="form-control" id="phoneNumber" required>
+                                                    <input type="text" class="form-control" id="phoneNumber" name="phone_number" required>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="areaChief" class="form-label">Area Chief (HOME AREA)</label>
-                                                <input type="text" class="form-control" id="areaChief">
+                                                <input type="text" class="form-control" id="areaChief" name="area_chief">
                                             </div>
 
                                             <div class="row">
                                                 <h4>Next of Kin</h4>
                                                 <div class="col-md-6">
                                                     <label for="nextOfKinName" class="form-label">Name *</label>
-                                                    <input type="text" class="form-control" id="nextOfKinName" required>
+                                                    <input type="text" class="form-control" id="nextOfKinName" name="next_of_kin_name" required>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label for="nextOfKinRelationship" class="form-label">Relationship *</label>
-                                                    <input type="text" class="form-control" id="nextOfKinRelationship" required>
+                                                    <label for="nextOfKinRelationship" class="form-label">Relationship
+                                                        *</label>
+                                                    <input type="text" class="form-control" id="nextOfKinRelationship" name="next_of_kin_relationship" required>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="nextOfKinAddress" class="form-label">Address</label>
-                                                    <input type="text" class="form-control" id="nextOfKinAddress">
+                                                    <input type="text" class="form-control" id="nextOfKinAddress" name="next_of_kin_address">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label for="nextOfKinPhone" class="form-label">Phone Number *</label>
-                                                    <input type="text" class="form-control" id="nextOfKinPhone" required>
+                                                    <label for="nextOfKinPhone" class="form-label">Phone Number
+                                                        *</label>
+                                                    <input type="text" class="form-control" id="nextOfKinPhone" name="next_of_kin_phone" required>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="nextOfKinEmail" class="form-label">Email Address</label>
-                                                    <input type="email" class="form-control" id="nextOfKinEmail">
+                                                    <input type="email" class="form-control" id="nextOfKinEmail" name="next_of_kin_email">
                                                 </div>
                                             </div>
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                                                <a class="btn btn-secondary " href="https://glohasacco.co.ke"><i class="bi bi-arrow-left me-2"></i>Back to Website</a>
-                                                <button type="button" class="btn btn-primary next-step" data-step="1">Next: Employment Details</button>
+                                                <a class="btn btn-secondary " href="https://glohasacco.co.ke"><i
+                                                        class="bi bi-arrow-left me-2"></i>Back to Website</a>
+                                                <button type="button" class="btn btn-primary next-step"
+                                                    data-step="1">Next: Employment Details</button>
                                             </div>
                                         </div>
                                         <!-- Step 2: Employment Details -->
@@ -550,108 +560,136 @@
                                             <h5 class="mb-4">Step 2: Employment Details</h5>
                                             <div class="row">
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="employer" class="form-label">Employer/Organization</label>
-                                                    <input type="text" class="form-control" id="employer">
+                                                    <label for="employer"
+                                                        class="form-label">Employer/Organization</label>
+                                                    <input type="text" class="form-control" id="employer" name="employer">
                                                 </div>
 
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="personalNumber" class="form-label">Personal Number</label>
-                                                    <input type="tel" class="form-control" id="personalNumber">
+                                                    <label for="personalNumber" class="form-label">Personal
+                                                        Number</label>
+                                                    <input type="tel" class="form-control" id="personalNumber" name="personal_number">
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="alternatePhone" class="form-label">Date of Appointment</label>
-                                                    <input type="date" class="form-control" id="alternatePhone">
-                                                </div>
-
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="workingStation" class="form-label">Working Station</label>
-                                                    <input type="text" class="form-control" id="workingStation">
+                                                    <label for="alternatePhone" class="form-label">Date of
+                                                        Appointment</label>
+                                                    <input type="date" class="form-control" id="alternatePhone" name="date_of_appointment">
                                                 </div>
 
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="employerEmail" class="form-label">Employer Email Address</label>
-                                                    <input type="email" class="form-control" id="employerEmail">
+                                                    <label for="workingStation" class="form-label">Working
+                                                        Station</label>
+                                                    <input type="text" class="form-control" id="workingStation" name="working_station">
+                                                </div>
+
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="employerEmail" class="form-label">Employer Email
+                                                        Address</label>
+                                                    <input type="email" class="form-control" id="employerEmail" name="employer_email">
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3">
                                                 <h4>Terms of Employment</h4>
                                                 <div class="col-md-6">
-                                                    <input type="radio" class="form-check-input" id="employmentType1" name="employmentType" value="permanent">
-                                                    <label for="employmentType1" class="form-check-label">Permanent & Pensionable</label>
+                                                    <input type="radio" class="form-check-input" id="employmentType1" name="employment_type" value="permanent">
+                                                    <label for="employmentType1" class="form-check-label">Permanent &
+                                                        Pensionable</label>
                                                     <br>
-                                                    <input type="radio" class="form-check-input" id="employmentType2" name="employmentType" value="temporary">
-                                                    <label for="employmentType2" class="form-check-label">Temporary/Contract</label>
+                                                    <input type="radio" class="form-check-input" id="employmentType2" name="employment_type" value="temporary">
+                                                    <label for="employmentType2"
+                                                        class="form-check-label">Temporary/Contract</label>
                                                 </div>
 
                                             </div>
 
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
-                                                    <label for="monthlyContribution" class="form-label">Monthly Contribution</label>
-                                                    <input type="number" class="form-control" id="monthlyContribution">
+                                                    <label for="monthlyContribution" class="form-label">Monthly
+                                                        Contribution</label>
+                                                    <input type="number" class="form-control" id="monthlyContribution" name="monthly_contribution">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <h4>Mode of remittance</h4>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="remittanceMode" id="remittanceMode1" value="payrollCheckOff">
-                                                        <label class="form-check-label" for="remittanceMode1">Payroll Check Off</label>
+                                                        <input class="form-check-input" type="radio"
+                                                        name="remittance_mode" id="remittanceMode1" value="payrollCheckOff">
+                                                        <label class="form-check-label" for="remittanceMode1">Payroll
+                                                            Check Off</label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="remittanceMode" id="remittanceMode2" value="bankTransfer">
-                                                        <label class="form-check-label" for="remittanceMode2">Cheque/Direct Deposit</label>
+                                                        <input class="form-check-input" type="radio"
+                                                        name="remittance_mode" id="remittanceMode2" value="bankTransfer">
+                                                        <label class="form-check-label"
+                                                            for="remittanceMode2">Cheque/Direct Deposit</label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="remittanceMode" id="remittanceMode3" value="mobileMoney">
-                                                        <label class="form-check-label" for="remittanceMode3">Mobile Money</label>
+                                                        <input class="form-check-input" type="radio"
+                                                        name="remittance_mode" id="remittanceMode3" value="mobileMoney">
+                                                        <label class="form-check-label" for="remittanceMode3">Mobile
+                                                            Money</label>
                                                     </div>
                                                 </div>
                                                 <div class="form-check ms-3 my-2">
-                                                    <input class="form-check-input" type="checkbox" id="employerAuthorization" name="employerAuthorization">
-                                                    <label class="form-check-label" for="employerAuthorization">Authorize Employer to Deduct Contributions</label>
+                                                    <input class="form-check-input" type="checkbox" id="employerAuthorization" name="employer_authorization">
+                                                    <label class="form-check-label"
+                                                        for="employerAuthorization">Authorize Employer to Deduct
+                                                        Contributions</label>
                                                 </div>
-                                                <p class="fw-bolder">All remittances should be deposited at any Co-op Bank, Account No.01100844777700
-                                                    Account Name: GLOHA SACCO SOCIETY LTD, Haile Selassie, Nairobi Branch or Mpesa
-                                                    Paybill 400200 and Account No: 40084477. (CAUTION: DO NOT PAY CASH TO ANY
+                                                <p class="fw-bolder">All remittances should be deposited at any Co-op
+                                                    Bank, Account No.01100844777700
+                                                    Account Name: GLOHA SACCO SOCIETY LTD, Haile Selassie, Nairobi
+                                                    Branch or Mpesa
+                                                    Paybill 400200 and Account No: 40084477. (CAUTION: DO NOT PAY CASH
+                                                    TO ANY
                                                     INDIVIDUAL)</p>
                                             </div>
 
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                                                <button type="button" class="btn btn-secondary prev-step" data-step="2">Previous: Personal Information</button>
-                                                <button type="button" class="btn btn-primary next-step" data-step="2">Next: Business Details</button>
+                                                <button type="button" class="btn btn-secondary prev-step"
+                                                    data-step="2">Previous: Personal Information</button>
+                                                <button type="button" class="btn btn-primary next-step"
+                                                    data-step="2">Next: Business Details</button>
                                             </div>
                                         </div>
 
                                         <!-- Business Details -->
                                         <div class="form-step" id="step-3">
-                                            <h5 class="mb-4">Step 3: Business Details (to be completed if not in employment)</h5>
+                                            <h5 class="mb-4">Step 3: Business Details (to be completed if not in
+                                                employment)</h5>
 
                                             <div class="row mb-3">
                                                 <div class="mb-3 col-md-6">
                                                     <label for="businessName" class="form-label">Business Name</label>
-                                                    <input type="text" class="form-control" id="businessName">
+                                                    <input type="text" class="form-control" id="businessName" name="business_name">
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="businessPostalAddress" class="form-label">Business Postal Address</label>
-                                                    <input type="text" class="form-control" id="businessPostalAddress">
+                                                    <label for="businessPostalAddress" class="form-label">Business
+                                                        Postal Address</label>
+                                                    <input type="text" class="form-control" id="businessPostalAddress" name="business_postal_address">
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="businessPostalCode" class="form-label">Postal Code</label>
-                                                    <input type="text" class="form-control" id="businessPostalCode">
+                                                    <label for="businessPostalCode" class="form-label">Postal
+                                                        Code</label>
+                                                    <input type="text" class="form-control" id="businessPostalCode" name="business_postal_code">
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="businessNature" class="form-label">Nature of Business</label>
-                                                    <input type="tel" class="form-control" id="businessNature">
+                                                    <label for="businessNature" class="form-label">Nature of
+                                                        Business</label>
+                                                    <input type="tel" class="form-control" id="businessNature" name="business_nature">
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="businessPhysicalLocation" class="form-label">Business Physical Location</label>
-                                                    <input type="text" class="form-control" id="businessPhysicalLocation">
+                                                    <label for="businessPhysicalLocation" class="form-label">Business
+                                                        Physical Location</label>
+                                                    <input type="text" class="form-control" id="businessPhysicalLocation" name="business_physical_location">
                                                 </div>
                                             </div>
 
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                                                <button type="button" class="btn btn-secondary me-md-2 prev-step" data-step="3">Previous: Employment Details</button>
-                                                <button type="button" class="btn btn-primary next-step" data-step="3">Next: Terms & Conditions</button>
+                                                <button type="button" class="btn btn-secondary me-md-2 prev-step"
+                                                    data-step="3">Previous: Employment Details</button>
+                                                <button type="button" class="btn btn-primary next-step"
+                                                    data-step="3">Next: Terms & Conditions</button>
                                             </div>
                                         </div>
 
@@ -660,22 +698,27 @@
 
                                             <div class=" mb-3">
                                                 <ol>
-                                                    <li class="text-uppercase">Membership fees : USD 50 - one time payment</li>
+                                                    <li class="text-uppercase">Membership fees : USD 50 - one time
+                                                        payment</li>
                                                     <li class="text-uppercase">Minimum Monthly savings : USD 40</li>
                                                     <li class="text-uppercase">Share Capital : USD 194</li>
                                                 </ol>
                                             </div>
 
                                             <div class="form-check ms-3 my-2">
-                                                <input class="form-check-input" type="checkbox" id="mobileBanking" name="mobileBanking">
-                                                <label class="form-check-label" for="mobileBanking">Enable Mobile Banking</label>
+                                                <input class="form-check-input" type="checkbox" id="mobileBanking" name="mobile_banking">
+                                                <label class="form-check-label" for="mobileBanking">Enable Mobile
+                                                    Banking</label>
                                             </div>
 
-                                            <p class="mb-3 fw-bolder">NB: Monthly savings will be remitted on or before 10<sup>th</sup> of every month. No ledger fees applicable</p>
+                                            <p class="mb-3 fw-bolder">NB: Monthly savings will be remitted on or before
+                                                10<sup>th</sup> of every month. No ledger fees applicable</p>
 
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                                                <button type="button" class="btn btn-secondary me-md-2 prev-step" data-step="4">Previous: Business Details</button>
-                                                <button type="button" class="btn btn-primary next-step" data-step="4">Next: Beneficiaries</button>
+                                                <button type="button" class="btn btn-secondary me-md-2 prev-step"
+                                                    data-step="4">Previous: Employment Details</button>
+                                                <button type="button" class="btn btn-primary next-step"
+                                                    data-step="4">Next: Beneficiaries</button>
                                             </div>
                                         </div>
 
@@ -683,7 +726,8 @@
                                         <div class="form-step" id="step-5">
                                             <h5 class="mb-4">Step 5: Beneficiaries</h5>
                                             <div class="table-responsive mb-3">
-                                                <table class="table table-bordered align-middle" id="beneficiariesTable">
+                                                <table class="table table-bordered align-middle"
+                                                    id="beneficiariesTable">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th>First Name</th>
@@ -699,14 +743,46 @@
                                                         <!-- Beneficiary rows will be added here -->
                                                     </tbody>
                                                 </table>
-                                                <button type="button" class="btn btn-outline-primary" id="addBeneficiaryBtn"><i class="bi bi-plus-circle"></i> Add Beneficiary</button>
+                                                <button type="button" class="btn btn-outline-primary"
+                                                    id="addBeneficiaryBtn"><i class="bi bi-plus-circle"></i> Add
+                                                    Beneficiary</button>
                                             </div>
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                                                <button type="button" class="btn btn-secondary me-md-2 prev-step" data-step="5">Previous: Employment Details</button>
-                                                <button type="submit" class="btn btn-success">Submit Application</button>
+                                                <button type="button" class="btn btn-secondary me-md-2 prev-step"
+                                                    data-step="5">Previous: Business Details</button>
+                                                <button type="submit" class="btn btn-success">Submit
+                                                    Application</button>
                                             </div>
                                         </div>
                                     </form>
+
+                                    <!-- Feedback Modal -->
+                                    <div id="feedbackModal" class="modal fade" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="feedbackModalTitle">Notification</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <div class="feedback-icon mb-4">
+                                                        <!-- Icon will be inserted here -->
+                                                    </div>
+                                                    <div id="feedbackMessage"></div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary"
+                                                        data-bs-dismiss="modal">OK</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Loading Overlay -->
+                                    <div id="loadingOverlay">
+                                        <div class="spinner-icon"></div>
+                                    </div>
 
                                 </div>
 
@@ -718,11 +794,12 @@
 
 
                 <div class="d-flex justify-content-center align-items-center mt-4">
-                    &copy;<?= date('Y') ?>, <a href="https://glohasacco.co.ke" class="fw-bolder text-success">Gloha Sacco</a>
+                    &copy;<?= date('Y') ?>, <a href="https://glohasacco.co.ke" class="fw-bolder text-success">Gloha
+                        Sacco</a>
                 </div>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function() {
+                    document.addEventListener('DOMContentLoaded', function () {
                         // Form steps navigation
                         const form = document.getElementById('memberForm');
                         const steps = document.querySelectorAll('.form-step');
@@ -737,7 +814,7 @@
                         // Add initial row
                         addBeneficiaryRow();
 
-                        addBeneficiaryBtn.addEventListener('click', function() {
+                        addBeneficiaryBtn.addEventListener('click', function () {
                             addBeneficiaryRow();
                         });
 
@@ -755,7 +832,7 @@
                             beneficiariesTable.appendChild(row);
                         }
 
-                        beneficiariesTable.addEventListener('click', function(e) {
+                        beneficiariesTable.addEventListener('click', function (e) {
                             if (e.target.closest('.remove-beneficiary')) {
                                 const row = e.target.closest('tr');
                                 if (beneficiariesTable.rows.length > 1) {
@@ -769,7 +846,7 @@
 
                         // Next button click handler
                         nextButtons.forEach(button => {
-                            button.addEventListener('click', function() {
+                            button.addEventListener('click', function () {
                                 const currentStep = parseInt(this.getAttribute('data-step'));
                                 const currentStepElement = document.getElementById(`step-${currentStep}`);
                                 const nextStepElement = document.getElementById(`step-${currentStep + 1}`);
@@ -808,7 +885,7 @@
 
                         // Previous button click handler
                         prevButtons.forEach(button => {
-                            button.addEventListener('click', function() {
+                            button.addEventListener('click', function () {
                                 const currentStep = parseInt(this.getAttribute('data-step'));
                                 const currentStepElement = document.getElementById(`step-${currentStep}`);
                                 const prevStepElement = document.getElementById(`step-${currentStep - 1}`);
@@ -830,7 +907,7 @@
                             });
                         });
 
-                        form.addEventListener('submit', function(e) {
+                        form.addEventListener('submit', function (e) {
                             e.preventDefault();
                             showLoadingState(true);
 
@@ -868,30 +945,30 @@
                             // Add beneficiaries as JSON string
                             formData.append('beneficiaries', JSON.stringify(beneficiaries));
 
-                            fetch('site/member/new', {
+                            fetch('<?= site_url('site/member/new') ?>', {
                                 method: 'POST',
                                 body: formData,
                                 headers: {
                                     'X-Requested-With': 'XMLHttpRequest'
                                 }
                             })
-                            .then(response => response.json())
-                            .then(data => {
-                                showLoadingState(false);
-                                if (data.success) {
-                                    showFeedbackModal(true, 'Success!', data.message || 'Registration successful.');
-                                    setTimeout(() => {
-                                        window.location.reload();
-                                    }, 2000);
-                                } else {
-                                    showFeedbackModal(false, 'Error', data.message || 'Registration failed.');
-                                }
-                            })
-                            .catch(error => {
-                                showLoadingState(false);
-                                showFeedbackModal(false, 'Submission Error', 'An error occurred while submitting the form. Please try again.');
-                                console.error('Error:', error);
-                            });
+                                .then(response => response.json())
+                                .then(data => {
+                                    showLoadingState(false);
+                                    if (data.success) {
+                                        showFeedbackModal(true, 'Success!', data.message || 'Registration successful.');
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 2000);
+                                    } else {
+                                        showFeedbackModal(false, 'Error', data.message || 'Registration failed.');
+                                    }
+                                })
+                                .catch(error => {
+                                    showLoadingState(false);
+                                    showFeedbackModal(false, 'Submission Error', 'An error occurred while submitting the form. Please try again.');
+                                    console.error('Error:', error);
+                                });
                         });
 
                         /**
@@ -958,7 +1035,9 @@
 
 
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
 
 </body>

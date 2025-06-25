@@ -10,10 +10,11 @@ class Site extends BaseController
 {
     public function memberNew()
     {
-        if ($this->request->getMethod() !== 'post') {
+        if ($this->request->getMethod() !== 'POST') {
             return $this->response->setStatusCode(405)->setJSON([
                 'success' => false,
-                'message' => 'Method Not Allowed'
+                'message' => 'Method Not Allowed',
+                'method' => $this->request->getMethod()
             ]);
         }
 
