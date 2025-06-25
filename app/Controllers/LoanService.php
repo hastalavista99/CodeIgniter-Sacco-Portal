@@ -98,8 +98,8 @@ class LoanService extends BaseController
      */
     public function applyAdvancePayment($loanId, $amount)
     {
-        $repaymentModel = new \App\Models\LoanRepaymentModel();
-        $loanModel = new \App\Models\LoanApplicationModel();
+        $repaymentModel = new LoanRepaymentModel();
+        $loanModel = new LoanApplicationModel();
 
         $remaining = floatval($amount);
         $loan = $loanModel->find($loanId);
@@ -192,6 +192,18 @@ class LoanService extends BaseController
         }
 
         log_message('debug', "Advance payment complete. Remaining unallocated: $remaining");
+        if ($remaining <= 0) {
+            // Check if all installments are now paid
+            $allPaid = $repaymentModel
+                ->where('loan_id', $loanId)
+                ->where('status !=', 'paid')
+                ->countAllResults() === 0;
+
+            if ($allPaid) {
+                $loanModel->update($loanId, ['loan_status' => 'paid']);
+                log_message('debug', "Loan ID $loanId status updated to 'paid'");
+            }
+        }
         return [
             'principal_paid' => $totalPrincipalPaid,
             'interest_paid' => $totalInterestPaid

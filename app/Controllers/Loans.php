@@ -102,7 +102,7 @@ class Loans extends BaseController
         ];
 
         // Save $data to your DB using model
-        $model = new \App\Models\LoanTypeModel();
+        $model = new LoanTypeModel();
         $model->insert($data);
 
         $accountsModel->insert([
@@ -135,7 +135,7 @@ class Loans extends BaseController
         ];
 
         // Save $data to your DB using model
-        $model = new \App\Models\LoanTypeModel();
+        $model = new LoanTypeModel();
         $model->update($id, $data);
 
 
@@ -176,6 +176,18 @@ class Loans extends BaseController
 
         $loanModel = new LoanApplicationModel();
         $guarantorModel = new LoanGuarantorModel();
+
+        $existingLoan = $loanModel
+            ->where('member_id', $data['member_id'])
+            ->where('loan_status', 'approved')
+            ->first();
+
+        if ($existingLoan) {
+            return $this->response->setJSON([
+            'success' => false,
+            'message' => 'You already have an active approved loan. You cannot apply for a new loan until it is cleared.'
+            ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+        }
 
         // Save loan application
         $loanData = [
