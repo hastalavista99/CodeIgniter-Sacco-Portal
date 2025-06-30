@@ -54,6 +54,7 @@ class LoanService extends BaseController
 
         $balance = $P;
 
+        $totalInterest = 0;
         for ($i = 1; $i <= $n; $i++) {
             $dueDate = clone $startDate;
             $dueDate->modify("+{$i} months");
@@ -84,6 +85,15 @@ class LoanService extends BaseController
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ];
+            $totalInterest += $interest;
+        }
+
+        // Optionally, you can round the total interest and adjust the last installment's interest_due to match
+        $roundedTotalInterest = round($totalInterest);
+        $interestDiff = $roundedTotalInterest - $totalInterest;
+        if ($n > 0 && abs($interestDiff) > 0.01) {
+            // Adjust the last installment's interest_due so the sum matches the rounded value
+            $installments[$n-1]['interest_due'] = round($installments[$n-1]['interest_due'] + $interestDiff, 2);
         }
 
         return $repaymentModel->insertBatch($installments);
@@ -109,7 +119,6 @@ class LoanService extends BaseController
             return;
         }
 
-        $monthlyRate = (float) $loan['interest_rate'] / 100 / 12;
         $loanAmount = floatval($loan['principal']);
 
         $installments = $repaymentModel
@@ -157,38 +166,49 @@ class LoanService extends BaseController
 
             $interestDue = floatval($installment['interest_due']);
             $interestPaid = floatval($installment['interest_paid']);
+            $principalDue = floatval($installment['principal_due']);
             $principalPaid = floatval($installment['principal_paid']);
 
             $interestRemaining = $interestDue - $interestPaid;
-            $payNow = min($remaining, $due);
+            $principalRemaining = $principalDue - $principalPaid;
 
-            $interestPayment = min($payNow, $interestRemaining);
-            $principalPayment = $payNow - $interestPayment;
+            $interestPayment = 0;
+            $principalPayment = 0;
 
-            log_message('debug', "Installment #$id | PayNow: $payNow | InterestDue: $interestDue | AlreadyPaid: $alreadyPaid | InterestRemaining: $interestRemaining | PrincipalPayment: $principalPayment");
+            // Always pay all remaining interest for this period first
+            if ($remaining > 0 && $interestRemaining > 0) {
+                $interestPayment = min($remaining, $interestRemaining);
+                $remaining -= $interestPayment;
+            }
 
-            $interestPaid = round($interestPaid + $interestPayment,2);
+            // Then pay principal for this period if any money left
+            if ($remaining > 0 && $principalRemaining > 0) {
+                $principalPayment = min($remaining, $principalRemaining);
+                $remaining -= $principalPayment;
+            }
+
+            $newInterestPaid = round($interestPaid + $interestPayment, 2);
+            $newPrincipalPaid = round($principalPaid + $principalPayment, 2);
+            $newAmountPaid = round($alreadyPaid + $interestPayment + $principalPayment, 2);
+
             $updateData = [
-                'amount_paid' => round($alreadyPaid + $payNow, 2),
-                'interest_paid' => round($interestPaid + $interestPayment,2),
-                'principal_paid' => round($principalPaid + $principalPayment, 2),
+                'amount_paid' => $newAmountPaid,
+                'interest_paid' => $newInterestPaid,
+                'principal_paid' => $newPrincipalPaid,
                 'payment_date' => date('Y-m-d'),
                 'payment_method' => 'advance_payment',
-                'status' => ($alreadyPaid + $payNow >= floatval($installment['amount_due'])) ? 'paid' : 'pending',
+                'status' => ($newAmountPaid >= floatval($installment['amount_due'])) ? 'paid' : 'pending',
             ];
 
             $success = $repaymentModel->update($id, $updateData);
-
 
             if (!$success) {
                 log_message('error', "Failed to update installment ID $id");
             } else {
                 log_message('debug', "Updated installment ID $id: " . json_encode($updateData));
-                $totalInterestPaid += $interestPaid;
+                $totalInterestPaid += $interestPayment;
                 $totalPrincipalPaid += $principalPayment;
             }
-
-            $remaining -= $payNow;
         }
 
         log_message('debug', "Advance payment complete. Remaining unallocated: $remaining");

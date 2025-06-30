@@ -804,15 +804,5 @@ class Members extends BaseController
         }
     }
 
-    public function siteRegister()
-    {
-        helper('form');
-
-        $data = [
-            'title' => 'Register Member',
-
-        ]; 
-
-        return view('site/register', $data);
-    }
+    
 }

@@ -304,7 +304,7 @@ class JournalController extends BaseController
                 'description' => $tx['description'],
                 'reference' => $txReference, // Unique reference number
                 'created_by' => session()->get('loggedInUser'),
-                'posted' => 0 // Not posted yet
+                'posted' => 1 // Mark as posted
             ];
             $journalEntryID = $journalModel->insert($journalData);
 

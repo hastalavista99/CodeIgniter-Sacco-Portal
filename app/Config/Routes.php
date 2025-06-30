@@ -42,8 +42,8 @@ $routes->get('password/forgot', 'Auth::changeAuth');
 $routes->post('renew/password', 'Auth::resetPassword');
 $routes->post('malipo/account', 'Integrations::account');
 $routes->post('malipo/advise', 'Integrations::advise');
-$routes->get('site/member/register', 'Members::siteRegister');
-$routes->post('site/member/new', 'Site::memberNew');
+$routes->get('site/register', 'Site::siteRegister');
+$routes->post('site/new', 'Site::memberNew');
 
 $routes->post('bank/receive', 'BankController::receive');
 $routes->post('bank/validate', 'BankController::validateMember');

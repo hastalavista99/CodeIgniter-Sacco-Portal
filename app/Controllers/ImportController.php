@@ -314,7 +314,10 @@ class ImportController extends BaseController
             $headers = array_shift($data);
 
             // check the headers are correct
-            $actualHeaders = array_map('strtolower', array_map('trim', array_values($headers)));
+            $actualHeaders = array_map('strtolower', array_map(function ($h) {
+                return is_null($h) ? '' : trim($h);
+            }, array_values($headers)));
+
             $expectedHeaders = ['member_number', 'transaction_type', 'amount', 'payment_method', 'transaction_date', 'description', 'service_transaction'];
 
             $hasLoanId = in_array('loan_id', $actualHeaders);

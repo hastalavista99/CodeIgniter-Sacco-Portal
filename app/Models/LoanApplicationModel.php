@@ -202,7 +202,7 @@ class LoanApplicationModel extends Model
             'disbursed'  => $disbursed,
             'total_due'  => $totalDue,
             'total_paid' => $totalPaid,
-            'balance'    => $balance,
+            'balance'    => round($balance, 2),
         ];
     }
 

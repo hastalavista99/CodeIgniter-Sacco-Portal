@@ -8,6 +8,20 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Site extends BaseController
 {
+
+    public function siteRegister()
+    {
+        helper('form');
+
+        $data = [
+            'title' => 'Register Member',
+
+        ]; 
+
+        return view('site/register', $data);
+    }
+
+    
     public function memberNew()
     {
         if ($this->request->getMethod() !== 'POST') {

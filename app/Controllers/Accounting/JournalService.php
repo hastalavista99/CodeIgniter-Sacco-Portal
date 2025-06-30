@@ -122,6 +122,7 @@ class JournalService extends BaseController
             'description' => 'Loan repayment for Loan ID ' . $loanId,
             'reference'   => 'Repayment #' . $loanId,
             'created_by'  => $user,
+            'posted'      => 1, // Mark as posted
         ];
 
         $entryId = $journalEntryModel->insert($entryData);

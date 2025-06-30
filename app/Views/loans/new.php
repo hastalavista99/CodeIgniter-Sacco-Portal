@@ -433,23 +433,28 @@ use CodeIgniter\HTTP\SiteURI;
             let repayment = 0;
 
             if (interestMethod === 'Flat Rate') {
-                interest = Math.ceil(loanPrincipal * monthlyRate * repaymentPeriod); // round up to the nearest number
-                totalLoan = Math.ceil(loanPrincipal + interest); // round up to the nearest number
-                repayment = totalLoan / repaymentPeriod;
+                // Flat rate: interest = principal * rate * period
+                interest = parseFloat(loanPrincipal) * parseFloat(monthlyRate) * parseInt(repaymentPeriod);
+                totalLoan = parseFloat(loanPrincipal) + interest;
+                repayment = totalLoan / parseInt(repaymentPeriod);
 
             } else if (interestMethod === 'Reducing Balance') {
-                const r = monthlyRate;
-                const n = repaymentPeriod;
-                const P = loanPrincipal;
-
-                repayment = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-                totalLoan = Math.ceil(repayment * n); // round up to the nearest number
-                interest = Math.ceil(totalLoan - loanPrincipal);
+                // Reducing balance: use the exact same formula as backend
+                const r = parseFloat(monthlyRate);
+                const n = parseInt(repaymentPeriod);
+                const P = parseFloat(loanPrincipal);
+                if (r > 0 && n > 0) {
+                    repayment = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                } else {
+                    repayment = 0;
+                }
+                totalLoan = repayment * n;
+                interest = totalLoan - P;
             }
 
-            totalLoanInput.value = totalLoan.toFixed(2);
-            totalInterestInput.value = interest.toFixed(2);
-            repaymentInput.value = repayment.toFixed(2);
+            totalLoanInput.value = totalLoan > 0 ? totalLoan.toFixed(2) : '';
+            totalInterestInput.value = interest > 0 ? Math.round(interest) : '';
+            repaymentInput.value = repayment > 0 ? repayment.toFixed(2) : '';
             feesInput.value = fees.toFixed(2);
             disburseAmountInput.value = disburse.toFixed(2);
             calculatedInsurance.value = insurancePremium.toFixed(2);
