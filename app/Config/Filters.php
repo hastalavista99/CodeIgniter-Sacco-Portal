@@ -38,6 +38,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'AuthCheck'     => AuthCheckFilter::class,
         'permission'    => UserPermissionFilter::class,
+        'jwt' => \App\Filters\JWTAuthFilter::class,
     ];
 
     /**
@@ -73,6 +74,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'cors' => ['except' => ['login/*']],
             // 'csrf' => [
             //     'except' => [
             //         'payments/export',

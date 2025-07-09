@@ -49,6 +49,18 @@ $routes->post('bank/receive', 'BankController::receive');
 $routes->post('bank/validate', 'BankController::validateMember');
 //Bank API Integration
 
+// Mobile App Routes
+
+$routes->post('api/login', 'Api\AuthController::login');
+
+$routes->group('api', ['filter' => 'jwt'], function($routes) {
+    $routes->get('profile', 'Api\UserController::profile');
+    $routes->get('dashboard', 'Api\DashboardController::index');
+});
+
+
+// Sacco backend routes
+
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
     $routes->post('dashboard/updateMemberNo', 'Dashboard::updateMemberNo');

@@ -53,6 +53,7 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         'F' => 
         array (
             'FontLib\\' => 8,
+            'Firebase\\JWT\\' => 13,
             'Faker\\' => 6,
         ),
         'E' => 
@@ -147,6 +148,10 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         array (
             0 => __DIR__ . '/..' . '/dompdf/php-font-lib/src/FontLib',
         ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
         'Faker\\' => 
         array (
             0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
@@ -207,6 +212,7 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         'App\\Controllers\\Accounting\\ReportsController' => __DIR__ . '/../..' . '/app/Controllers/Accounting/ReportsController.php',
         'App\\Controllers\\AdminSettingsController' => __DIR__ . '/../..' . '/app/Controllers/AdminSettingsController.php',
         'App\\Controllers\\Agents' => __DIR__ . '/../..' . '/app/Controllers/Agents.php',
+        'App\\Controllers\\Api\\AuthController' => __DIR__ . '/../..' . '/app/Controllers/Api/AuthController.php',
         'App\\Controllers\\Auth' => __DIR__ . '/../..' . '/app/Controllers/Auth.php',
         'App\\Controllers\\BankController' => __DIR__ . '/../..' . '/app/Controllers/BankController.php',
         'App\\Controllers\\BaseController' => __DIR__ . '/../..' . '/app/Controllers/BaseController.php',
@@ -224,6 +230,7 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         'App\\Controllers\\Payments' => __DIR__ . '/../..' . '/app/Controllers/Payments.php',
         'App\\Controllers\\SendSMS' => __DIR__ . '/../..' . '/app/Controllers/SendSMS.php',
         'App\\Controllers\\Settings' => __DIR__ . '/../..' . '/app/Controllers/Settings.php',
+        'App\\Controllers\\Site' => __DIR__ . '/../..' . '/app/Controllers/Site.php',
         'App\\Controllers\\StaffController' => __DIR__ . '/../..' . '/app/Controllers/StaffController.php',
         'App\\Filters\\AuthCheckFilter' => __DIR__ . '/../..' . '/app/Filters/AuthCheckFilter.php',
         'App\\Filters\\UserPermissionFilter' => __DIR__ . '/../..' . '/app/Filters/UserPermissionFilter.php',
@@ -246,8 +253,10 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         'App\\Models\\LoanGuarantorModel' => __DIR__ . '/../..' . '/app/Models/LoanGuarantorModel.php',
         'App\\Models\\LoanRepaymentModel' => __DIR__ . '/../..' . '/app/Models/LoanRepaymentModel.php',
         'App\\Models\\LoanTypeModel' => __DIR__ . '/../..' . '/app/Models/LoanTypeModel.php',
+        'App\\Models\\MemberBeneficiariesModel' => __DIR__ . '/../..' . '/app/Models/MemberBeneficiariesModel.php',
         'App\\Models\\MemberLogin' => __DIR__ . '/../..' . '/app/Models/MemberLogin.php',
         'App\\Models\\MembersModel' => __DIR__ . '/../..' . '/app/Models/MembersModel.php',
+        'App\\Models\\MembersRegistrationModel' => __DIR__ . '/../..' . '/app/Models/MembersRegistrationModel.php',
         'App\\Models\\OTPModel' => __DIR__ . '/../..' . '/app/Models/OTPModel.php',
         'App\\Models\\OrganizationModel' => __DIR__ . '/../..' . '/app/Models/OrganizationModel.php',
         'App\\Models\\PaymentsModel' => __DIR__ . '/../..' . '/app/Models/PaymentsModel.php',
@@ -1421,6 +1430,14 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         'Faker\\Provider\\zh_TW\\Text' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/zh_TW/Text.php',
         'Faker\\UniqueGenerator' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/UniqueGenerator.php',
         'Faker\\ValidGenerator' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/ValidGenerator.php',
+        'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
+        'Firebase\\JWT\\CachedKeySet' => __DIR__ . '/..' . '/firebase/php-jwt/src/CachedKeySet.php',
+        'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
+        'Firebase\\JWT\\JWK' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWK.php',
+        'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
+        'Firebase\\JWT\\JWTExceptionWithPayloadInterface' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWTExceptionWithPayloadInterface.php',
+        'Firebase\\JWT\\Key' => __DIR__ . '/..' . '/firebase/php-jwt/src/Key.php',
+        'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'FontLib\\AdobeFontMetrics' => __DIR__ . '/..' . '/dompdf/php-font-lib/src/FontLib/AdobeFontMetrics.php',
         'FontLib\\BinaryStream' => __DIR__ . '/..' . '/dompdf/php-font-lib/src/FontLib/BinaryStream.php',
         'FontLib\\EOT\\File' => __DIR__ . '/..' . '/dompdf/php-font-lib/src/FontLib/EOT/File.php',
