@@ -52,4 +52,20 @@ class TransactionsModel extends Model
 
         return (float) ($result->amount ?? 0);
     }
+
+    public function getMobileTransactions(int $limit = 10): array
+    {
+        return $this->builder()
+            ->select([
+                'reference AS id',
+                'service_transaction AS transType',
+                'DATE_FORMAT(transaction_date, "%Y-%m-%d") AS transTime',
+                'payment_method AS paymentType',
+                'amount AS transAmount'
+            ])
+            ->orderBy('transaction_date', 'DESC')
+            ->limit($limit)
+            ->get()
+            ->getResultArray();
+    }
 }

@@ -56,6 +56,7 @@ $routes->post('api/login', 'Api\AuthController::login');
 $routes->group('api', ['filter' => 'jwt'], function($routes) {
     $routes->get('profile', 'Api\UserController::profile');
     $routes->get('dashboard', 'Api\DashboardController::index');
+    $routes->get('transactions', 'Api\TransactionsController::index');
 });
 
 
