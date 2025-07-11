@@ -22,10 +22,10 @@ class TransactionsController extends BaseController
         $this->model = new TransactionsModel();
     }
 
-    public function index()
+    public function index($member)
     {
         $model = new TransactionsModel();
-        $transactions = $model->getRecentTransactions(10);
+        $transactions = $model->getMobileTransactions($member,10);
 
         if (empty($transactions)) {
             return $this->response->setJSON([

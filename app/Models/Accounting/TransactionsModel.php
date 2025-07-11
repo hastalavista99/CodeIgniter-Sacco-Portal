@@ -53,7 +53,7 @@ class TransactionsModel extends Model
         return (float) ($result->amount ?? 0);
     }
 
-    public function getMobileTransactions(int $limit = 10): array
+    public function getMobileTransactions($member, int $limit = 10): array
     {
         return $this->builder()
             ->select([
@@ -63,6 +63,7 @@ class TransactionsModel extends Model
                 'payment_method AS paymentType',
                 'amount AS transAmount'
             ])
+            ->where('member_number', $member)
             ->orderBy('transaction_date', 'DESC')
             ->limit($limit)
             ->get()
