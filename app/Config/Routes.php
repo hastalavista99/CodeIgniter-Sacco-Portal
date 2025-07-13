@@ -53,6 +53,8 @@ $routes->post('bank/validate', 'BankController::validateMember');
 
 $routes->post('api/login', 'Api\AuthController::login');
 $routes->get('api/sacco/loans/(:num)', 'Api\LoansController::index/$1');
+$routes->get('api/sacco/balances/(:num)', 'Api\TransactionsController::balances/$1');
+
 
 $routes->group('api', ['filter' => 'jwt'], function($routes) {
     $routes->get('profile', 'Api\UserController::profile');
