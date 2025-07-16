@@ -52,15 +52,16 @@ $routes->post('bank/validate', 'BankController::validateMember');
 // Mobile App Routes
 
 $routes->post('api/login', 'Api\AuthController::login');
-$routes->get('api/sacco/loans/(:num)', 'Api\LoansController::index/$1');
-$routes->get('api/sacco/balances/(:num)', 'Api\TransactionsController::balances/$1');
+$routes->post('api/auth/refresh', 'Api\AuthController::refresh');
+
 
 
 $routes->group('api', ['filter' => 'jwt'], function($routes) {
     $routes->get('profile', 'Api\UserController::profile');
     $routes->get('dashboard', 'Api\DashboardController::index');
     $routes->get('transactions/(:num)', 'Api\TransactionsController::index/$1');
-    
+    $routes->get('sacco/loans/(:num)', 'Api\LoansController::index/$1');
+    $routes->get('sacco/balances/(:num)', 'Api\TransactionsController::balances/$1');
 });
 
 

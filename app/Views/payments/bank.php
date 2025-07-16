@@ -34,7 +34,7 @@
                                     <th>Date</th>
                                     <th>Reference Code</th>
                                     <th>Amount</th>
-                                    <th>View</th>
+                                    <!-- <th>View</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,7 +45,7 @@
                                         <td><?= esc($payment_item['paymentDate'])?></td>
                                         <td><?= esc($payment_item['paymentReferenceCode'])?></td>
                                         <td><?= esc($payment_item['paymentAmount']) ?></td>
-                                        <td><button class="btn btn-sm btn-success"><i class="bi bi-eye"></i></button></td>
+                                        <!-- <td><button class="btn btn-sm btn-success"><i class="bi bi-eye"></i></button></td> -->
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
