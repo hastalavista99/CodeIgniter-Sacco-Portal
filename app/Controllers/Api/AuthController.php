@@ -110,9 +110,17 @@ class AuthController extends BaseController
 
         if ($otpRecord && Hash::check($otp, $otpRecord['otp'])) {
             $model->where('username', $mobile)->delete();
+            $userModel = new UserModel();
+            $user = $userModel
+                ->where('mobile', $mobile)
+                ->first();
+
+            $userExists = $user ? true : false;
+
             return $this->respond([
                 'success' => true,
-                'message' => 'OTP Validation successful'
+                'message' => 'Validation successful.',
+                'exists' => $userExists,
             ]);
         } else {
             return $this->respond([
@@ -122,25 +130,79 @@ class AuthController extends BaseController
         }
     }
 
+    public function createPin()
+    {
+        $json = $this->request->getJSON();
+
+        if (!isset($json->memberNo) || !isset($json->pin) || !isset($json->mobile)) {
+            return $this->respond([
+                'success' => false,
+                'message' => 'Member number, mobile and pin are required'
+            ], ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $memberNo = $json->memberNo;
+        $pin = $json->pin;
+        $mobile = $json->mobile;
+
+        $memberModel = new MembersModel();
+        $userModel = new UserModel();
+
+        $member = $memberModel->where('member_number', $memberNo)->first();
+
+        if (!$member) {
+            return $this->respond([
+                'success' => false,
+                'message' => 'Member not found'
+            ], ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        // Optional: check if user already exists
+        if ($userModel->where('member_no', $memberNo)->first()) {
+            return $this->respond([
+                'success' => false,
+                'message' => 'User already exists'
+            ], ResponseInterface::HTTP_CONFLICT);
+        }
+
+        $data = [
+            'user' => $member['first_name'] . ' ' . $member['last_name'],
+            'name' => $member['first_name'],
+            'member_no' => $memberNo,
+            'email' => '',
+            'mobile' => $mobile,
+            'password' => Hash::encrypt($pin),
+            'role' => 'member',
+        ];
+
+        $userModel->save($data);
+
+        return $this->respond([
+            'success' => true,
+            'message' => 'PIN created successfully'
+        ]);
+    }
+
+
     public function login()
     {
         $json = $this->request->getJSON();
 
         // Validate presence of data
-        if (!isset($json->memberNo) || !isset($json->password)) {
+        if (!isset($json->memberNo) || !isset($json->pin)) {
             return $this->respond([
                 'success' => false,
-                'message' => 'Member number and password are required'
+                'message' => 'Member number and pin are required'
             ], ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $memberNo = $json->memberNo;
-        $password = $json->password;
+        $pin = $json->pin;
 
         $model = new UserModel();
         $member = $model->where('member_no', $memberNo)->first();
 
-        if (!$member || !password_verify($password, $member['password'])) {
+        if (!$member || !password_verify($pin, $member['password'])) {
             return $this->respond([
                 'success' => false,
                 'message' => 'Invalid member number or password'

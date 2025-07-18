@@ -54,10 +54,8 @@ $routes->post('bank/validate', 'BankController::validateMember');
 $routes->post('api/login', 'Api\AuthController::login');
 $routes->post('api/validate', 'Api\AuthController::checkMember');
 $routes->post('api/confirm-otp', 'Api\AuthController::checkOtp');
-
+$routes->post('api/create-pin', 'Api\AuthController::createPin');
 $routes->post('api/auth/refresh', 'Api\AuthController::refresh');
-
-
 
 $routes->group('api', ['filter' => 'jwt'], function($routes) {
     $routes->get('profile', 'Api\UserController::profile');
