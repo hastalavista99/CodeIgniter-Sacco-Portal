@@ -52,6 +52,9 @@ $routes->post('bank/validate', 'BankController::validateMember');
 // Mobile App Routes
 
 $routes->post('api/login', 'Api\AuthController::login');
+$routes->post('api/validate', 'Api\AuthController::checkMember');
+$routes->post('api/confirm-otp', 'Api\AuthController::checkOtp');
+
 $routes->post('api/auth/refresh', 'Api\AuthController::refresh');
 
 
