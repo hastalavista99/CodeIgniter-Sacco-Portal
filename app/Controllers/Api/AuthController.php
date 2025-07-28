@@ -33,11 +33,11 @@ class AuthController extends BaseController
         $memberNo = $json->memberNo;
         $mobile = $json->mobile;
 
-        $model = new UserModel();
+        $model = new MembersModel();
         $otpModel = new OTPModel();
         $member = $model->where([
-            'member_no' => $memberNo,
-            'mobile'    => $mobile
+            'member_number' => $memberNo,
+            'phone_number'  => $mobile
         ])->first();
 
 

@@ -389,3 +389,33 @@ CREATE TABLE `refresh_tokens` (
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
+22/7/2025
+
+CREATE TABLE mobile_loans (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    member_id BIGINT UNSIGNED NOT NULL,
+    amount_requested DECIMAL(12,2) NOT NULL,
+    amount_approved DECIMAL(12,2) DEFAULT NULL,
+    interest_rate DECIMAL(5,2) NOT NULL DEFAULT 5.00, -- customizable or fixed
+    tenure_days INT NOT NULL DEFAULT 30, -- short-term: 7, 14, 30 days
+    purpose TEXT DEFAULT NULL,
+    
+    status ENUM('pending', 'approved', 'declined', 'disbursed', 'repaid', 'defaulted') DEFAULT 'pending',
+    
+    application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    approval_date DATETIME DEFAULT NULL,
+    disbursed_at DATETIME DEFAULT NULL,
+    due_date DATETIME DEFAULT NULL,
+    repaid_at DATETIME DEFAULT NULL,
+
+    repayment_method VARCHAR(50) DEFAULT 'mobile_money', -- optional
+    mobile_transaction_id VARCHAR(100) DEFAULT NULL,
+
+    remarks TEXT DEFAULT NULL,
+    verified_by BIGINT UNSIGNED DEFAULT NULL, -- staff/admin ID
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+);
