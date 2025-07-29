@@ -81,7 +81,7 @@ class LoansController extends BaseController
         $json = $this->request->getJSON();
 
         // Validate presence of data
-        if (!isset($json->memberNo) || !isset($json->amountRequested) || !isset($json->tenureDays)) {
+        if (!isset($json->memberNumber) || !isset($json->principal) || !isset($json->repaymentPeriod)) {
             return $this->respond([
                 'success' => false,
                 'message' => 'Member number, amount requested, and tenure days are required'
@@ -91,7 +91,7 @@ class LoansController extends BaseController
         $memberNo = $json->memberNumber;
         $amountRequested = $json->principal;
         $tenureDays = $json->repaymentPeriod;
-        $loanType = $json->loanType;
+        $loanType = $json->loanTypeID;
 
         $memberModel = new MembersModel();
         $member = $memberModel->where('member_number', $memberNo)->first();
