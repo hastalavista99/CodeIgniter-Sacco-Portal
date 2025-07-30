@@ -128,6 +128,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->group('loans', function ($routes) {
         $routes->get('/', 'Loans::index');
         $routes->get('all', 'Loans::allLoans');
+        $routes->get('mobile', 'Loans::mobileLoans');
         $routes->get('view/(:num)', 'Loans::view/$1');
         $routes->get('type', 'Loans::loanTypes');
         $routes->get('type/view/(:num)', 'Loans::typeView/$1');

@@ -78,7 +78,7 @@
                   </span>
                 </a>
               </li>
-              <!-- <li class="nav-item">
+            
               <a href="<?= site_url('payments/deposits') ?>" class="nav-link collapsed">
                 <i class="bi bi-piggy-bank"></i>
                 <span>
@@ -135,14 +135,7 @@
                 </span>
               </a>
             </li>
-            <!-- <li class="nav-item">
-              <a href="<?= site_url('loans/my_loans?user' . $userInfo['id']) ?>" class="nav-link collapsed">
-                <i class="bi bi-person-workspace"></i>
-                <span>
-                  My Loans
-                </span>
-              </a>
-            </li> -->
+           
             <li class="nav-item">
               <a href="<?= site_url('loans/all') ?>" class="nav-link collapsed">
                 <i class="bi bi-card-checklist"></i>
@@ -151,14 +144,15 @@
                 </span>
               </a>
             </li>
-            <!-- <li class="nav-item">
-              <a href="<?= site_url('loans/approved') ?>" class="nav-link collapsed">
-                <i class="bi bi-check2-circle"></i>
+            
+            <li class="nav-item">
+              <a href="<?= site_url('loans/mobile') ?>" class="nav-link collapsed">
+                <i class="bi bi-phone"></i>
                 <span>
-                  Approved Loans
+                  Mobile Loans
                 </span>
               </a>
-            </li> -->
+            </li>
 
             <li class="nav-item">
               <a href="<?= site_url('loans/type') ?>" class="nav-link collapsed">

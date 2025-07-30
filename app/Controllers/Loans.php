@@ -9,6 +9,7 @@ use App\Models\MembersModel;
 use App\Controllers\Auth;
 use App\Models\LoanGuarantorModel;
 use App\Models\LoansModel;
+use App\Models\MobileLoanModel;
 use App\Models\UserModel;
 use Dompdf\Dompdf;
 use App\Libraries\Pdf;
@@ -412,5 +413,23 @@ class Loans extends BaseController
             'title' => 'Amortization Schedule',
             'member' => $member
         ]);
+    }
+
+    public function mobileLoans()
+    {
+        $model = new MobileLoanModel();
+        $loans = $model->getMemberDetailsPerLoan();
+
+         $userModel = new UserModel();
+        $loggedInUserId = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUserId);
+
+        $data = [
+            'loans' => $loans,
+            'userInfo' => $userInfo,
+            'title' => 'Mobile Loans'
+        ];
+
+        return view('loans/mobile_loans', $data);
     }
 }

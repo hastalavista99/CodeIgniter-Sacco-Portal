@@ -29,23 +29,36 @@ class MobileLoanController extends ResourceController
             return $this->failValidationErrors("Missing required parameters.");
         }
 
-        $memberNumber = $request->memberNumber;
+        $memberNumber = trim($request->memberNumber);
         $amount = floatval($request->loan_amount);
 
-        $memberModel = new MembersModel();
+        $memberModel = new \App\Models\MembersModel();
         $member = $memberModel->where('member_number', $memberNumber)->first();
 
-        $memberId = $member ? $member['id'] : null;
+        if (!$member) {
+            return $this->failNotFound("Member not found.");
+        }
 
-        // For this prototype, simulate calculations
-        $interestRate = 8;
+        $memberId = $member['id'];
+
+        // Simulate calculations
+        $interestRate = 8.0;
         $interest = $amount * ($interestRate / 100);
         $totalRepayable = $amount + $interest;
 
-        // Save to DB (fake for now — log only)
-        log_message('info', "Mobile Loan Requested: Member {$memberId} | Amount: {$amount} | Total: {$totalRepayable}");
+        // Calculate repayment due date (30 days from now)
+        $repaymentDueDate = date('Y-m-d', strtotime('+30 days'));
 
-        // Example future save: $this->mobileLoanModel->insert([...]);
+        // Save loan application
+        $loanModel = new \App\Models\MobileLoanModel();
+        $loanModel->insert([
+            'member_id' => $memberId,
+            'amount' => $amount,
+            'interest_rate' => $interestRate,
+            'total_repayable' => $totalRepayable,
+            'repayment_due_date' => $repaymentDueDate,
+            'disbursement_status' => 'pending',
+        ]);
 
         return $this->respondCreated([
             'status' => 201,
@@ -57,7 +70,9 @@ class MobileLoanController extends ResourceController
                 'interest' => $interest,
                 'total_repayable' => $totalRepayable,
                 'repayment_days' => 30,
-                'disbursement_method' => 'mpesa_b2c'
+                'repayment_due_date' => $repaymentDueDate,
+                'disbursement_method' => 'mpesa_b2c',
+                'disbursement_status' => 'pending',
             ]
         ]);
     }
