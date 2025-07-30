@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\MembersModel;
+use App\Models\MobileLoanModel;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -75,5 +76,30 @@ class MobileLoanController extends ResourceController
                 'disbursement_status' => 'pending',
             ]
         ]);
+    }
+
+    public function fetchLoan($memberNo)
+    {
+        $memberModel = new MembersModel();
+        $member = $memberModel->where('member_number', $memberNo)->first();
+
+        if (!$member) {
+            return $this->response->setJSON([
+                'status' => ResponseInterface::HTTP_NOT_FOUND,
+                'error' => true,
+                'message' => 'Member not found',
+                'data' => []
+            ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $loanModel = new MobileLoanModel();
+        $loans = $loanModel->getMemberDetails($member['id']);
+
+        return $this->response->setJSON([
+            'status' => ResponseInterface::HTTP_OK,
+            'error' => false,
+            'message' => 'Transactions retrieved successfully',
+            'data' => $loans
+        ])->setStatusCode(ResponseInterface::HTTP_OK);
     }
 }

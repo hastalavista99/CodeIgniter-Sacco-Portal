@@ -32,4 +32,14 @@ class MobileLoanModel extends Model
             ->join('members', 'members.id = mobile_loans.member_id')
             ->findAll();
     }
+
+
+    // get loans by member ID
+    public function getMemberDetails($id)
+    {
+        return $this->select('mobile_loans.*, members.member_number, members.first_name, members.last_name')
+            ->join('members', 'members.id = mobile_loans.member_id')
+            ->where('mobile_loans.member_id', $id)
+            ->findAll();
+    }
 }
