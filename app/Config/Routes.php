@@ -70,6 +70,7 @@ $routes->group('api', ['filter' => 'jwt'], function($routes) {
     $routes->get('mobile-loan/settings', 'Api\MobileLoanController::settings');
     $routes->post('mobile-loan/request', 'Api\MobileLoanController::request');
     $routes->get('mobile/statements/(:segment)', 'Api\StatementsController::download/$1');
+    $routes->get('mobile/savings-statement/(:num)', 'Api\StatementsController::downloadSavings/$1');
 
 
 });
