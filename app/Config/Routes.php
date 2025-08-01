@@ -57,6 +57,11 @@ $routes->post('api/confirm-otp', 'Api\AuthController::checkOtp');
 $routes->post('api/create-pin', 'Api\AuthController::createPin');
 $routes->post('api/auth/refresh', 'Api\AuthController::refresh');
 
+$routes->get('api/mobile/savings-statement/(:num)', 'Api\StatementsController::downloadSavings/$1');
+$routes->get('api/mobile/shares-statement/(:num)', 'Api\StatementsController::downloadShares/$1');
+$routes->get('api/mobile/loans-statement/(:num)', 'Api\StatementsController::downloadLoans/$1');
+$routes->get('api/mobile/transactions-statement/(:num)', 'Api\StatementsController::downloadTransactions/$1');
+
 $routes->group('api', ['filter' => 'jwt'], function($routes) {
     $routes->get('profile', 'Api\UserController::profile');
     $routes->get('dashboard', 'Api\DashboardController::index');
