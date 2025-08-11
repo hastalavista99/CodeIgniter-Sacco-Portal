@@ -215,7 +215,7 @@ class LoansController extends BaseController
         // 3. Prepare final loan application data
         $loanData = [
             'member_id'         => $member['id'],
-            'loan_type_id'      => $data['loan_type_id'],
+            'loan_type_id'      => $data['loanTypeID'],
             'principal'         => $principal,
             'repayment_period'  => $period,
             'interest_method'   => $method,
