@@ -155,6 +155,15 @@
             </li>
 
             <li class="nav-item">
+              <a href="<?= site_url('loans/topup/4') ?>" class="nav-link collapsed">
+                <i class="bi bi-phone"></i>
+                <span>
+                  Loan Topup
+                </span>
+              </a>
+            </li>
+
+            <li class="nav-item">
               <a href="<?= site_url('loans/type') ?>" class="nav-link collapsed">
                 <i class="bi bi-gear"></i>
                 <span>
@@ -165,37 +174,7 @@
           </ul>
         </div>
       </li>
-      <!-- <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#agentPay" role="button" aria-expanded="false"
-          aria-controls="collapseExample">
-          <i class="bi bi-person-lines-fill"></i>
-          <span>
-            Agents
-          </span>
-          <i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-
-        <div class="collapse" id="agentPay">
-          <ul>
-            <li class="nav-item">
-              <a href="<?= site_url('/agents') ?>" class="nav-link collapsed">
-                <i class="bi bi-people"></i>
-                <span>
-                  Agent List
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('agent/commissions') ?>" class="nav-link collapsed">
-                <i class="bi bi-piggy-bank"></i>
-                <span>
-                  Commissions
-                </span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </li> -->
+      
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#reports" role="button" aria-expanded="false"
           aria-controls="collapseExample">

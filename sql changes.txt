@@ -405,3 +405,13 @@ CREATE TABLE mobile_loans (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
   ); 
+
+
+12/08/2025
+
+INSERT INTO `system_parameters` (`id`, `param_key`, `param_value`, `description`) VALUES (NULL, 'loan_topup_min_percent', '40', 'Topup Loan minimum repayment(%)');
+
+ALTER TABLE loan_applications
+ADD COLUMN parent_loan_id BIGINT NULL,
+ADD COLUMN topup_outstanding_cleared DECIMAL(15,2) DEFAULT 0.00,
+ADD COLUMN topup_processing_fee DECIMAL(15,2) DEFAULT 0.00;

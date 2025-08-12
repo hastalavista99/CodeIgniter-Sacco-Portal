@@ -25,7 +25,10 @@ class LoanApplicationModel extends Model
         'monthly_repayment',
         'disburse_amount',
         'loan_status',
-        'created_at'
+        'created_at',
+        'parent_loan_id',
+        'topup_outstanding_cleared',
+        'topup_processing_fee'
     ];
 
     public function getAllApplicationsWithDetails()
@@ -222,22 +225,27 @@ class LoanApplicationModel extends Model
     }
 
     public function getMemberLoans(int $memberId): array
-{
-    return $this->builder()
-        ->select([
-            'l.id AS loanId',                    // 👈 unique per row
-            'l.member_id',
-            'lt.loan_name AS loanType',
-            'l.principal',
-            'l.loan_status AS loanStatus',
-            'l.created_at AS requestDate',
-        ])
-        ->from("$this->table l")
-        ->join('loan_types lt', 'lt.id = l.loan_type_id')
-        ->where('l.member_id', $memberId)
-        ->groupBy('l.id')                        // 👈 prevents 1-to-many blowup
-        ->orderBy('l.created_at', 'DESC')
-        ->get()
-        ->getResultArray();
-}
+    {
+        return $this->builder()
+            ->select([
+                'l.id AS loanId',                    // 👈 unique per row
+                'l.member_id',
+                'lt.loan_name AS loanType',
+                'l.principal',
+                'l.loan_status AS loanStatus',
+                'l.created_at AS requestDate',
+            ])
+            ->from("$this->table l")
+            ->join('loan_types lt', 'lt.id = l.loan_type_id')
+            ->where('l.member_id', $memberId)
+            ->groupBy('l.id')                        // 👈 prevents 1-to-many blowup
+            ->orderBy('l.created_at', 'DESC')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getTopupsForLoan($loanId)
+    {
+        return $this->where('parent_loan_id', $loanId)->findAll();
+    }
 }
