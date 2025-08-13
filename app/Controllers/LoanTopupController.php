@@ -14,14 +14,17 @@ class LoanTopupController extends BaseController
     protected $loanModel;
     protected $repaymentModel;
     protected $loanService;
+    protected $journalService;
 
     public function __construct()
     {
         $this->loanModel = new LoanApplicationModel();
         $this->repaymentModel = new LoanRepaymentModel();
         $this->loanService = service('loanService'); // Your existing loan service
-        // $this->journalService = new JournalService();
+        $this->journalService = new JournalService();
     }
+
+    
 
     public function initiate($oldLoanId)
     {
@@ -46,7 +49,8 @@ class LoanTopupController extends BaseController
             'oldLoan' => $oldLoan,
             'percentagePaid' => $percentagePaid,
             'title' => 'Loan Top-up',
-            'userInfo' => $userInfo
+            'userInfo' => $userInfo,
+            'paidAmount' => $paidAmount['total_paid']
         ]);
     }
 
@@ -59,7 +63,7 @@ class LoanTopupController extends BaseController
         $paidAmount = $this->repaymentModel->getTotalPaid($oldLoanId);
         $outstanding = $oldLoan['principal_amount'] - $paidAmount;
 
-        $feePercent = getSystemParameter('loan_topup_fee_percent');
+        $feePercent = get_system_parameter('loan_topup_fee_percent');
         $processingFee = $outstanding * ($feePercent / 100);
         $netDisbursement = $newLoanAmount - $outstanding - $processingFee;
 
@@ -76,36 +80,35 @@ class LoanTopupController extends BaseController
         // Post accounting entries via LoanService
         $this->loanService->processTopUpLoan($oldLoan, $newLoanAmount, $outstanding, $processingFee, $netDisbursement);
 
-       
-       
+
+
         return redirect()->to('/loans/' . $newLoanId)->with('success', 'Top-up loan processed.');
     }
 
     public function processTopUpLoan($oldLoan, $newLoanAmount, $outstanding, $processingFee, $netDisbursement)
-{
-    // 1. Clear old loan balance
-    $this->journalService->postEntry([
-        'debit_account'  => 'Old Loan Clearing',
-        'credit_account' => 'Loan Portfolio',
-        'amount'         => $outstanding,
-        'description'    => 'Top-up loan clearance for Loan #' . $oldLoan['id']
-    ]);
+    {
+        // 1. Clear old loan balance
+        $this->journalService->postEntry([
+            'debit_account'  => 'Old Loan Clearing',
+            'credit_account' => 'Loan Portfolio',
+            'amount'         => $outstanding,
+            'description'    => 'Top-up loan clearance for Loan #' . $oldLoan['id']
+        ]);
 
-    // 2. Record processing fee
-    $this->journalService->postEntry([
-        'debit_account'  => 'Loan Processing Income',
-        'credit_account' => 'Loan Portfolio',
-        'amount'         => $processingFee,
-        'description'    => 'Processing fee for Top-up Loan'
-    ]);
+        // 2. Record processing fee
+        $this->journalService->postEntry([
+            'debit_account'  => 'Loan Processing Income',
+            'credit_account' => 'Loan Portfolio',
+            'amount'         => $processingFee,
+            'description'    => 'Processing fee for Top-up Loan'
+        ]);
 
-    // 3. Disburse net amount
-    $this->journalService->postEntry([
-        'debit_account'  => 'Loan Portfolio',
-        'credit_account' => 'Cash/Bank',
-        'amount'         => $netDisbursement,
-        'description'    => 'Net disbursement for Top-up Loan'
-    ]);
-}
-
+        // 3. Disburse net amount
+        $this->journalService->postEntry([
+            'debit_account'  => 'Loan Portfolio',
+            'credit_account' => 'Cash/Bank',
+            'amount'         => $netDisbursement,
+            'description'    => 'Net disbursement for Top-up Loan'
+        ]);
+    }
 }

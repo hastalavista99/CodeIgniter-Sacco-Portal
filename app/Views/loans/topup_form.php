@@ -20,26 +20,221 @@
         <div class="card shadow border-none my-2 px-2">
 
             <div class="card-body px-0 pb-2">
-                <h2>Top-Up Loan Request</h2>
+                <div class="row mb-3 mt-2">
 
+                    <h2>Member Details</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form id="memberForm">
+                                <div class="col-md-6">
+                                    <label for="member-number" class="form-label">Member Number</label>
+                                    <input type="text" name="member-number" id="member-number" class="form-control"
+                                        required>
+                                </div>
+                                <button type="button" id="fetchMemberBtn" class="btn btn-primary mt-2">Fetch
+                                    Member</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6 position-relative mb-3">
+                            <label for="member-name-search" class="form-label">Search Member Name</label>
+                            <input type="text" id="member-name-search" class="form-control" placeholder="Type name...">
+                            <div id="name-suggestions" class="list-group position-absolute w-100"
+                                style="z-index: 1000;">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="member-name" class="form-label">Member Name</label>
+                        <input type="text" name="member-name" id="member-name" class="form-control" disabled>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="member-mobile" class="form-label">Mobile Number</label>
+                        <input type="text" name="member-mobile" id="member-mobile" class="form-control" disabled>
+                    </div>
+
+                    <!--  hidden input to have member id after fetching it from the backend  -->
+                    <input type="hidden" name="member-id" id="member-id">
+                </div>
                 <p>Original Loan Amount: <?= number_format($oldLoan['principal'], 2) ?></p>
                 <p>Repaid: <?= number_format($percentagePaid, 2) ?>%</p>
+                <p>Paid Amount: <?= number_format($paidAmount, 2) ?></p>
+
+                <div class="row">
+                    <div class="col-4">
+                        <label for="" class="form-label">Original Loan Principal</label>
+                        <input type="text" name="" id="loan-amount" class="form-control" >
+                    </div>
+                    <div class="col-4">
+                        <label for="" class="form-label">Loan Period</label>
+                        <input type="text" name="" id="" class="form-control">
+                    </div>
+                    <div class="col-4">
+                        <label for="" class="form-label">Loan Interest</label>
+                        <input type="text" name="" id="" class="form-control">
+                    </div>
+                </div>
 
                 <form action="<?= site_url('loan-topup/process') ?>" method="post">
                     <input type="hidden" name="old_loan_id" value="<?= $oldLoan['id'] ?>">
-                    <div class="form-control">
-                        <label class="form-label">New Loan Amount</label>
-                        <input type="number" name="new_loan_amount" step="0.01" class="form-control" required>
-                        <button type="submit" class="btn btn-primary mt-4">Submit Top-Up</button>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Principal Amount</label>
+                            <input type="number" name="new_loan_amount" id="balance" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Repayment Period</label>
+                            <input type="number" name="repayment_period" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Disburse Amount</label>
+                            <input type="number" name="disburse_amount" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">New Loan Amount</label>
+                            <input type="number" name="new_loan_amount" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">New Loan Amount</label>
+                            <input type="number" name="new_loan_amount" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">New Loan Amount</label>
+                            <input type="number" name="new_loan_amount" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <a href="<?= site_url('loans/all') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Loan Applications</a>
+                            <button type="submit" class="btn btn-primary mt-4">Submit Top-Up</button>
+                        </div>
+
+                        
                     </div>
-                    
-                    
+
+
                 </form>
 
+                <div id="loan-details">
+                    <!-- <p id="loan-amount"></p> -->
+                    <!-- <p id="balance"></p> -->
+                </div>
             </div>
         </div>
     </div>
 
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let fetchMemberBtn = document.getElementById('fetchMemberBtn');
+            if (fetchMemberBtn) {
+                fetchMemberBtn.addEventListener('click', function() {
+                    // console.log("Fetch Member button clicked");
 
+                    let memberNo = document.getElementById('member-number').value.trim();
+                    if (memberNo === '') {
+                        alert("Please enter a Member Number.");
+                        return;
+                    }
+
+                    fetch(`<?= site_url('/accounting/remittances/get-member/') ?>${encodeURIComponent(memberNo)}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.name) {
+                                document.getElementById('member-id').value = data.id;
+                                document.getElementById('member-name').value = data.name;
+                                document.getElementById('member-mobile').value = data.mobile;
+                            } else {
+                                alert("Member not found!");
+                                document.getElementById('member-id').value = "";
+                                document.getElementById('member-name').value = "";
+                                document.getElementById('member-mobile').value = "";
+                            }
+                        })
+                        .catch(error => console.error('Fetch error:', error));
+                });
+            }
+        })
+    </script>
+
+    <!-- Member Name Search -->
+    <script>
+        const nameInput = document.getElementById('member-name-search');
+        const suggestionBox = document.getElementById('name-suggestions');
+
+        let debounceTimer;
+
+        nameInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+
+            const query = this.value.trim();
+            if (query.length < 2) {
+                suggestionBox.innerHTML = '';
+                return;
+            }
+
+
+
+            debounceTimer = setTimeout(() => {
+                fetch(`<?= site_url('/accounting/remittances/search-member-name') ?>?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        suggestionBox.innerHTML = '';
+                        if (data.length === 0) {
+                            suggestionBox.innerHTML = '<div class="list-group-item">No results found</div>';
+                            return;
+                        }
+
+
+                        data.forEach(member => {
+                            const item = document.createElement('div');
+                            item.classList.add('list-group-item', 'list-group-item-action');
+                            item.textContent = `${member.name} (${member.member_number})`;
+                            item.addEventListener('click', () => {
+                                document.getElementById('member-id').value = member.id;
+                                document.getElementById('member-name').value = member.name;
+                                document.getElementById('member-mobile').value = member.mobile;
+                                document.getElementById('member-number').value = member.member_number;
+                                nameInput.value = member.name;
+                                suggestionBox.innerHTML = '';
+                                setTimeout(checkLoan(member.id), 500)
+                            });
+                            suggestionBox.appendChild(item);
+
+                        });
+                    });
+            }, 300); // debounce delay
+
+        });
+
+        const checkLoan = (memberId) => {
+            fetch(`<?= site_url('loans/check-loan/') ?>${memberId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data before if:', data)
+                    if (data.balance > 0) {
+                        console.log(data)
+                        // Loan exists, show details
+                        document.getElementById('balance').value = data.balance;
+                        document.getElementById('loan-amount').value = data.loan_amount;
+                    } else {
+                        document.getElementById('loan-amount').value = '';
+                        document.getElementById('balance').value = '';
+                    }
+                })
+                .catch(error => console.error('Error fetching loan details:', error));
+        }
+
+
+        document.addEventListener('click', function(e) {
+            if (!suggestionBox.contains(e.target) && e.target !== nameInput) {
+                suggestionBox.innerHTML = '';
+            }
+        });
+    </script>
     <?= $this->endSection() ?>
