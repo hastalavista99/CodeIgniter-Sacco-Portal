@@ -216,6 +216,15 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
 
     });
 
+    $routes->group('employers', function ($routes) {
+        $routes->get('/', 'Employers::index');
+        $routes->get('create', 'Employers::create');
+        $routes->post('store', 'Employers::store');
+        $routes->get('edit/(:num)', 'Employers::edit/$1');
+        $routes->post('update/(:num)', 'Employers::update/$1');
+        $routes->get('delete/(:num)', 'Employers::delete/$1');
+    });
+
     $routes->group('staff', function ($routes) {
         $routes->get('/', 'StaffController::index');
         $routes->get('create', 'StaffController::create');

@@ -1,0 +1,94 @@
+<?= $this->extend('layouts/main') ?>
+<?= $this->section('title') ?><?= $title ?> <?= $this->endSection() ?>
+
+
+
+<div class="row">
+    <?= $this->section('content') ?>
+    <?= $this->include('partials/sidebar') ?>
+    <div class="col-lg-12">
+        <?php
+        if (!empty(session()->getFlashdata('success'))) {
+        ?>
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
+                <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php
+        } else if (!empty(session()->getFlashdata('fail'))) {
+        ?>
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi-exclamation-triangle-fill"></i> <?= session()->getFlashdata('fail') ?>
+                <button type="button" class="container btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php
+        }
+        ?>
+        <div class="card shadow border-none my-2 px-2">
+            <div class="card-body px-0 pb-2">
+
+                <form action="<?= site_url('employers/store') ?>" method="post" class="row g-3 mt-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Employer Name *</label>
+                        <input type="text" name="employer_name" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Contact Person</label>
+                        <input type="text" name="contact_person" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone_number" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Postal Address</label>
+                        <input type="text" name="postal_address" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Physical Address</label>
+                        <input type="text" name="physical_address" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Check-off Code</label>
+                        <input type="text" name="checkoff_code" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Deduction Frequency</label>
+                        <select name="deduction_frequency" class="form-select">
+                            <option value="Monthly">Monthly</option>
+                            <option value="Bi-Weekly">Bi-Weekly</option>
+                            <option value="Weekly">Weekly</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-primary" type="submit">Save Employer</button>
+                        <a href="<?= site_url('employers') ?>" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<?= $this->endSection() ?>

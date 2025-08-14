@@ -266,6 +266,16 @@
                 </span>
               </a>
             </li>
+
+            <li class="nav-item">
+              <a href="<?= site_url('employers') ?>" class="nav-link collapsed">
+                <i class="bi bi-person-vcard"></i>
+                <span>
+                  Employers
+                </span>
+              </a>
+            </li>
+
             <?php if (user_can('manage_users')): ?>
 
               <li class="nav-item">

@@ -65,7 +65,7 @@
                 <div class="row">
                     <div class="col-4">
                         <label for="" class="form-label">Original Loan Principal</label>
-                        <input type="text" name="" id="loan-amount" class="form-control" >
+                        <input type="text" name="" id="loan-amount" class="form-control" disabled>
                     </div>
                     <div class="col-4">
                         <label for="" class="form-label">Loan Period</label>
