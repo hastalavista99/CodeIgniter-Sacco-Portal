@@ -439,3 +439,16 @@ CREATE TABLE employers (
 ALTER TABLE members
 ADD COLUMN employer_id INT,
 ADD CONSTRAINT fk_members_employer FOREIGN KEY (employer_id) REFERENCES employers(employer_id);
+
+
+15/08/2025
+
+ALTER TABLE members
+ADD COLUMN employee_number VARCHAR(50) NULL AFTER employer_id,
+ADD COLUMN department VARCHAR(100) NULL,
+ADD COLUMN position VARCHAR(100) NULL,
+ADD COLUMN employment_date DATE NULL,
+ADD COLUMN deduction_frequency VARCHAR(50) NULL,
+ADD COLUMN checkoff_start_date DATE NULL,
+ADD COLUMN checkoff_amount DECIMAL(15,2) NULL;
+

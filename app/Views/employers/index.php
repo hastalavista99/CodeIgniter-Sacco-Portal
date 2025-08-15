@@ -35,22 +35,23 @@
                 </div>
             </div>
             <div class="card-body px-0 pb-2">
-                <table class="table table-bordered table-striped" id="viewsTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Employer Name</th>
-                            <th>Contact Person</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Check-off Code</th>
-                            <th>Frequency</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($employers)): ?>
+                <?php if (!empty($employers)): ?>
+                    <table class="table table-bordered table-striped" id="viewsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Employer Name</th>
+                                <th>Contact Person</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Check-off Code</th>
+                                <th>Frequency</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
                             <?php foreach ($employers as $index => $emp): ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
@@ -62,24 +63,25 @@
                                     <td><?= esc($emp['deduction_frequency']) ?></td>
                                     <td><?= esc($emp['status']) ?></td>
                                     <td>
-                                        <a href="<?= site_url('employers/edit/' . $emp['employer_id']) ?>" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="<?= site_url('employers/edit/' . $emp['employer_id']) ?>" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="View & Edit"><i class="bi bi-pencil-square"></i></a>
                                         <a href="<?= site_url('employers/delete/' . $emp['employer_id']) ?>"
                                             onclick="return confirm('Are you sure you want to delete this employer?');"
-                                            class="btn btn-sm btn-danger">Delete</a>
+                                            class="btn btn-sm btn-danger"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Delete"><i class="bi bi-trash3-fill"></i></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="9" class="text-center">No employers found</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                     <h3>No Employers</h3>
+                    <p>Unable to find any employers for you. Create to see list</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
 
-    <?= $this->endSection() ?>
+<?= $this->endSection() ?>

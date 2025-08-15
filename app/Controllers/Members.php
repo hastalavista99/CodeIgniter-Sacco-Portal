@@ -22,7 +22,7 @@ use Dompdf\Options;
 use App\Models\OrganizationModel;
 use App\Models\Accounting\JournalDetailsModel;
 use App\Models\Accounting\TransactionsModel;
-
+use App\Models\EmployerModel;
 
 class Members extends BaseController
 {
@@ -85,6 +85,15 @@ class Members extends BaseController
             'county' => $this->request->getPost('county'),
             'zip_code' => $this->request->getPost('zipCode'),
             'photo_path' => $photoPath,
+            'employer_id' => $this->request->getPost('employer_id'),
+            'employee_number' => $this->request->getPost('employee_number'),
+            'department' => $this->request->getPost('department'),
+            'position' => $this->request->getPost('position'),
+            'employment_date' => $this->request->getPost('date_employed'),
+            'deduction_frequency' => $this->request->getPost('deduction_frequency'),
+            'checkoff_start_date' => $this->request->getPost('checkoff_start_date'),
+            'checkoff_amount' => $this->request->getPost('checkoff_amount')
+
         ];
 
         $mobile = $this->request->getPost('phoneNumber');
@@ -134,8 +143,8 @@ class Members extends BaseController
             $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             $pass = substr(str_shuffle($alpha_numeric), 0, 8);
 
-            $createUser = new \App\Models\UserModel();
-            new \App\Libraries\Hash();
+            $createUser = new UserModel();
+            new Hash();
 
             $data = [
                 'user' => $fname,
@@ -219,9 +228,13 @@ class Members extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
+        $employerModel = new EmployerModel();
+        $employers = $employerModel->findAll();
+
         $data = [
             'title' => 'Create Member',
-            'userInfo' => $userInfo
+            'userInfo' => $userInfo,
+            'employers' => $employers
         ];
 
         return view('members/create', $data);

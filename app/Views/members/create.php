@@ -42,16 +42,20 @@
             <div class="card-body px-0 pb-2 mt-3">
                 <!-- Step Indicators -->
                 <div class="row step-indicator mb-4">
-                    <div class="col-4">
+                    <div class="col-3">
                         <div class="step active" id="step-indicator-1">1</div>
                         <div class="step-label">Personal Information</div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <div class="step" id="step-indicator-2">2</div>
                         <div class="step-label">Contact Details</div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <div class="step" id="step-indicator-3">3</div>
+                        <div class="step-label">Employment Details</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="step" id="step-indicator-4">4</div>
                         <div class="step-label">Beneficiaries</div>
                     </div>
                 </div>
@@ -129,7 +133,7 @@
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
                             <a class="btn btn-secondary " href="<?= site_url('/members') ?>"><i class="bi bi-arrow-left me-2"></i>Back to List</a>
-                            <button type="button" class="btn btn-primary next-step" data-step="1">Next: Contact Details</button>
+                            <button type="button" class="btn btn-primary next-step" data-step="1">Next: Contact Details<i class="bi bi-arrow-right ms-2"></i></button>
                         </div>
                     </div>
 
@@ -185,15 +189,96 @@
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                            <button type="button" class="btn btn-secondary prev-step" data-step="2">Previous: Personal Information</button>
-                            <button type="button" class="btn btn-primary next-step" data-step="2">Next: Beneficiary Information</button>
+                            <button type="button" class="btn btn-secondary prev-step" data-step="2"><i class="bi bi-arrow-left me-2"></i>Previous: Personal Details</button>
+                            <button type="button" class="btn btn-primary next-step" data-step="2">Next: Employment Details<i class="bi bi-arrow-right ms-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Employment Details -->
+                    <div class="form-step" id="step-3">
+                        <h5 class="mb-4">Step 3: Employment Details (Check-off Information)</h5>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="employer_id" class="form-label">Employer *</label>
+                                <select class="form-select" id="employer_id" name="employer_id">
+                                    <option value="">Select Employer</option>
+                                    <?php foreach ($employers as $emp): ?>
+                                        <option value="<?= $emp['employer_id'] ?>"
+                                            <?= (isset($member) && $member['employer_id'] == $emp['employer_id']) ? 'selected' : '' ?>>
+                                            <?= esc($emp['employer_name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="employee_number" class="form-label">Employee/Payroll Number *</label>
+                                <input type="text" class="form-control" id="employee_number" name="employee_number"
+                                    value="<?= isset($member) ? esc($member['employee_number']) : '' ?>">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="department" class="form-label">Department</label>
+                                <input type="text" class="form-control" id="department" name="department"
+                                    value="<?= isset($member) ? esc($member['department']) : '' ?>">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="position" class="form-label">Position/Job Title</label>
+                                <input type="text" class="form-control" id="position" name="position"
+                                    value="<?= isset($member) ? esc($member['position']) : '' ?>">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="date_employed" class="form-label">Date Employed</label>
+                                <input type="date" class="form-control" id="date_employed" name="date_employed"
+                                    value="<?= isset($member) ? esc($member['date_employed']) : '' ?>">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="deduction_frequency" class="form-label">Deduction Frequency</label>
+                                <select class="form-select" id="deduction_frequency" name="deduction_frequency">
+                                    <option value="">Select Frequency</option>
+                                    <option value="Monthly" <?= (isset($member) && $member['deduction_frequency'] == 'Monthly') ? 'selected' : '' ?>>Monthly</option>
+                                    <option value="Bi-Weekly" <?= (isset($member) && $member['deduction_frequency'] == 'Bi-Weekly') ? 'selected' : '' ?>>Bi-Weekly</option>
+                                    <option value="Weekly" <?= (isset($member) && $member['deduction_frequency'] == 'Weekly') ? 'selected' : '' ?>>Weekly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="checkoff_start_date" class="form-label">Check-off Start Date</label>
+                                <input type="date" class="form-control" id="checkoff_start_date" name="checkoff_start_date"
+                                    value="<?= isset($member) ? esc($member['checkoff_start_date']) : '' ?>">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="checkoff_amount" class="form-label">Check-off Amount</label>
+                                <input type="number" class="form-control" id="checkoff_amount" name="checkoff_amount"
+                                    value="<?= isset($member) ? esc($member['checkoff_amount']) : '' ?>">
+                            </div>
+
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                            <button type="button" class="btn btn-secondary prev-step" data-step="3">
+                                <i class="bi bi-arrow-left me-2"></i>Contact Details
+                            </button>
+                            <button type="button" class="btn btn-primary next-step" data-step="3">
+                                Next: Beneficiary Details<i class="bi bi-arrow-right ms-2"></i>
+                            </button>
                         </div>
                     </div>
 
 
                     <!-- Step 4: Additional Details -->
-                    <div class="form-step" id="step-3">
-                        <h5 class="mb-4">Step 3: Beneficiaries</h5>
+                    <div class="form-step" id="step-4">
+                        <h5 class="mb-4">Step 4: Beneficiaries</h5>
 
                         <div class="row mb-3">
                             <div class="mb-3 col-md-6">
@@ -233,7 +318,7 @@
 
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                            <button type="button" class="btn btn-secondary me-md-2 prev-step" data-step="3">Previous: Contact Details</button>
+                            <button type="button" class="btn btn-secondary me-md-2 prev-step" data-step="4"><i class="bi bi-arrow-left me-2"></i>Previous: Employment Details</button>
                             <button type="submit" class="btn btn-success"><?= isset($member) ? 'Update Member' : 'Submit Form' ?></button>
                         </div>
                     </div>
@@ -360,6 +445,16 @@
             if (photoInput.files.length > 0) {
                 formData.append('photo', photoInput.files[0]);
             }
+
+            // Employment Details (Step 3)
+            formData.append('employer_id', document.getElementById('employer_id').value);
+            formData.append('employee_number', document.getElementById('employee_number').value);
+            formData.append('department', document.getElementById('department').value);
+            formData.append('position', document.getElementById('position').value);
+            formData.append('date_employed', document.getElementById('date_employed').value);
+            formData.append('deduction_frequency', document.getElementById('deduction_frequency').value);
+            formData.append('checkoff_start_date', document.getElementById('checkoff_start_date').value);
+            formData.append('checkoff_amount', document.getElementById('checkoff_amount').value);
 
             // Beneficiary Details (Step 3)
             formData.append('beneficiaryFirstName', document.getElementById('beneficiaryFirstName').value);

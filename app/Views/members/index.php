@@ -62,9 +62,9 @@
                     <td><?= esc($member['join_date']) ?></td>
                     <td>
                       <?php if (user_can('edit_member_details')): ?>
-                        <a href="<?= site_url('members/edit/'. $member['id'])?>" class="btn btn-sm btn-info" ><i class="bi-pencil-square"></i></a>
+                        <a href="<?= site_url('members/edit/'. $member['id'])?>" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Edit"><i class="bi-pencil-square"></i></a>
                       <?php endif;?>
-                      <a href="<?= site_url('members/view/'. $member['id'])?>" class="btn btn-sm btn-success" ><i class="bi-eye"></i></a>
+                      <a href="<?= site_url('members/view/'. $member['id'])?>" class="btn btn-sm btn-success" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="View" ><i class="bi-eye"></i></a>
                       
                     </td>
                   </tr>
