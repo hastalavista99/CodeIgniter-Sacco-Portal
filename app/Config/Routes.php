@@ -221,6 +221,7 @@ $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
         $routes->get('create', 'Employers::create');
         $routes->post('store', 'Employers::store');
         $routes->get('edit/(:num)', 'Employers::edit/$1');
+        $routes->get('checkoff/(:num)', 'Employers::checkoff/$1');
         $routes->post('update/(:num)', 'Employers::update/$1');
         $routes->get('delete/(:num)', 'Employers::delete/$1');
     });

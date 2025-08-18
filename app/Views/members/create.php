@@ -237,7 +237,7 @@
                             <div class="col-md-6">
                                 <label for="date_employed" class="form-label">Date Employed</label>
                                 <input type="date" class="form-control" id="date_employed" name="date_employed"
-                                    value="<?= isset($member) ? esc($member['date_employed']) : '' ?>">
+                                    value="<?= isset($member) ? esc($member['employment_date']) : '' ?>">
                             </div>
 
                             <div class="col-md-6">

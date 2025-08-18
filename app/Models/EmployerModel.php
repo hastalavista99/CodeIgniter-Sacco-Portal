@@ -33,4 +33,16 @@ class EmployerModel extends Model
     {
         return $this->where('status', 'Active')->findAll();
     }
+
+
+    // get all checkoff ammounts as an array for a specific employer using the employer_id in the members table
+    public function getCheckoffAmounts($employerId)
+    {
+        return $this->db->table('members')
+            ->select('checkoff_amount')
+            ->where('employer_id', $employerId)
+            ->get()
+            ->getResultArray();
+    }
+
 }

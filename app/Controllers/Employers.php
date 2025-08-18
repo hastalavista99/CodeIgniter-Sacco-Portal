@@ -89,6 +89,24 @@ class Employers extends BaseController
     }
 
     /**
+     * Show checkoff list
+     */
+
+    public function checkoff($id) 
+    {
+        $userModel = new UserModel();
+        $loggedInUser = session()->get('loggedInUser');
+        $userInfo = $userModel->find($loggedInUser);
+
+        $data = [
+            'userInfo' => $userInfo,
+            'title' => 'Checkoff List',
+            'checkoff_amounts' => $this->employerModel->getCheckoffAmounts($id)
+        ];
+        return view('employers/checkoff_list', $data);
+    }
+
+    /**
      * Update employer
      */
     public function update($id)

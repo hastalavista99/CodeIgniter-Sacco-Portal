@@ -353,11 +353,16 @@ class Members extends BaseController
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
+        $employerModel = new EmployerModel();
+
+        $employers = $employerModel->findAll();
+
         $data = [
             'title' => 'Edit Member - ' . $memberData['member_number'],
             'member' => $memberData,
             'userInfo' => $userInfo,
-            'beneficiary' => $beneficiary
+            'beneficiary' => $beneficiary,
+            'employers' => $employers
         ];
 
         return view('members/create', $data);
@@ -435,6 +440,14 @@ class Members extends BaseController
             'county' => $this->request->getPost('county'),
             'zip_code' => $this->request->getPost('zipCode'),
             'photo_path' => $photoPath,
+            'employer_id' => $this->request->getPost('employer_id'),
+            'employee_number' => $this->request->getPost('employee_number'),
+            'department' => $this->request->getPost('department'),
+            'position' => $this->request->getPost('position'),
+            'employment_date' => $this->request->getPost('date_employed'),
+            'deduction_frequency' => $this->request->getPost('deduction_frequency'),
+            'checkoff_start_date' => $this->request->getPost('checkoff_start_date'),
+            'checkoff_amount' => $this->request->getPost('checkoff_amount')
         ];
 
         // Prepare beneficiary data if provided
