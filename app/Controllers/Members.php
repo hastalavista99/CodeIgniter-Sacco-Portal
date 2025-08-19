@@ -45,7 +45,7 @@ class Members extends BaseController
 
     public function create()
     {
-        log_message('debug', 'Request method received: ' . $this->request->getMethod());
+        // log_message('debug', 'Request method received: ' . $this->request->getMethod());
 
         // Handle form submission
         if ($this->request->getMethod() !== 'POST') {
@@ -64,6 +64,7 @@ class Members extends BaseController
             $photoPath = 'uploads/' . $newName;
         }
 
+        log_message('debug', 'POST data: ' . json_encode($this->request->getPost()));
         // Prepare member data
         $memberData = [
             'member_number' => $this->request->getPost('memberNumber'),
@@ -418,6 +419,9 @@ class Members extends BaseController
             // Keep existing photo
             $photoPath = $this->request->getPost('existing_photo');
         }
+
+        log_message('debug', 'POST data: ' . json_encode($this->request->getPost()));
+
 
         // Prepare member data
         $memberData = [

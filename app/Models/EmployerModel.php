@@ -39,8 +39,10 @@ class EmployerModel extends Model
     public function getCheckoffAmounts($employerId)
     {
         return $this->db->table('members')
-            ->select('checkoff_amount')
-            ->where('employer_id', $employerId)
+            ->select('members.*')
+            ->where('members.employer_id', $employerId)
+            ->join('employers', 'employers.employer_id = members.employer_id')
+            ->select('members.checkoff_amount, employers.*')
             ->get()
             ->getResultArray();
     }
