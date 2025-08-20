@@ -252,15 +252,21 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="checkoff_start_date" class="form-label">Check-off Start Date</label>
                                 <input type="date" class="form-control" id="checkoff_start_date" name="checkoff_start_date"
                                     value="<?= isset($member) ? esc($member['checkoff_start_date']) : '' ?>">
                             </div>
-                            <div class="col-md-6">
-                                <label for="checkoff_amount" class="form-label">Check-off Amount</label>
-                                <input type="number" class="form-control" id="checkoff_amount" name="checkoff_amount"
-                                    value="<?= isset($member) ? esc($member['checkoff_amount']) : '' ?>">
+                            <div class="col-md-4">
+                                <label for="checkoff_shares" class="form-label">Shares Deduction</label>
+                                <input type="number" class="form-control" id="checkoff_shares" name="checkoff_shares"
+                                    value="<?= isset($member) ? esc($member['checkoff_shares']) : '' ?>">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="checkoff_savings" class="form-label">Savings Deduction</label>
+                                <input type="number" class="form-control" id="checkoff_savings" name="checkoff_savings"
+                                    value="<?= isset($member) ? esc($member['checkoff_savings']) : '' ?>">
                             </div>
 
                         </div>
@@ -454,7 +460,8 @@
             formData.append('date_employed', document.getElementById('date_employed').value);
             formData.append('deduction_frequency', document.getElementById('deduction_frequency').value);
             formData.append('checkoff_start_date', document.getElementById('checkoff_start_date').value);
-            formData.append('checkoff_amount', document.getElementById('checkoff_amount').value);
+            formData.append('checkoff_shares', document.getElementById('checkoff_shares').value);
+            formData.append('checkoff_savings', document.getElementById('checkoff_savings').value);
 
             // Beneficiary Details (Step 3)
             formData.append('beneficiaryFirstName', document.getElementById('beneficiaryFirstName').value);

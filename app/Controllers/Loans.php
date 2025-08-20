@@ -40,12 +40,21 @@ class Loans extends BaseController
         $loanType = new LoanTypeModel();
         $types = $loanType->findAll();
 
+
         $data = [
             'title' => 'Loan Application',
             'userInfo' => $userInfo,
             'loanTypes' => $types
         ];
         return view('loans/new', $data);
+    }
+
+    public function fetchLoanApplicationsByMember($memberId)
+    {
+        $loanModel = new LoanApplicationModel();
+        $loans = $loanModel->getApplicationsWithDetailsByMember($memberId);
+
+        return $this->response->setJSON($loans);
     }
 
     public function allLoans()
@@ -142,8 +151,6 @@ class Loans extends BaseController
 
         return $this->response->setJSON(['status' => 'success']);
     }
-
-
 
     public function getInterest($id = null)
     {

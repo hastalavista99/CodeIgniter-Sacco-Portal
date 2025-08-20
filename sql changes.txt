@@ -450,5 +450,6 @@ ADD COLUMN position VARCHAR(100) NULL,
 ADD COLUMN employment_date DATE NULL,
 ADD COLUMN deduction_frequency VARCHAR(50) NULL,
 ADD COLUMN checkoff_start_date DATE NULL,
-ADD COLUMN checkoff_amount DECIMAL(15,2) NULL;
+ADD COLUMN checkoff_shares DECIMAL(15,2) NULL,
+ADD COLUMN checkoff_savings DECIMAL(15,2) NULL;
 

@@ -79,37 +79,6 @@
                 </a>
               </li>
             
-              <a href="<?= site_url('payments/deposits') ?>" class="nav-link collapsed">
-                <i class="bi bi-piggy-bank"></i>
-                <span>
-                  Saving Deposits
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('payments/shares') ?>" class="nav-link collapsed">
-                <i class="bi bi-box-arrow-in-down"></i>
-                <span>
-                  Share Deposits
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('payments/repayments') ?>" class="nav-link collapsed">
-                <i class="bi bi-cash-coin"></i>
-                <span>
-                  Loan Repayments
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('payments/group') ?>" class="nav-link collapsed">
-                <i class="bi bi-people"></i>
-                <span>
-                  Group Payments
-                </span>
-              </a>
-            </li> -->
             </ul>
           </div>
         </li>

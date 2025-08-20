@@ -24,8 +24,6 @@ class LoanTopupController extends BaseController
         $this->journalService = new JournalService();
     }
 
-    
-
     public function initiate($oldLoanId)
     {
 
@@ -79,8 +77,6 @@ class LoanTopupController extends BaseController
 
         // Post accounting entries via LoanService
         $this->loanService->processTopUpLoan($oldLoan, $newLoanAmount, $outstanding, $processingFee, $netDisbursement);
-
-
 
         return redirect()->to('/loans/' . $newLoanId)->with('success', 'Top-up loan processed.');
     }

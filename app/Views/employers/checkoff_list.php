@@ -27,7 +27,7 @@
         <div class="card shadow border-none my-2 px-2">
             <div class="card-body px-0 pb-2 pt-2">
                 <?php if (!empty($checkoff_amounts)): ?>
-                    <table class="table table-bordered table-striped" id="viewsTable">
+                    <table class="table table-bordered text-center" id="viewsTable">
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
@@ -35,7 +35,8 @@
                                 <th>Member No</th>
                                 <th>Employer</th>
                                 <th>Check-off Code</th>
-                                <th>Checkoff Amount</th>
+                                <th>Checkoff Shares</th>
+                                <th>Checkoff Savings</th>
                                 <th>Frequency</th>
                             </tr>
                         </thead>
@@ -47,7 +48,8 @@
                                     <td><?= esc($amount['member_number']) ?></td>
                                     <td><?= esc($amount['employer_name']) ?></td>
                                     <td><?= esc($amount['checkoff_code']) ?></td>
-                                    <td><?= esc($amount['checkoff_amount']) ?></td>
+                                    <td><?= esc($amount['checkoff_shares']) ?></td>
+                                    <td><?= esc($amount['checkoff_savings']) ?></td>
                                     <td><?= esc($amount['deduction_frequency']) ?></td>
                                 </tr>
                             <?php endforeach; ?>

@@ -47,7 +47,53 @@ class LoanApplicationModel extends Model
             ->findAll();
     }
 
+    public function getApplicationsWithDetailsByMember($memberId)
+    {
 
+        $loans = $this->select('
+            loan_applications.*,
+            members.member_number,
+            members.first_name AS member_first_name,
+            members.last_name AS member_last_name,
+            members.phone_number AS member_mobile,
+            loan_types.loan_name
+        ')
+            ->join('members', 'members.id = loan_applications.member_id')
+            ->join('loan_types', 'loan_types.id = loan_applications.loan_type_id')
+            ->where('loan_applications.member_id', $memberId)
+            ->orderBy('loan_applications.created_at', 'DESC')
+            ->findAll();
+
+        foreach ($loans as $loan) {
+            $loanId = $loan['id'];
+            $disbursed = $loan['disburse_amount'];
+
+            // Get repayment summary for this loan
+            $repayment = $this->select('loan_applications.*, loan_repayments.amount_due, SUM(loan_repayments.amount_paid) AS amount_paid')
+                ->join('loan_repayments', 'loan_repayments.loan_id = loan_applications.id', 'left')
+                ->where('loan_applications.id', $loanId)
+                ->get()
+                ->getRow();
+
+            $totalDue  = $repayment->total_loan ?? 0;
+            $totalPaid = $repayment->amount_paid ?? 0;
+            $balance   = round($totalDue - $totalPaid,2);
+
+            $loanSummaries[] = [
+                'loan_id'         => $loanId,
+                'principal'       =>$loan['principal'],
+                'interest_method' => $loan['interest_method'],
+                'disbursed'       => $disbursed,
+                'repayment_period'=> $loan['repayment_period'],
+                'loan_status'     => $loan['loan_status'],
+                'total_due'       => $totalDue,
+                'total_paid'      => $totalPaid,
+                'balance'         => $balance,
+            ];
+        }
+
+        return $loanSummaries;
+    }
 
     public function getApplicationWithDetails($loanAppId)
     {

@@ -216,11 +216,34 @@ use CodeIgniter\HTTP\SiteURI;
                 </form>
             </div>
         </div>
+
+        <div class="card shadow border-none my-2 px-2">
+            <div class="card-body px-0 py-2">
+                <div class="table-responsive-md">
+                    <table class="table table-bordered text-sm" id="loansTable">
+                        <thead>
+                            <tr>
+                                <th>Loan ID</th>
+                                <th>Principal</th>
+                                <th>Interest Method</th>
+                                <th>Repayment Period</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         // Form steps navigation
         const form = document.getElementById('multiStepForm');
         const steps = document.querySelectorAll('.form-step');
@@ -230,7 +253,7 @@ use CodeIgniter\HTTP\SiteURI;
 
         // Next button click handler
         nextButtons.forEach(button => {
-            button.addEventListener('click', function () {
+            button.addEventListener('click', function() {
                 const currentStep = parseInt(this.getAttribute('data-step'));
                 const currentStepElement = document.getElementById(`step-${currentStep}`);
                 const nextStepElement = document.getElementById(`step-${currentStep + 1}`);
@@ -269,7 +292,7 @@ use CodeIgniter\HTTP\SiteURI;
 
         // Previous button click handler
         prevButtons.forEach(button => {
-            button.addEventListener('click', function () {
+            button.addEventListener('click', function() {
                 const currentStep = parseInt(this.getAttribute('data-step'));
                 const currentStepElement = document.getElementById(`step-${currentStep}`);
                 const prevStepElement = document.getElementById(`step-${currentStep - 1}`);
@@ -297,7 +320,7 @@ use CodeIgniter\HTTP\SiteURI;
         // Ensure fetchMemberBtn exists before adding an event listener
         let fetchMemberBtn = document.getElementById('fetchMemberBtn');
         if (fetchMemberBtn) {
-            fetchMemberBtn.addEventListener('click', function () {
+            fetchMemberBtn.addEventListener('click', function() {
                 // console.log("Fetch Member button clicked");
 
                 let memberNo = document.getElementById('member-number').value.trim();
@@ -332,7 +355,7 @@ use CodeIgniter\HTTP\SiteURI;
         // Fetch interest Method
         const loanType = document.getElementById('loan_type');
 
-        loanType.addEventListener('change', function () {
+        loanType.addEventListener('change', function() {
             let loanId = loanType.value;
 
             fetch(`<?= site_url('/loans/get-interest/') ?>${encodeURIComponent(loanId)}`)
@@ -364,7 +387,7 @@ use CodeIgniter\HTTP\SiteURI;
         // fetch guarantor details
         const fetchGuarantorBtn = document.getElementById('fetchGuarantorBtn');
 
-        fetchGuarantorBtn.addEventListener('click', function () {
+        fetchGuarantorBtn.addEventListener('click', function() {
             let guarantorNumber = document.getElementById('guarantor-number').value.trim();
             if (guarantorNumber === '') {
                 alert("Please enter a valid Member Number.");
@@ -470,7 +493,7 @@ use CodeIgniter\HTTP\SiteURI;
         // Add guarantors to table 
         const addBtn = document.getElementById('addBtn');
 
-        addBtn.addEventListener('click', function (e) {
+        addBtn.addEventListener('click', function(e) {
             e.preventDefault(); // Prevent form submission 
 
             const number = document.getElementById('guarantor-number').value.trim();
@@ -521,7 +544,37 @@ use CodeIgniter\HTTP\SiteURI;
 
     let debounceTimer;
 
-    nameInput.addEventListener('input', function () {
+    const fetchMemberLoans = (memberID) => {
+        fetch(`/loans/fetch/${memberID}`)
+            .then(response => response.json())
+            .then(data => {
+                // Handle the loan data
+                console.log(data);
+                const loansTableBody = document.querySelector('#loansTable tbody');
+                loansTableBody.innerHTML = '';
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(loan => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${loan.loan_id || ''}</td>
+                            <td>${loan.principal || ''}</td>
+                            <td>${loan.interest_method || ''}</td>
+                            <td>${loan.repayment_period || ''}</td>
+                            <td>${loan.balance || ''}</td>
+                            <td>${loan.loan_status || ''}</td>
+                        `;
+                        loansTableBody.appendChild(row);
+                    });
+                } else {
+                    loansTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No loans found for this member.</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching member loans:', error);
+            });
+    }
+
+    nameInput.addEventListener('input', function() {
         clearTimeout(debounceTimer);
 
         const query = this.value.trim();
@@ -551,6 +604,7 @@ use CodeIgniter\HTTP\SiteURI;
                             document.getElementById('member-number').value = member.member_number;
                             nameInput.value = member.name;
                             suggestionBox.innerHTML = '';
+                            fetchMemberLoans(member.id);
                         });
                         suggestionBox.appendChild(item);
                     });
@@ -558,7 +612,7 @@ use CodeIgniter\HTTP\SiteURI;
         }, 300); // debounce delay
     });
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
         if (!suggestionBox.contains(e.target) && e.target !== nameInput) {
             suggestionBox.innerHTML = '';
         }
@@ -567,7 +621,7 @@ use CodeIgniter\HTTP\SiteURI;
 
 <!-- Submission of Loan Data -->
 <script>
-    document.getElementById('loanApplicationForm').addEventListener('submit', function (e) {
+    document.getElementById('loanApplicationForm').addEventListener('submit', function(e) {
         e.preventDefault();
         showLoadingState(true);
 
@@ -606,14 +660,14 @@ use CodeIgniter\HTTP\SiteURI;
 
         // Send data to backend using fetch
         fetch('<?= site_url('/loans/application/submit') ?>', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest', // optional: for CI4 to detect AJAX
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest', // optional: for CI4 to detect AJAX
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
             .then(response => {
                 if (!response.ok) throw new Error("Network response was not ok");
                 return response.json();

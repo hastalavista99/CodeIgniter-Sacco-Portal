@@ -93,7 +93,9 @@ class Members extends BaseController
             'employment_date' => $this->request->getPost('date_employed'),
             'deduction_frequency' => $this->request->getPost('deduction_frequency'),
             'checkoff_start_date' => $this->request->getPost('checkoff_start_date'),
-            'checkoff_amount' => $this->request->getPost('checkoff_amount')
+            'checkoff_shares' => $this->request->getPost('checkoff_shares'),
+            'checkoff_savings' => $this->request->getPost('checkoff_savings')
+
 
         ];
 
@@ -291,7 +293,7 @@ class Members extends BaseController
 
         $member = $memberModel->find($id);
         if (!$member) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException("Member not found");
+            throw new PageNotFoundException("Member not found");
         }
 
         $savings = $savingsModel->getMemberSavingsTotal($id);
@@ -451,7 +453,9 @@ class Members extends BaseController
             'employment_date' => $this->request->getPost('date_employed'),
             'deduction_frequency' => $this->request->getPost('deduction_frequency'),
             'checkoff_start_date' => $this->request->getPost('checkoff_start_date'),
-            'checkoff_amount' => $this->request->getPost('checkoff_amount')
+            'checkoff_savings' => $this->request->getPost('checkoff_savings'),
+            'checkoff_shares' => $this->request->getPost('checkoff_shares')
+
         ];
 
         // Prepare beneficiary data if provided

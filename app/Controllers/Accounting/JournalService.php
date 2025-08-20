@@ -173,4 +173,36 @@ class JournalService extends BaseController
 
         $journalDetailModel->insertBatch($entries);
     }
+
+
+    /**
+     * Create a journal entry and its details in a reusable way.
+     *
+     * @param array $entryData - Journal entry header data
+     * @param array $detailsData - Array of journal detail rows
+     * @return int|false - The journal entry ID or false on failure
+     */
+    public function createJournalEntryWithDetails(array $entryData, array $detailsData)
+    {
+        $journalEntryModel = new JournalEntryModel();
+        $journalDetailModel = new JournalDetailsModel();
+
+        // Create journal entry header
+        $entryId = $journalEntryModel->insert($entryData);
+
+        if (!$entryId) {
+            return false;
+        }
+
+        // Attach entry ID to each detail row
+        foreach ($detailsData as &$detail) {
+            $detail['journal_entry_id'] = $entryId;
+        }
+        unset($detail);
+
+        // Insert journal details
+        $result = $journalDetailModel->insertBatch($detailsData);
+
+        return $result ? $entryId : false;
+    }
 }

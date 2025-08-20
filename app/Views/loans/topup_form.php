@@ -62,21 +62,6 @@
                 <p>Repaid: <?= number_format($percentagePaid, 2) ?>%</p>
                 <p>Paid Amount: <?= number_format($paidAmount, 2) ?></p>
 
-                <div class="row">
-                    <div class="col-4">
-                        <label for="" class="form-label">Original Loan Principal</label>
-                        <input type="text" name="" id="loan-amount" class="form-control" disabled>
-                    </div>
-                    <div class="col-4">
-                        <label for="" class="form-label">Loan Period</label>
-                        <input type="text" name="" id="" class="form-control">
-                    </div>
-                    <div class="col-4">
-                        <label for="" class="form-label">Loan Interest</label>
-                        <input type="text" name="" id="" class="form-control">
-                    </div>
-                </div>
-
                 <form action="<?= site_url('loan-topup/process') ?>" method="post">
                     <input type="hidden" name="old_loan_id" value="<?= $oldLoan['id'] ?>">
                     <div class="row mb-3">
@@ -84,26 +69,16 @@
                             <label class="form-label">Principal Amount</label>
                             <input type="number" name="new_loan_amount" id="balance" class="form-control" required>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label">Repayment Period</label>
-                            <input type="number" name="repayment_period" class="form-control" required>
-                        </div>
+                        
                         <div class="col-6">
                             <label class="form-label">Disburse Amount</label>
                             <input type="number" name="disburse_amount" step="0.01" class="form-control" required>
                         </div>
                         <div class="col-6">
-                            <label class="form-label">New Loan Amount</label>
-                            <input type="number" name="new_loan_amount" step="0.01" class="form-control" required>
+                            <label class="form-label">Repayment Period</label>
+                            <input type="number" name="repayment_period" class="form-control" required>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label">New Loan Amount</label>
-                            <input type="number" name="new_loan_amount" step="0.01" class="form-control" required>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">New Loan Amount</label>
-                            <input type="number" name="new_loan_amount" step="0.01" class="form-control" required>
-                        </div>
+                        
                         <div class="d-flex align-items-center justify-content-between">
                             <a href="<?= site_url('loans/all') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Loan Applications</a>
                             <button type="submit" class="btn btn-primary mt-4">Submit Top-Up</button>

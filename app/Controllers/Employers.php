@@ -97,10 +97,11 @@ class Employers extends BaseController
         $userModel = new UserModel();
         $loggedInUser = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUser);
+        $employer = $this->employerModel->find($id);
 
         $data = [
             'userInfo' => $userInfo,
-            'title' => 'Checkoff List',
+            'title' => 'Checkoff List - '. esc($employer['employer_name']),
             'checkoff_amounts' => $this->employerModel->getCheckoffAmounts($id)
         ];
         return view('employers/checkoff_list', $data);

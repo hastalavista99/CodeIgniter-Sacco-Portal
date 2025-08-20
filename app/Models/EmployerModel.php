@@ -42,7 +42,7 @@ class EmployerModel extends Model
             ->select('members.*')
             ->where('members.employer_id', $employerId)
             ->join('employers', 'employers.employer_id = members.employer_id')
-            ->select('members.checkoff_amount, employers.*')
+            ->select('members.checkoff_shares, members.checkoff_savings, employers.*')
             ->get()
             ->getResultArray();
     }

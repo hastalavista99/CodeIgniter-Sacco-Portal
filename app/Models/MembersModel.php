@@ -17,7 +17,7 @@ class MembersModel extends Model
         'first_name', 'last_name', 'dob', 'join_date', 'gender', 
         'nationality', 'marital_status', 'id_number', 'is_active',
         'email', 'phone_number', 'alternate_phone', 'street_address', 
-        'address_line2', 'city', 'county', 'zip_code', 'photo_path', 'employer_id', 'employee_number', 'department', 'position', 'employment_date', 'deduction_frequency', 'checkoff_start_date', 'checkoff_amount'
+        'address_line2', 'city', 'county', 'zip_code', 'photo_path', 'employer_id', 'employee_number', 'department', 'position', 'employment_date', 'deduction_frequency', 'checkoff_start_date', 'checkoff_shares', 'checkoff_savings'
     ];
     
     protected $useTimestamps = true;
