@@ -182,6 +182,37 @@ class JournalService extends BaseController
      * @param array $detailsData - Array of journal detail rows
      * @return int|false - The journal entry ID or false on failure
      */
+    /**
+     * Creates a journal entry along with its associated details.
+     *
+     * @param array $entryData Associative array containing the main journal entry data.
+     *   Example:
+     *   // $entryData = [
+     *   //     'date' => '2024-06-01',
+     *   //     'reference' => 'INV-1001',
+     *   //     'description' => 'Sales invoice entry',
+     *   //     'created_by' => 1
+     *   // ];
+     *
+     * @param array $detailsData Array of associative arrays, each containing details for the journal entry.
+     *   Example:
+     *   // $detailsData = [
+     *   //     [
+     *   //         'account_id' => 101,
+     *   //         'debit' => 500.00,
+     *   //         'credit' => 0.00,
+     *   //         'narration' => 'Sales revenue'
+     *   //     ],
+     *   //     [
+     *   //         'account_id' => 201,
+     *   //         'debit' => 0.00,
+     *   //         'credit' => 500.00,
+     *   //         'narration' => 'Accounts receivable'
+     *   //     ]
+     *   // ];
+     *
+     * @return mixed Returns the created journal entry object or ID on success, or false on failure.
+     */
     public function createJournalEntryWithDetails(array $entryData, array $detailsData)
     {
         $journalEntryModel = new JournalEntryModel();

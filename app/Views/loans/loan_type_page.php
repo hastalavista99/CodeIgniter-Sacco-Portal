@@ -34,14 +34,14 @@
                 <?php if (!empty($types) && is_array($types)) : 
                     // print_r ($types);?>
                     <div class="table-responsive-md my-3">
-                        <table class="table table-hover" id="paymentsTable">
+                        <table class="table table-hover" id="viewsTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Loan Name</th>
                                     <th>Interest Rate(%)</th>
                                     <th>Interest Method</th>
-                                    <th>Actions</th>
+                                    <th>View & Edit</th>
                                 </tr>
                             </thead>
                             <tbody>

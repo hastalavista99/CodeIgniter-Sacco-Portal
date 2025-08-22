@@ -67,16 +67,44 @@
                     <div class="row mb-3">
                         <div class="col-6">
                             <label class="form-label">Principal Amount</label>
-                            <input type="number" name="new_loan_amount" id="balance" class="form-control" required>
+                            <input type="number" name="new_loan_amount" step="0.01" id="balance" class="form-control" required>
                         </div>
                         
                         <div class="col-6">
                             <label class="form-label">Disburse Amount</label>
                             <input type="number" name="disburse_amount" step="0.01" class="form-control" required>
                         </div>
-                        <div class="col-6">
+                        <div class="col-6 mb-3">
                             <label class="form-label">Repayment Period</label>
                             <input type="number" name="repayment_period" class="form-control" required>
+                        </div>
+                        <h4>Repayment Details</h4>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="total_loan" class="form-label">Total Loan Amount *</label>
+                                <input type="number" class="form-control" id="total_loan" name="total_loan" disabled>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="total_interest" class="form-label">Total Interest *</label>
+                                <input type="number" class="form-control" id="total_interest" name="total_interest"
+                                    disabled>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="fees" class="form-label">Fees & Charges *</label>
+                                <input type="number" class="form-control" id="fees" disabled>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="monthly_repayment" class="form-label">Monthly Repayment *</label>
+                                <input type="number" class="form-control" id="monthly_repayment" disabled>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="disburse_amount" class="form-label">Disburse Amount *</label>
+                                <input type="number" class="form-control" id="disburse_amount">
+                            </div>
+
+                            <input type="hidden" name="" id="service_calculated">
+                            <input type="hidden" name="" id="insurance_calculated">
+
                         </div>
                         
                         <div class="d-flex align-items-center justify-content-between">

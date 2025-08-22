@@ -144,7 +144,7 @@ use CodeIgniter\HTTP\SiteURI;
                             </div>
                             <div class="col-md-3">
                                 <label for="disburse_amount" class="form-label">Disburse Amount *</label>
-                                <input type="number" class="form-control" id="disburse_amount" disabled>
+                                <input type="number" class="form-control" id="disburse_amount">
                             </div>
 
                             <input type="hidden" name="" id="service_calculated">
