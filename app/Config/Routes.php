@@ -67,6 +67,7 @@ $routes->group('api', ['filter' => 'jwt'], function($routes) {
     $routes->get('dashboard', 'Api\DashboardController::index');
     $routes->get('transactions/(:num)', 'Api\TransactionsController::index/$1');
     $routes->get('sacco/loans/(:num)', 'Api\LoansController::index/$1');
+    $routes->get('sacco/loans/details/(:num)', 'Api\LoansController::view/$1');
     $routes->get('sacco/loans/mobile/(:num)', 'Api\MobileLoanController::fetchLoan/$1');
     $routes->get('sacco/balances/(:num)', 'Api\TransactionsController::balances/$1');
     $routes->get('sacco/loan/types', 'Api\LoansController::fetchLoanTypes');

@@ -238,4 +238,30 @@ class LoansController extends BaseController
             'loan_id' => $loanApplicationModel->getInsertID(),
         ]);
     }
+
+    public function view($id = null)
+    {
+        if (!$id) {
+            return $this->respond([
+                'success' => false,
+                'message' => 'Loan ID is required.'
+            ], ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $loanModel = new LoanApplicationModel();
+        $loan = $loanModel->getApplicationWithDetails($id);
+
+        if (!$loan) {
+            return $this->respond([
+                'success' => false,
+                'message' => 'Loan not found.'
+            ], ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        return $this->respond([
+            'success' => true,
+            'message' => 'Loan details retrieved successfully.',
+            'data' => $loan
+        ], ResponseInterface::HTTP_OK);
+    }
 }
