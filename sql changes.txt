@@ -453,3 +453,7 @@ ADD COLUMN checkoff_start_date DATE NULL,
 ADD COLUMN checkoff_shares DECIMAL(15,2) NULL,
 ADD COLUMN checkoff_savings DECIMAL(15,2) NULL;
 
+21/10/2025
+
+ALTER TABLE `loan_applications` ADD `is_topup` BOOLEAN NOT NULL DEFAULT FALSE AFTER `principal`;
+

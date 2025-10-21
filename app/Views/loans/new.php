@@ -117,6 +117,9 @@ use CodeIgniter\HTTP\SiteURI;
                             <div class="col-md-3" id="topupAmountDiv" style="display: none;">
                                 <label for="topup_amount" class="form-label">Top-up Amount *</label>
                                 <input type="number" class="form-control" id="topup_amount">
+                                <div class="form-text text-muted">
+                                    Must be greater than current loan balance
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <label for="repayment_period" class="form-label">Repayment Period(Months) *</label>
@@ -496,12 +499,25 @@ use CodeIgniter\HTTP\SiteURI;
             
             // Handle top-up loan calculations
             if (loanType.value === '4' && topupAmountInput.value) {
+                const existingBalance = parseFloat(principalInput.value) || 0;
                 const topupAmount = parseFloat(topupAmountInput.value) || 0;
-                loanPrincipal = parseFloat(principalInput.value) + topupAmount;
-                const insurancePremium = parseInt(topupAmount * parseFloat(insurancePremiumInput.value) / 100);
-                const fees = parseFloat((topupAmount * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
-                const disburse = parseFloat(topupAmount - fees);
-                const serviceCharge = topupAmount * (serviceChargeInput.value / 100);
+
+                // Validate top-up amount
+                if (topupAmount <= existingBalance) {
+                    alert(`Top-up amount (${topupAmount.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })}) must be greater than your current loan balance (${existingBalance.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })})`);                    
+                    topupAmountInput.value = '';
+                    return;
+                }
+
+                // Calculate new principal (top-up minus existing balance)
+                const newPrincipal = topupAmount - existingBalance;
+                loanPrincipal = newPrincipal;
+
+                const insurancePremium = parseInt(newPrincipal * parseFloat(insurancePremiumInput.value) / 100);
+                const fees = parseFloat((newPrincipal * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
+                const disburse = parseFloat(newPrincipal - fees);
+                const serviceCharge = newPrincipal * (serviceChargeInput.value / 100);
+                
                 disburseAmountInput.value = disburse.toFixed(2);
                 calculatedInsurance.value = insurancePremium.toFixed(2);
                 calculatedServiceFee.value = serviceCharge.toFixed(2);

@@ -200,74 +200,82 @@ class Loans extends BaseController
                     'message' => 'You already have an active approved loan. You cannot apply for a new loan until it is cleared.'
                 ])->setStatusCode(ResponseInterface::HTTP_CREATED);
             } else {
-                // For top-up loans, calculate principal as topup_amount minus existing balance
+                // For top-up loans, validate and calculate the new amounts
                 $loanSummary = $loanModel->getMemberLoanBalance($data['member_id'], $existingLoan['id']);
+
+                // Validate that top-up amount is greater than existing balance
+                if ($data['topup_amount'] <= $loanSummary['balance']) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'Top-up amount (Ksh ' . number_format($data['topup_amount'], 2) . ') must be greater than your current loan balance (Ksh ' . number_format($loanSummary['balance'], 2) . ')'
+                    ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+                }
+
+                // Calculate new principal as topup_amount minus existing balance
                 $data['principal'] = $data['topup_amount'] - $loanSummary['balance'];
-                
+
                 // Recalculate disburse amount based on new principal
                 $totalFees = $data['insurance_premium'] + $data['crb_amount'] + $data['service_charge'];
                 $data['disburse_amount'] = $data['principal'] - $totalFees;
             }
-        }
 
-        // Save loan application
-        $loanData = [
-            'member_id' => $data['member_id'],
-            'loan_type_id' => $data['loan_type'],
-            'interest_method' => $data['interest_method'],
-            'interest_rate' => $data['interest_rate'],
-            'insurance_premium' => $data['insurance_premium'],
-            'crb_amount' => $data['crb_amount'],
-            'service_charge' => $data['service_charge'],
-            'principal' => $data['principal'],
-            'is_topup' => $isTopup,
-            'topup_amount' => $isTopup ? $data['topup_amount'] : 0,
-            'repayment_period' => $data['repayment_period'],
-            'request_date' => $data['request_date'],
-            'total_loan' => $data['total_loan'],
-            'total_interest' => $data['total_interest'],
-            'fees' => $data['fees'],
-            'monthly_repayment' => $data['monthly_repayment'],
-            'disburse_amount' => $data['disburse_amount'],
-            'loan_status' => 'pending'
-        ];
+            // Save loan application
+            $loanData = [
+                'member_id' => $data['member_id'],
+                'loan_type_id' => $data['loan_type'],
+                'interest_method' => $data['interest_method'],
+                'interest_rate' => $data['interest_rate'],
+                'insurance_premium' => $data['insurance_premium'],
+                'crb_amount' => $data['crb_amount'],
+                'service_charge' => $data['service_charge'],
+                'principal' => $data['principal'],
+                'is_topup' => $isTopup,
+                'topup_amount' => $isTopup ? $data['topup_amount'] : 0,
+                'repayment_period' => $data['repayment_period'],
+                'request_date' => $data['request_date'],
+                'total_loan' => $data['total_loan'],
+                'total_interest' => $data['total_interest'],
+                'fees' => $data['fees'],
+                'monthly_repayment' => $data['monthly_repayment'],
+                'disburse_amount' => $data['disburse_amount'],
+                'loan_status' => 'pending'
+            ];
 
-        $loanModel->insert($loanData);
-        $loanAppId = $loanModel->getInsertID();
+            $loanModel->insert($loanData);
+            $loanAppId = $loanModel->getInsertID();
 
-        $sms = new SendSMS();
-        $memberModel = new MembersModel();
-        $member = $memberModel->find($loanData['member_id']);
-        $sms->sendSMS($member['phone_number'], "Your loan application has been received. We will notify you once it is processed.");
+            $sms = new SendSMS();
+            $memberModel = new MembersModel();
+            $member = $memberModel->find($loanData['member_id']);
+            $sms->sendSMS($member['phone_number'], "Your loan application has been received. We will notify you once it is processed.");
 
-        // Save guarantors
-        if (!empty($data['guarantors'])) {
-            foreach ($data['guarantors'] as $guarantor) {
-                $guarantorModel->insert([
-                    'loan_application_id' => $loanAppId,
-                    'guarantor_member_no' => $guarantor['member_number'],
-                    'name' => $guarantor['name'],
-                    'mobile' => $guarantor['mobile'],
-                    'amount' => $guarantor['amount'],
-                ]);
+            // Save guarantors
+            if (!empty($data['guarantors'])) {
+                foreach ($data['guarantors'] as $guarantor) {
+                    $guarantorModel->insert([
+                        'loan_application_id' => $loanAppId,
+                        'guarantor_member_no' => $guarantor['member_number'],
+                        'name' => $guarantor['name'],
+                        'mobile' => $guarantor['mobile'],
+                        'amount' => $guarantor['amount'],
+                    ]);
 
-                // Send SMS to guarantor
-                $sms->sendSMS($guarantor['mobile'], "You have been added as a guarantor for loan application #$loanAppId by {$member['first_name']} {$member['last_name']} for Ksh {$guarantor['amount']}. Please contact us for more details.");
+                    // Send SMS to guarantor
+                    $sms->sendSMS($guarantor['mobile'], "You have been added as a guarantor for loan application #$loanAppId by {$member['first_name']} {$member['last_name']} for Ksh {$guarantor['amount']}. Please contact us for more details.");
+                }
             }
-        }
 
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Loan application submitted successfully',
-            'loan_id' => $loanAppId
-        ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Loan application submitted successfully',
+                'loan_id' => $loanAppId
+            ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+        }
     }
 
     public function view($id = null)
     {
         helper('userpermissionhelper');
-
-
         $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
@@ -341,7 +349,7 @@ class Loans extends BaseController
                 ->where('loan_status', 'approved')
                 ->where('id !=', $id)
                 ->first();
-            
+
             if ($existingLoan) {
                 // Clear existing loan by creating a repayment for the remaining balance
                 $loanSummary = $loanModel->getMemberLoanBalance($loan['member_id'], $existingLoan['id']);
@@ -382,7 +390,7 @@ class Loans extends BaseController
     public function checkLoan($memberId)
     {
         $loanModel = new \App\Models\LoanApplicationModel();
-        
+
         // Get latest *approved* loan for that member
         $loan = $loanModel
             ->where('member_id', $memberId)
@@ -398,7 +406,7 @@ class Loans extends BaseController
 
         $loanSummary = $loanModel->getMemberLoanBalance($memberId, $loan['id']);
         return $this->response->setJSON([
-            'loan_id'     => $loan['id'], 
+            'loan_id'     => $loan['id'],
             'loan_amount' => $loan['principal'],
             'balance'    => $loanSummary['balance'],
         ]);
@@ -468,7 +476,7 @@ class Loans extends BaseController
         $model = new MobileLoanModel();
         $loans = $model->getMemberDetailsPerLoan();
 
-         $userModel = new UserModel();
+        $userModel = new UserModel();
         $loggedInUserId = session()->get('loggedInUser');
         $userInfo = $userModel->find($loggedInUserId);
 
