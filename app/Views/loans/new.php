@@ -110,15 +110,19 @@ use CodeIgniter\HTTP\SiteURI;
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="principal" class="form-label">Principal Amount *</label>
                                 <input type="number" class="form-control" id="principal" value="" required>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3" id="topupAmountDiv" style="display: none;">
+                                <label for="topup_amount" class="form-label">Top-up Amount *</label>
+                                <input type="number" class="form-control" id="topup_amount">
+                            </div>
+                            <div class="col-md-3">
                                 <label for="repayment_period" class="form-label">Repayment Period(Months) *</label>
                                 <input type="number" class="form-control" id="repayment_period" required>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="date" class="form-label">Request Date *</label>
                                 <input type="date" class="form-control" id="date" required>
                             </div>
@@ -354,6 +358,9 @@ use CodeIgniter\HTTP\SiteURI;
 
         // Fetch interest Method
         const loanType = document.getElementById('loan_type');
+        const topupAmountDiv = document.getElementById('topupAmountDiv');
+        const topupAmountInput = document.getElementById('topup_amount');
+        const principalInput = document.getElementById('principal');
 
         loanType.addEventListener('change', function() {
             let loanId = loanType.value;
@@ -372,6 +379,52 @@ use CodeIgniter\HTTP\SiteURI;
                         document.getElementById('insurance_premium').value = data.insurance_premium;
                         document.getElementById('crb_amount').value = data.crb_amount;
                         document.getElementById('service_charge').value = data.service_charge;
+
+                        // Handle top-up loan type (assuming id=4 is top-up loan)
+                        if (loanId === '4') {
+                            topupAmountDiv.style.display = 'block';
+                            principalInput.readOnly = true;
+                            // Fetch current loan balance
+                            const memberId = document.getElementById('member-id').value;
+                            if (memberId) {
+                                fetch(`<?= site_url('loans/check-loan/') ?>${memberId}`)
+                                    .then(response => response.json())
+                                    .then(loanData => {
+                                        if (loanData.balance > 0) {
+                                            principalInput.value = loanData.balance;
+                                            calculateLoanDetails();
+                                        } else {
+                                            alert('No active loan found for top-up. Please select a different loan type.');
+                                            loanType.value = '';
+                                            topupAmountDiv.style.display = 'none';
+                                            principalInput.readOnly = false;
+                                            principalInput.value = '';
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching loan details:', error);
+                                        alert('Error checking loan status. Please try again.');
+                                    });
+                                fetch(`<?= site_url('loans/check-loan/') ?>${memberId}`)
+                                    .then(response => response.json())
+                                    .then(loanData => {
+                                        if (loanData.balance > 0) {
+                                            principalInput.value = loanData.balance;
+                                            calculateLoanDetails();
+                                        } else {
+                                            alert('No active loan found for top-up');
+                                            loanType.value = '';
+                                            topupAmountDiv.style.display = 'none';
+                                            principalInput.readOnly = false;
+                                            principalInput.value = '';
+                                        }
+                                    })
+                                    .catch(error => console.error('Error fetching loan details:', error));
+                            }
+                        } else {
+                            topupAmountDiv.style.display = 'none';
+                            principalInput.readOnly = false;
+                        }
                     } else {
                         alert("Interest Method not found!");
                         document.getElementById('interest_method').value = "";
@@ -414,10 +467,9 @@ use CodeIgniter\HTTP\SiteURI;
                 .catch(error => console.error('Guarantor fetch error: ', error));
         });
 
+        // Get all form elements
         const repaymentPeriodInput = document.getElementById('repayment_period');
-        const principalInput = document.getElementById('principal');
         const interestMethodInput = document.getElementById('interest_method');
-
         const totalLoanInput = document.getElementById('total_loan');
         const totalInterestInput = document.getElementById('total_interest');
         const repaymentInput = document.getElementById('monthly_repayment');
@@ -436,12 +488,34 @@ use CodeIgniter\HTTP\SiteURI;
             const monthlyInterestRate = document.getElementById('interest_rate').value;
             const monthlyRate = monthlyInterestRate / 100; // interest rate per month / 100 to get the decimal
             const interestMethod = interestMethodInput.value;
-            const loanPrincipal = parseFloat(principalInput.value);
-            const repaymentPeriod = parseInt(repaymentPeriodInput.value);
-            const insurancePremium = parseInt(loanPrincipal * parseFloat(insurancePremiumInput.value) / 100)
-            const fees = parseFloat((loanPrincipal * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
-            const disburse = parseFloat(loanPrincipal - fees);
-            const serviceCharge = loanPrincipal * (serviceChargeInput.value / 100);
+            const principalInput = document.getElementById('principal');
+            const topupAmountInput = document.getElementById('topup_amount');
+            
+            let loanPrincipal = parseFloat(principalInput.value) || 0;
+            const repaymentPeriod = parseInt(repaymentPeriodInput.value) || 0;
+            
+            // Handle top-up loan calculations
+            if (loanType.value === '4' && topupAmountInput.value) {
+                const topupAmount = parseFloat(topupAmountInput.value) || 0;
+                loanPrincipal = parseFloat(principalInput.value) + topupAmount;
+                const insurancePremium = parseInt(topupAmount * parseFloat(insurancePremiumInput.value) / 100);
+                const fees = parseFloat((topupAmount * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
+                const disburse = parseFloat(topupAmount - fees);
+                const serviceCharge = topupAmount * (serviceChargeInput.value / 100);
+                disburseAmountInput.value = disburse.toFixed(2);
+                calculatedInsurance.value = insurancePremium.toFixed(2);
+                calculatedServiceFee.value = serviceCharge.toFixed(2);
+                feesInput.value = fees.toFixed(2);
+            } else {
+                const insurancePremium = parseInt(loanPrincipal * parseFloat(insurancePremiumInput.value) / 100);
+                const fees = parseFloat((loanPrincipal * (serviceChargeInput.value / 100)) + parseFloat(crbAmountInput.value) + insurancePremium);
+                const disburse = parseFloat(loanPrincipal - fees);
+                const serviceCharge = loanPrincipal * (serviceChargeInput.value / 100);
+                disburseAmountInput.value = disburse.toFixed(2);
+                calculatedInsurance.value = insurancePremium.toFixed(2);
+                calculatedServiceFee.value = serviceCharge.toFixed(2);
+                feesInput.value = fees.toFixed(2);
+            }
 
             // Validate inputs
             if (isNaN(loanPrincipal) || isNaN(repaymentPeriod) || repaymentPeriod <= 0) {
@@ -488,6 +562,7 @@ use CodeIgniter\HTTP\SiteURI;
         repaymentPeriodInput.addEventListener('input', calculateLoanDetails);
         principalInput.addEventListener('input', calculateLoanDetails);
         interestMethodInput.addEventListener('change', calculateLoanDetails);
+        topupAmountInput.addEventListener('input', calculateLoanDetails);
 
 
         // Add guarantors to table 
@@ -628,6 +703,8 @@ use CodeIgniter\HTTP\SiteURI;
         // Gather loan application data
         const data = {
             member_id: document.getElementById('member-id').value,
+            is_topup: document.getElementById('loan_type').value === '4',
+            topup_amount: document.getElementById('topup_amount').value || 0,
             loan_type: document.getElementById('loan_type').value,
             interest_method: document.getElementById('interest_method').value,
             interest_rate: document.getElementById('interest_rate').value,

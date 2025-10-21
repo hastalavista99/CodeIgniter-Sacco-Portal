@@ -212,18 +212,27 @@ class LoanService extends BaseController
         }
 
         log_message('debug', "Advance payment complete. Remaining unallocated: $remaining");
-        if ($remaining <= 0) {
-            // Check if all installments are now paid
-            $allPaid = $repaymentModel
-                ->where('loan_id', $loanId)
-                ->where('status !=', 'paid')
-                ->countAllResults() === 0;
 
-            if ($allPaid) {
-                $loanModel->update($loanId, ['loan_status' => 'paid']);
-                log_message('debug', "Loan ID $loanId status updated to 'paid'");
-            }
+        // Always check if loan is fully paid after any payment
+        $unpaidInstallments = $repaymentModel
+            ->where('loan_id', $loanId)
+            ->where('status !=', 'paid')
+            ->findAll();
+
+        // Consider loan paid if all installments are paid OR if total paid equals or exceeds total due
+        $totalPaid = $repaymentModel
+            ->selectSum('amount_paid')
+            ->where('loan_id', $loanId)
+            ->first()['amount_paid'] ?? 0;
+
+        $loan = $loanModel->find($loanId);
+        $totalDue = $loan['total_loan'];
+
+        if (empty($unpaidInstallments) || $totalPaid >= $totalDue) {
+            $loanModel->update($loanId, ['loan_status' => 'paid']);
+            log_message('debug', "Loan ID $loanId status updated to 'paid'. Total paid: $totalPaid, Total due: $totalDue");
         }
+
         return [
             'principal_paid' => $totalPrincipalPaid,
             'interest_paid' => $totalInterestPaid

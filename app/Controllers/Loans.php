@@ -190,11 +190,24 @@ class Loans extends BaseController
             ->where('loan_status', 'approved')
             ->first();
 
+        // Check if it's a top-up loan
+        $isTopup = isset($data['is_topup']) && $data['is_topup'];
+
         if ($existingLoan) {
-            return $this->response->setJSON([
-            'success' => false,
-            'message' => 'You already have an active approved loan. You cannot apply for a new loan until it is cleared.'
-            ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+            if (!$isTopup) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'You already have an active approved loan. You cannot apply for a new loan until it is cleared.'
+                ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+            } else {
+                // For top-up loans, calculate principal as topup_amount minus existing balance
+                $loanSummary = $loanModel->getMemberLoanBalance($data['member_id'], $existingLoan['id']);
+                $data['principal'] = $data['topup_amount'] - $loanSummary['balance'];
+                
+                // Recalculate disburse amount based on new principal
+                $totalFees = $data['insurance_premium'] + $data['crb_amount'] + $data['service_charge'];
+                $data['disburse_amount'] = $data['principal'] - $totalFees;
+            }
         }
 
         // Save loan application
@@ -207,6 +220,8 @@ class Loans extends BaseController
             'crb_amount' => $data['crb_amount'],
             'service_charge' => $data['service_charge'],
             'principal' => $data['principal'],
+            'is_topup' => $isTopup,
+            'topup_amount' => $isTopup ? $data['topup_amount'] : 0,
             'repayment_period' => $data['repayment_period'],
             'request_date' => $data['request_date'],
             'total_loan' => $data['total_loan'],
@@ -318,10 +333,37 @@ class Loans extends BaseController
             return redirect()->back()->with('error', 'Loan not found');
         }
 
+        // Handle top-up loan approval
+        if ($loan['is_topup']) {
+            // Get existing active loan
+            $existingLoan = $loanModel
+                ->where('member_id', $loan['member_id'])
+                ->where('loan_status', 'approved')
+                ->where('id !=', $id)
+                ->first();
+            
+            if ($existingLoan) {
+                // Clear existing loan by creating a repayment for the remaining balance
+                $loanSummary = $loanModel->getMemberLoanBalance($loan['member_id'], $existingLoan['id']);
+                if ($loanSummary['balance'] > 0) {
+                    $loanService = new LoanService();
+                    $loanService->handleRepayment([
+                        'loan_id' => $existingLoan['id'],
+                        'amount' => $loanSummary['balance'],
+                        'payment_date' => date('Y-m-d'),
+                        'payment_method' => 'transfer',
+                        'description' => 'Loan cleared by top-up loan #' . $id
+                    ]);
+                }
+                // Mark old loan as paid
+                $loanModel->update($existingLoan['id'], ['loan_status' => 'paid']);
+            }
+        }
+
         // Update status
         $loanModel->update($id, ['loan_status' => 'approved']);
 
-        // Generate installment schedule
+        // Generate installment schedule 
         $loanService = new LoanService();
         $loanService->generateInstallments($id);
 
@@ -341,7 +383,6 @@ class Loans extends BaseController
     {
         $loanModel = new \App\Models\LoanApplicationModel();
         
-
         // Get latest *approved* loan for that member
         $loan = $loanModel
             ->where('member_id', $memberId)
@@ -349,18 +390,18 @@ class Loans extends BaseController
             ->orderBy('id', 'DESC')
             ->first();
 
-        $loanSummary = $loanModel->getMemberLoanBalance($memberId, $loan['id']);
-        if ($loan) {
-            return $this->response->setJSON([
-                'loan_id'     => $loan['id'],
-                'loan_amount' => $loan['principal'],
-                'balance'    => $loanSummary['balance'],
-            ]);
-        } else {
+        if (!$loan) {
             return $this->response->setJSON([
                 'message' => 'No active loan found',
             ]);
         }
+
+        $loanSummary = $loanModel->getMemberLoanBalance($memberId, $loan['id']);
+        return $this->response->setJSON([
+            'loan_id'     => $loan['id'], 
+            'loan_amount' => $loan['principal'],
+            'balance'    => $loanSummary['balance'],
+        ]);
     }
 
     public function amortizationSchedule($loanId)
