@@ -67,37 +67,36 @@ class Members extends BaseController
         log_message('debug', 'POST data: ' . json_encode($this->request->getPost()));
         // Prepare member data
         $memberData = [
-            'member_number' => $this->request->getPost('memberNumber'),
-            'first_name' => $this->request->getPost('firstName'),
-            'last_name' => $this->request->getPost('lastName'),
-            'dob' => $this->request->getPost('dob'),
-            'join_date' => $this->request->getPost('joinDate'),
-            'gender' => $this->request->getPost('gender'),
-            'nationality' => $this->request->getPost('nationality'),
-            'marital_status' => $this->request->getPost('maritalStatus'),
-            'id_number' => $this->request->getPost('idNumber'),
-            'is_active' => $this->request->getPost('isActive'),
-            'email' => $this->request->getPost('email'),
-            'phone_number' => $this->request->getPost('phoneNumber'),
-            'alternate_phone' => $this->request->getPost('alternatePhone'),
-            'street_address' => $this->request->getPost('streetAddress'),
-            'address_line2' => $this->request->getPost('addressLine2'),
-            'city' => $this->request->getPost('city'),
-            'county' => $this->request->getPost('county'),
-            'zip_code' => $this->request->getPost('zipCode'),
-            'photo_path' => $photoPath,
-            'employer_id' => $this->request->getPost('employer_id'),
-            'employee_number' => $this->request->getPost('employee_number'),
-            'department' => $this->request->getPost('department'),
-            'position' => $this->request->getPost('position'),
-            'employment_date' => $this->request->getPost('date_employed'),
-            'deduction_frequency' => $this->request->getPost('deduction_frequency'),
-            'checkoff_start_date' => $this->request->getPost('checkoff_start_date'),
-            'checkoff_shares' => $this->request->getPost('checkoff_shares'),
-            'checkoff_savings' => $this->request->getPost('checkoff_savings')
-
-
+            'member_number'        => $this->request->getPost('memberNumber'),
+            'first_name'           => $this->request->getPost('firstName'),
+            'last_name'            => $this->request->getPost('lastName'),
+            'dob'                  => $this->request->getPost('dob'),
+            'join_date'            => $this->request->getPost('joinDate'),
+            'gender'               => $this->request->getPost('gender'),
+            'nationality'          => $this->request->getPost('nationality'),
+            'marital_status'       => $this->request->getPost('maritalStatus'),
+            'id_number'            => $this->request->getPost('idNumber'),
+            'is_active'            => $this->request->getPost('isActive'),
+            'email'                => $this->request->getPost('email'),
+            'phone_number'         => $this->request->getPost('phoneNumber'),
+            'alternate_phone'      => $this->request->getPost('alternatePhone'),
+            'street_address'       => $this->request->getPost('streetAddress'),
+            'address_line2'        => $this->request->getPost('addressLine2'),
+            'city'                 => $this->request->getPost('city'),
+            'county'               => $this->request->getPost('county'),
+            'zip_code'             => $this->request->getPost('zipCode'),
+            'photo_path'           => $photoPath ?: null,
+            'employer_id'          => $this->request->getPost('employer_id') ?: null,
+            'employee_number'      => $this->request->getPost('employee_number') ?: null,
+            'department'           => $this->request->getPost('department') ?: null,
+            'position'             => $this->request->getPost('position') ?: null,
+            'employment_date'      => $this->request->getPost('date_employed') ?: null,
+            'deduction_frequency'  => $this->request->getPost('deduction_frequency') ?: null,
+            'checkoff_start_date'  => $this->request->getPost('checkoff_start_date') ?: null,
+            'checkoff_shares'      => $this->request->getPost('checkoff_shares') ?: null,
+            'checkoff_savings'     => $this->request->getPost('checkoff_savings') ?: null
         ];
+
 
         $mobile = $this->request->getPost('phoneNumber');
         $fname = $this->request->getPost('firstName');
@@ -837,6 +836,4 @@ class Members extends BaseController
             ]);
         }
     }
-
-    
 }
