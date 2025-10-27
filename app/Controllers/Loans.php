@@ -180,26 +180,43 @@ class Loans extends BaseController
 
     public function submit()
     {
-        $data = $this->request->getJSON(true); // Decode JSON body into array
-
-        $loanModel = new LoanApplicationModel();
-        $guarantorModel = new LoanGuarantorModel();
-
-        $existingLoan = $loanModel
-            ->where('member_id', $data['member_id'])
-            ->where('loan_status', 'approved')
-            ->first();
-
-        // Check if it's a top-up loan
-        $isTopup = isset($data['is_topup']) && $data['is_topup'];
-
-        if ($existingLoan) {
-            if (!$isTopup) {
+        try {
+            $data = $this->request->getJSON(true); // Decode JSON body into array
+            
+            if (empty($data)) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'You already have an active approved loan. You cannot apply for a new loan until it is cleared.'
-                ])->setStatusCode(ResponseInterface::HTTP_CREATED);
-            } else {
+                    'message' => 'No data received'
+                ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+            }
+
+            if (!isset($data['member_id']) || empty($data['member_id'])) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Member ID is required'
+                ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+            }
+
+            $loanModel = new LoanApplicationModel();
+            $guarantorModel = new LoanGuarantorModel();
+
+            $existingLoan = $loanModel
+                ->where('member_id', $data['member_id'])
+                ->where('loan_status', 'approved')
+                ->first();
+
+            // Check if it's a top-up loan
+            $isTopup = isset($data['is_topup']) && $data['is_topup'];
+
+            // Handle existing loan scenario
+            if ($existingLoan) {
+                if (!$isTopup) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'You already have an active approved loan. You cannot apply for a new loan until it is cleared.'
+                    ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+                }
+
                 // For top-up loans, validate and calculate the new amounts
                 $loanSummary = $loanModel->getMemberLoanBalance($data['member_id'], $existingLoan['id']);
 
@@ -219,57 +236,101 @@ class Loans extends BaseController
                 $data['disburse_amount'] = $data['principal'] - $totalFees;
             }
 
-            // Save loan application
-            $loanData = [
-                'member_id' => $data['member_id'],
-                'loan_type_id' => $data['loan_type'],
-                'interest_method' => $data['interest_method'],
-                'interest_rate' => $data['interest_rate'],
-                'insurance_premium' => $data['insurance_premium'],
-                'crb_amount' => $data['crb_amount'],
-                'service_charge' => $data['service_charge'],
-                'principal' => $data['principal'],
-                'is_topup' => $isTopup,
-                'topup_amount' => $isTopup ? $data['topup_amount'] : 0,
-                'repayment_period' => $data['repayment_period'],
-                'request_date' => $data['request_date'],
-                'total_loan' => $data['total_loan'],
-                'total_interest' => $data['total_interest'],
-                'fees' => $data['fees'],
-                'monthly_repayment' => $data['monthly_repayment'],
-                'disburse_amount' => $data['disburse_amount'],
-                'loan_status' => 'pending'
-            ];
+            try {
+                // Prepare loan application data
+                $loanData = [
+                    'member_id' => $data['member_id'],
+                    'loan_type_id' => $data['loan_type'],
+                    'interest_method' => $data['interest_method'] ?? '',
+                    'interest_rate' => $data['interest_rate'] ?? 0,
+                    'insurance_premium' => $data['insurance_premium'] ?? 0,
+                    'crb_amount' => $data['crb_amount'] ?? 0,
+                    'service_charge' => $data['service_charge'] ?? 0,
+                    'principal' => $data['principal'],
+                    'is_topup' => $isTopup,
+                    'topup_amount' => $isTopup ? ($data['topup_amount'] ?? 0) : 0,
+                    'repayment_period' => $data['repayment_period'],
+                    'request_date' => $data['request_date'] ?? date('Y-m-d'),
+                    'total_loan' => $data['total_loan'] ?? 0,
+                    'total_interest' => $data['total_interest'] ?? 0,
+                    'fees' => $data['fees'] ?? 0,
+                    'monthly_repayment' => $data['monthly_repayment'] ?? 0,
+                    'disburse_amount' => $data['disburse_amount'] ?? 0,
+                    'loan_status' => 'pending'
+                ];
 
-            $loanModel->insert($loanData);
-            $loanAppId = $loanModel->getInsertID();
-
-            $sms = new SendSMS();
-            $memberModel = new MembersModel();
-            $member = $memberModel->find($loanData['member_id']);
-            $sms->sendSMS($member['phone_number'], "Your loan application has been received. We will notify you once it is processed.");
-
-            // Save guarantors
-            if (!empty($data['guarantors'])) {
-                foreach ($data['guarantors'] as $guarantor) {
-                    $guarantorModel->insert([
-                        'loan_application_id' => $loanAppId,
-                        'guarantor_member_no' => $guarantor['member_number'],
-                        'name' => $guarantor['name'],
-                        'mobile' => $guarantor['mobile'],
-                        'amount' => $guarantor['amount'],
-                    ]);
-
-                    // Send SMS to guarantor
-                    $sms->sendSMS($guarantor['mobile'], "You have been added as a guarantor for loan application #$loanAppId by {$member['first_name']} {$member['last_name']} for Ksh {$guarantor['amount']}. Please contact us for more details.");
+                // Insert loan application
+                if (!$loanModel->insert($loanData)) {
+                    throw new \Exception('Failed to insert loan application');
                 }
-            }
+                
+                $loanAppId = $loanModel->getInsertID();
+                if (!$loanAppId) {
+                    throw new \Exception('Failed to get loan application ID');
+                }
 
+                // Send SMS notification
+                try {
+                    $sms = new SendSMS();
+                    $memberModel = new MembersModel();
+                    $member = $memberModel->find($loanData['member_id']);
+                    if ($member && isset($member['phone_number'])) {
+                        $sms->sendSMS($member['phone_number'], "Your loan application has been received. We will notify you once it is processed.");
+                    }
+                } catch (\Exception $e) {
+                    // Log SMS error but continue processing
+                    log_message('error', 'Failed to send SMS notification: ' . $e->getMessage());
+                }
+
+                // Save guarantors if any
+                if (!empty($data['guarantors'])) {
+                    foreach ($data['guarantors'] as $guarantor) {
+                        try {
+                            $guarantorData = [
+                                'loan_application_id' => $loanAppId,
+                                'guarantor_member_no' => $guarantor['member_number'] ?? '',
+                                'name' => $guarantor['name'] ?? '',
+                                'mobile' => $guarantor['mobile'] ?? '',
+                                'amount' => $guarantor['amount'] ?? 0,
+                            ];
+                            
+                            if (!$guarantorModel->insert($guarantorData)) {
+                                throw new \Exception('Failed to insert guarantor: ' . json_encode($guarantorData));
+                            }
+
+                            // Send SMS to guarantor
+                            if (isset($guarantor['mobile']) && $member) {
+                                $sms->sendSMS(
+                                    $guarantor['mobile'],
+                                    "You have been added as a guarantor for loan application #$loanAppId. Please contact us for more details."
+                                );
+                            }
+                        } catch (\Exception $e) {
+                            // Log guarantor error but continue processing
+                            log_message('error', 'Failed to process guarantor: ' . $e->getMessage());
+                        }
+                    }
+                }
+
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Loan application submitted successfully',
+                    'loan_id' => $loanAppId
+                ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+
+            } catch (\Exception $e) {
+                log_message('error', 'Loan submission failed: ' . $e->getMessage());
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Failed to process loan application: ' . $e->getMessage()
+                ])->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Loan submission failed: ' . $e->getMessage());
             return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Loan application submitted successfully',
-                'loan_id' => $loanAppId
-            ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+                'success' => false,
+                'message' => 'An error occurred while processing your loan application'
+            ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
     }
 
