@@ -457,3 +457,7 @@ ADD COLUMN checkoff_savings DECIMAL(15,2) NULL;
 
 ALTER TABLE `loan_applications` ADD `is_topup` BOOLEAN NOT NULL DEFAULT FALSE AFTER `principal`;
 
+06/11/2025
+
+ALTER TABLE `user` CHANGE `password` `password` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
+

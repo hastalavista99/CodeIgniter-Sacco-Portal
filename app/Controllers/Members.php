@@ -142,8 +142,8 @@ class Members extends BaseController
             // Create share capital account
             $this->createMemberShareAccount($memberId);
 
-            $alpha_numeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            $pass = substr(str_shuffle($alpha_numeric), 0, 8);
+            // $alpha_numeric = '0123456789';
+            // $pass = substr(str_shuffle($alpha_numeric), 0, 4);
 
             $createUser = new UserModel();
             new Hash();
@@ -154,13 +154,13 @@ class Members extends BaseController
                 'member_no' => $memberNumber,
                 'email' => $email ? $email : '',
                 'mobile' => $mobile,
-                'password' => Hash::encrypt($pass),
+                'password' => null,
                 'role' => 'member',
             ];
             $createUser->save($data);
 
             $smsModel = new SendSMS();
-            $msg = "Hi, $fname \n Welcome to Sacco Manager, Login to https://pay.macrologicsys.com/sacco to view your transactions.\nMember Number: $memberNumber \nPassword: $pass\n Regards \n Sacco Manager";
+            $msg = "Hi, $fname \n Welcome to Sacco Manager, Login to https://pay.macrologicsys.com/sacco to view your transactions.";
 
             $sendSMSStatus = $smsModel->sendSMS($mobile, $msg);
 

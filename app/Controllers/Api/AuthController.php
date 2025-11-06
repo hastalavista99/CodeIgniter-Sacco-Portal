@@ -120,7 +120,7 @@ class AuthController extends BaseController
             return $this->respond([
                 'success' => true,
                 'message' => 'Validation successful.',
-                'exists' => $userExists,
+                'exists' => false,
             ]);
         } else {
             return $this->respond([
@@ -129,6 +129,60 @@ class AuthController extends BaseController
             ], ResponseInterface::HTTP_UNAUTHORIZED);
         }
     }
+
+    // public function createPin()
+    // {
+    //     $json = $this->request->getJSON();
+
+    //     if (!isset($json->memberNo) || !isset($json->pin) || !isset($json->mobile)) {
+    //         return $this->respond([
+    //             'success' => false,
+    //             'message' => 'Member number, mobile and pin are required'
+    //         ], ResponseInterface::HTTP_BAD_REQUEST);
+    //     }
+
+    //     $memberNo = $json->memberNo;
+    //     $pin = $json->pin;
+    //     $mobile = $json->mobile;
+
+    //     $memberModel = new MembersModel();
+    //     $userModel = new UserModel();
+
+    //     $member = $memberModel->where('member_number', $memberNo)->first();
+
+    //     if (!$member) {
+    //         return $this->respond([
+    //             'success' => false,
+    //             'message' => 'Member not found'
+    //         ], ResponseInterface::HTTP_NOT_FOUND);
+    //     }
+
+    //     // Optional: check if user already exists
+    //     if ($userModel->where('member_no', $memberNo)->first()) {
+    //         return $this->respond([
+    //             'success' => false,
+    //             'message' => 'User already exists'
+    //         ], ResponseInterface::HTTP_CONFLICT);
+    //     }
+
+    //     $data = [
+    //         'user' => $member['first_name'] . ' ' . $member['last_name'],
+    //         'name' => $member['first_name'],
+    //         'member_no' => $memberNo,
+    //         'email' => '',
+    //         'mobile' => $mobile,
+    //         'password' => Hash::encrypt($pin),
+    //         'role' => 'member',
+    //     ];
+
+    //     $userModel->update($data);
+
+    //     return $this->respond([
+    //         'success' => true,
+    //         'message' => 'PIN created successfully'
+    //     ]);
+    // }
+
 
     public function createPin()
     {
@@ -157,14 +211,30 @@ class AuthController extends BaseController
             ], ResponseInterface::HTTP_NOT_FOUND);
         }
 
-        // Optional: check if user already exists
-        if ($userModel->where('member_no', $memberNo)->first()) {
+        // Check if user already exists
+        $existingUser = $userModel->where('member_no', $memberNo)->first();
+
+        if ($existingUser) {
+            if (empty($existingUser['password']) || is_null($existingUser['password'])) {
+                // Update password for existing user
+                $userModel->update($existingUser['id'], [
+                    'password' => Hash::encrypt($pin),
+                ]);
+
+                return $this->respond([
+                    'success' => true,
+                    'message' => 'PIN created successfully'
+                ]);
+            }
+
+            // User exists and has a password
             return $this->respond([
                 'success' => false,
                 'message' => 'User already exists'
             ], ResponseInterface::HTTP_CONFLICT);
         }
 
+        // Create new user if not found
         $data = [
             'user' => $member['first_name'] . ' ' . $member['last_name'],
             'name' => $member['first_name'],
@@ -175,14 +245,13 @@ class AuthController extends BaseController
             'role' => 'member',
         ];
 
-        $userModel->save($data);
+        $userModel->insert($data);
 
         return $this->respond([
             'success' => true,
-            'message' => 'PIN created successfully'
+            'message' => 'PIN created successfully (new user)'
         ]);
     }
-
 
     public function login()
     {
