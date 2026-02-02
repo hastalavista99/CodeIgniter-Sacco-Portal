@@ -145,32 +145,32 @@ class Members extends BaseController
             // $alpha_numeric = '0123456789';
             // $pass = substr(str_shuffle($alpha_numeric), 0, 4);
 
-            $createUser = new UserModel();
-            new Hash();
+            // $createUser = new UserModel();
+            // new Hash();
 
-            $data = [
-                'user' => $fname,
-                'name' => $fname,
-                'member_no' => $memberNumber,
-                'email' => $email ? $email : '',
-                'mobile' => $mobile,
-                'password' => null,
-                'role' => 'member',
-            ];
-            $createUser->save($data);
+            // $data = [
+            //     'user' => $fname,
+            //     'name' => $fname,
+            //     'member_no' => $memberNumber,
+            //     'email' => $email ? $email : '',
+            //     'mobile' => $mobile,
+            //     'password' => null,
+            //     'role' => 'member',
+            // ];
+            // $createUser->save($data);
 
-            $smsModel = new SendSMS();
-            $msg = "Hi, $fname \n Welcome to Sacco Manager, Login to https://pay.macrologicsys.com/sacco to view your transactions.";
+            // $smsModel = new SendSMS();
+            // $msg = "Hi, $fname \n Welcome to Sacco Manager, Login to https://pay.macrologicsys.com/sacco to view your transactions.";
 
-            $sendSMSStatus = $smsModel->sendSMS($mobile, $msg);
+            // $sendSMSStatus = $smsModel->sendSMS($mobile, $msg);
 
-            if ($sendSMSStatus) {
-                return $this->response->setStatusCode(201)->setJSON([
-                    'success' => true,
-                    'message' => 'Member created and notified successfully',
-                    'member_id' => $memberId
-                ]);
-            }
+            // if ($sendSMSStatus) {
+            //     return $this->response->setStatusCode(201)->setJSON([
+            //         'success' => true,
+            //         'message' => 'Member created and notified successfully',
+            //         'member_id' => $memberId
+            //     ]);
+            // }
             return $this->response->setStatusCode(201)->setJSON([
                 'success' => true,
                 'message' => 'Member created successfully',
@@ -180,6 +180,57 @@ class Members extends BaseController
             return $this->response->setStatusCode(500)->setJSON([
                 'success' => false,
                 'message' => 'Failed to create member'
+            ]);
+        }
+    }
+
+    public function addUser($memberId)
+    {
+
+        $memberId = intval($memberId);
+        $memberModel = new MembersModel();
+
+        $member = $memberModel->find($memberId);
+        if (!$member) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Member not found'
+            ]);
+        }
+
+        $mobile = $member['phone_number'];
+        $fname = $member['first_name'];
+        $memberNumber = $member['member_number'];
+        $email = $member['email'];
+
+
+        $alpha_numeric = '0123456789';
+        $pass = substr(str_shuffle($alpha_numeric), 0, 4);
+
+        $createUser = new UserModel();
+        new Hash();
+
+        $data = [
+            'user' => $fname,
+            'name' => $fname,
+            'member_no' => $memberNumber,
+            'email' => $email ? $email : '',
+            'mobile' => $mobile,
+            'password' => Hash::encrypt($pass),
+            'role' => 'member',
+        ];
+        $createUser->save($data);
+
+        $smsModel = new SendSMS();
+        $msg = "Hi, $fname \n Welcome to Sacco Manager, Login to https://pay.macrologicsys.com/sacco with your member number to view your transactions. Your password is: $pass. Do not share it with anyone.";
+
+        $sendSMSStatus = $smsModel->sendSMS($mobile, $msg);
+
+        if ($sendSMSStatus) {
+            return $this->response->setStatusCode(201)->setJSON([
+                'success' => true,
+                'message' => 'Member created and notified successfully',
+                'member_id' => $memberId
             ]);
         }
     }

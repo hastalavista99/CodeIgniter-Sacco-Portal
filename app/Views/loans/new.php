@@ -117,7 +117,7 @@ use CodeIgniter\HTTP\SiteURI;
                             <div class="col-md-3" id="topupAmountDiv" style="display: none;">
                                 <label for="topup_amount" class="form-label">Top-up Amount *</label>
                                 <input type="number" class="form-control" id="topup_amount">
-                                <div class="form-text text-muted">
+                                <div class="form-text text-muted" id="topUpHelpText">
                                     Must be greater than current loan balance
                                 </div>
                             </div>
@@ -160,7 +160,7 @@ use CodeIgniter\HTTP\SiteURI;
                         </div>
 
                         <div class="d-flex justify-content-end mt-4">
-                            <button type="button" class="btn btn-primary next-step" data-step="1">Next: Guarantor
+                            <button type="button" class="btn btn-primary next-step" data-step="1" id="guarantorDetailsBtn">Next: Guarantor
                                 Details</button>
                         </div>
                     </div>
@@ -493,6 +493,7 @@ use CodeIgniter\HTTP\SiteURI;
             const interestMethod = interestMethodInput.value;
             const principalInput = document.getElementById('principal');
             const topupAmountInput = document.getElementById('topup_amount');
+            const guarantorDetailsBtn = document.getElementById('guarantorDetailsBtn');
             
             let loanPrincipal = parseFloat(principalInput.value) || 0;
             const repaymentPeriod = parseInt(repaymentPeriodInput.value) || 0;
@@ -501,12 +502,15 @@ use CodeIgniter\HTTP\SiteURI;
             if (loanType.value === '4' && topupAmountInput.value) {
                 const existingBalance = parseFloat(principalInput.value) || 0;
                 const topupAmount = parseFloat(topupAmountInput.value) || 0;
+                const topUpHelpText = document.getElementById('topUpHelpText');
 
                 // Validate top-up amount
                 if (topupAmount <= existingBalance) {
-                    alert(`Top-up amount (${topupAmount.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })}) must be greater than your current loan balance (${existingBalance.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })})`);                    
-                    topupAmountInput.value = '';
+                    topUpHelpText.textContent = `Top-up amount (${topupAmount.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })}) must be greater than your current loan balance (${existingBalance.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })})`;
+                    // topupAmountInput.value = '';
                     return;
+                } else {
+                    topUpHelpText.textContent = 'Valid top-up amount.';
                 }
 
                 // Calculate new principal (top-up minus existing balance)

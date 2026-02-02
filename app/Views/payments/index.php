@@ -54,7 +54,12 @@
                                         <td><a href="<?= site_url('payments/details/'.$payment_item['BillRefNumber'])?>"><?= esc($payment_item['BillRefNumber']) ?></a></td>
                                         <td><?= esc($payment_item['ShortCode']) ?></td>
                                         <td><?= esc($payment_item['mp_date']) ?></td>
-                                        <td><a href="<?= site_url('editPay?id=' . $payment_item['mp_id']) ?>"><i class="bi bi-pencil-square text-success"></i></a></td>
+                                        <td>
+                                            <?php if (!$payment_item['exported']) : ?>
+                                                <a href="<?= site_url('payments/export/' . $payment_item['mp_id']) ?>"><i class="bi bi-arrow-right-square text-success" title="Export to remittances"></i></a>
+                                            <?php endif ?>
+                                            <!-- <a href="<?= site_url('editPay?id=' . $payment_item['mp_id']) ?>"><i class="bi bi-pencil-square text-success"></i></a> -->
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

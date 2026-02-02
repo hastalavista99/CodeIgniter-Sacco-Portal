@@ -40,6 +40,12 @@ class Dashboard extends BaseController
             $savings = $savingsModel->getMemberSavingsTotal($memberId);
             $shares = $sharesModel->getMemberSharesTotal($memberId);
             $loans = $loanModel->getMemberLoanSummary($memberId);
+            $loanId = $loanModel->allowCallbacks(false)
+                ->where('member_id', $memberId)
+                ->where('loan_status', 'approved')
+                ->orderBy('created_at', 'DESC')
+                ->first()['id'];
+            $loanBalance =  $loanModel->getMemberLoanBalance($memberId, $loanId);
             $transactions = $transactionsModel->getRecentTransactions($member['member_number']);
         } else {
             $savings = $savingsModel->getTotalSavings();
@@ -117,7 +123,9 @@ class Dashboard extends BaseController
             'userInfo' => $userInfo,
             'savings' => $savings,
             'shares' => $shares,
-            'loans' => $loans,
+            'loans' => $loans ?? 0,
+            'loanBalance' => intval($loanBalance ?? 0),
+            'transactions' => $transactions ?? null,
             'payments' => $payments,
             'member' => $member ?? null,
             'members' => $totalMembers ?? null,
@@ -131,4 +139,6 @@ class Dashboard extends BaseController
         ];
         return view('dashboard/index', $data);
     }
+
+
 }

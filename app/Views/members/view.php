@@ -129,7 +129,13 @@
                             <li class="list-group-item"><strong>Phone:</strong> <?= $member['phone_number'] ?></li>
                             <li class="list-group-item"><strong>Email:</strong> <?= $member['email'] ?></li>
                         </ul>
-                        <a href="<?= site_url('members/all-info/' . $member['id']) ?>" class="btn btn-success mt-3">More Info</a>
+                        <a href="<?= site_url('members/all-info/' . $member['id']) ?>" class="btn btn-success mt-3 d-flex justify-content-center align-items-center"><i class="bi bi-info-circle me-1"></i><span>More Info</span></a>
+                        <a href="#" class="btn btn-warning mt-3 d-flex justify-content-center align-items-center" id="add-user-btn"><i class="bi bi-plus-circle me-1"></i><span>Add User</span></a>
+                        <button class="btn btn-warning w-100" type="button" disabled="" id="loading-add-btn" style="display: none;">
+                            <span class="spinner-border spinner-border-sm" style="width: 16px !important; height: 16px;" role="status" aria-hidden="true"></span>
+                            Processing...
+                        </button>
+
 
                     </div>
                 </div>
@@ -210,6 +216,35 @@
                 alert("Cannot send empty message")
             }
 
+        });
+
+        const addBtn = document.getElementById('add-user-btn');
+        const loadingAdd = document.getElementById('loading-add-btn');
+
+        addBtn.addEventListener('click', () => {
+            addBtn.style.display = 'none';
+            loadingAdd.style.display = 'block';
+
+            fetch('<?= site_url('/members/add-user/' . $member['id']) ?>', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    addBtn.style.display = 'block';
+                    loadingAdd.style.display = 'none';
+                    if (data.success) {
+                        alert('User account created successfully' + data.message);
+                    } else {
+                        alert('User account creation failed: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('User account creation failed');
+                    console.error(error);
+                });
         });
     });
 </script>

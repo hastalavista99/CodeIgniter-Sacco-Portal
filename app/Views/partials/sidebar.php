@@ -123,14 +123,14 @@
               </a>
             </li>
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="<?= site_url('loans/topup/4') ?>" class="nav-link collapsed">
                 <i class="bi bi-phone"></i>
                 <span>
                   Loan Topup
                 </span>
               </a>
-            </li>
+            </li> -->
 
             <li class="nav-item">
               <a href="<?= site_url('loans/type') ?>" class="nav-link collapsed">
@@ -288,7 +288,7 @@
       </a>
     </li>
     <?php if ($userInfo['role'] == 'member') { ?>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-toggle="collapse" href="#loans" role="button" aria-expanded="false"
           aria-controls="collapseExample">
           <i class="bi bi-bank"></i>
@@ -319,7 +319,7 @@
 
           </ul>
         </div>
-      </li>
+      </li> -->
     <?php } ?>
 
 
