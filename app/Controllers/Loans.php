@@ -216,7 +216,7 @@ class Loans extends BaseController
         $sms = new SendSMS();
         $memberModel = new MembersModel();
         $member = $memberModel->find($loanData['member_id']);
-        $sms->sendSMS($member['phone_number'], "Your loan application has been received. We will notify you once it is processed.");
+        // $sms->sendSMS($member['phone_number'], "Your loan application has been received. We will notify you once it is processed.");
 
         // Save guarantors
         if (!empty($data['guarantors'])) {

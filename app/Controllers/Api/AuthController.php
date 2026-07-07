@@ -63,7 +63,7 @@ class AuthController extends BaseController
             try {
                 $sms = "Use $otp as your OTP. Do not share this code.";
                 $smsSend = new SendSMS();
-                $smsSend->sendSMS($mobile, $sms);
+                $smsSend->sendOTP($mobile, $sms);
             } catch (\Exception $e) {
                 log_message('error', 'SMS failed: ' . $e->getMessage());
             }
@@ -113,6 +113,7 @@ class AuthController extends BaseController
             $userModel = new UserModel();
             $user = $userModel
                 ->where('mobile', $mobile)
+                ->where('mobile_activated', 1)
                 ->first();
 
             $userExists = $user ? true : false;
@@ -158,11 +159,25 @@ class AuthController extends BaseController
         }
 
         // Optional: check if user already exists
-        if ($userModel->where('member_no', $memberNo)->first()) {
+        if ($userModel->where('member_no', $memberNo)->where('mobile_activated', 1)->first()) {
             return $this->respond([
                 'success' => false,
                 'message' => 'User already exists'
             ], ResponseInterface::HTTP_CONFLICT);
+        }
+
+        //if user exists but not activated, update the record instead of creating a new one
+        $existingUser = $userModel->where('member_no', $memberNo)->first();
+        if ($existingUser) {
+            $data = [
+                'mobile_activated' => 1,
+                'mobile_password' => Hash::encrypt($pin),
+            ];
+            $userModel->update($existingUser['id'], $data);
+            return $this->respond([
+                'success' => true,
+                'message' => 'PIN updated successfully'
+            ]);
         }
 
         $data = [
@@ -171,7 +186,8 @@ class AuthController extends BaseController
             'member_no' => $memberNo,
             'email' => '',
             'mobile' => $mobile,
-            'password' => Hash::encrypt($pin),
+            'mobile_activated' => 1,
+            'mobile_password' => Hash::encrypt($pin),
             'role' => 'member',
         ];
 
@@ -202,7 +218,7 @@ class AuthController extends BaseController
         $model = new UserModel();
         $member = $model->where('member_no', $memberNo)->first();
 
-        if (!$member || !password_verify($pin, $member['password'])) {
+        if (!$member || !password_verify($pin, $member['mobile_password'])) {
             return $this->respond([
                 'success' => false,
                 'message' => 'Invalid member number or password'

@@ -405,3 +405,5 @@ CREATE TABLE mobile_loans (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
   ); 
+
+  ALTER TABLE `user` ADD `mobile_activated` INT NOT NULL DEFAULT '0' AFTER `permissions`, ADD `mobile_password` VARCHAR(255) NULL AFTER `mobile_activated`;

@@ -229,11 +229,15 @@ class LoanApplicationModel extends Model
             'l.member_id',
             'lt.loan_name AS loanType',
             'l.principal',
+            'l.total_loan AS totalLoan',
+            'lt.interest_rate AS interestRate',
+            'lt.interest_type_id AS interestTypeId',
             'l.loan_status AS loanStatus',
             'l.created_at AS requestDate',
         ])
         ->from("$this->table l")
         ->join('loan_types lt', 'lt.id = l.loan_type_id')
+        ->join('interest_types it', 'it.id = lt.interest_type_id')
         ->where('l.member_id', $memberId)
         ->groupBy('l.id')                        // 👈 prevents 1-to-many blowup
         ->orderBy('l.created_at', 'DESC')

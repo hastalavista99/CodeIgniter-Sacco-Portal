@@ -75,10 +75,10 @@ class TransactionsController extends BaseController
             'status'  => ResponseInterface::HTTP_OK,
             'error'   => false,
             'message' => 'Transactions retrieved successfully',
-            'data'    => [
-                'savingsBalance' => $savings,
-                'sharesBalance' => $shares,
-                'loanBalance' => round($loans[0]['balance'], 2)
+            'balances'    => [
+                'savings' => $savings,
+                'shares' => $shares,
+                'loan' => round($loans[0]['balance'], 2)
             ]
         ])->setStatusCode(ResponseInterface::HTTP_OK);
     }
